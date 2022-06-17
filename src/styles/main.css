@@ -1,0 +1,166 @@
+@font-face {
+  font-family: 'CircularBlack';
+  src: local('CircularBlack'),
+    url(../assets/fonts/CircularStd-Black.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'CircularBold';
+  src: local('CircularBold'),
+    url(../assets/fonts/CircularStd-Bold.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'CircularLight';
+  src: local('CircularLight'),
+    url(../assets/fonts/CircularStd-Light.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'CircularMedium';
+  src: local('CircularMedium'),
+    url(../assets/fonts/CircularStd-Medium.otf) format('opentype');
+}
+
+@font-face {
+  font-family: 'CircularBook';
+  src: local('CircularBook'),
+    url(../assets/fonts/CircularStd-Book.otf) format('opentype');
+}
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;600;700;900&display=swap');
+
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  font-family: 'Montserrat';
+  scroll-behavior: smooth;
+}
+
+*:focus {
+  outline: 3px var(--outline) solid;
+  border-radius: 2px;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
+li {
+  list-style: none;
+}
+
+.pages-top {
+  width: 100%;
+  background-color: var(--primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 50px;
+  flex-direction: column;
+}
+
+.pages-wave {
+  width: 100%;
+  fill: var(--primary);
+}
+
+.pages-parent {
+  margin-top: -90px;
+}
+
+.pages-parent-dir {
+  margin-top: -90px;
+  transform: scaleX(-1);
+}
+
+.pages-where {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.pages-h1 {
+  font-family: CircularMedium;
+  font-weight: 100;
+  color: #fff;
+  font-size: 54px;
+  text-align: center;
+  z-index: 9;
+}
+
+.pages-p {
+  font-family: CircularLight;
+  font-weight: 100;
+  color: #fff;
+  opacity: 0.85;
+  font-size: 16px;
+  text-align: center;
+  margin-top: 15px;
+  z-index: 9;
+}
+
+.pages-where-h1 {
+  font-family: CircularBook;
+  font-weight: 100;
+  color: #fff;
+  text-transform: uppercase;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.pages-where-splitter {
+  width: 20px;
+  height: 1px;
+  background-color: #fff;
+  opacity: 0.6;
+}
+
+.pages-where-h2 {
+  font-family: CircularLight;
+  font-weight: 100;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #fff;
+  opacity: 0.8;
+}
+
+.main-component-h1 {
+  color: var(--black);
+  font-size: 64px;
+  line-height: 62px;
+  font-family: CircularBold;
+  opacity: 0.9;
+}
+
+.main-component-h1-h2 {
+  color: var(--onBackground);
+  font-size: 20px;
+  font-weight: 100;
+  padding: 10px 0px;
+  text-align: center;
+  opacity: 0.8;
+  font-family: CircularBook;
+}
+
+.main-component-h2 {
+  font-family: CircularBook;
+  font-weight: 100;
+  font-size: 42px;
+  text-align: center;
+  color: var(--softBlack);
+}
+
+.main-component-h2-h2 {
+  font-family: CircularLight;
+  font-weight: 100;
+  font-size: 17px;
+  color: var(--softBlack);
+  text-align: center;
+  opacity: 0.7;
+  margin-top: 10px;
+}

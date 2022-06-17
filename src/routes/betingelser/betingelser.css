@@ -1,0 +1,36 @@
+.betingelser-h1 {
+    color: var(--secondary);
+    font-size: 35px;
+    font-family: CircularBook;
+}
+
+.betingelser-h2 {
+    color: var(--softBlack);
+    font-size: 20px;
+    font-family: CircularLight;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.betingelser-h3 {
+    color: var(--secondary);
+    font-size: 22px;
+    font-family: CircularMedium;
+    margin-top: 25px;
+}
+
+.betingelser-h4 {
+    color: var(--secondary);
+    font-size: 18px;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-family: CircularBook;
+}
+
+.betingelser-p {
+    color: var(--softBlack);
+    font-size: 17px;
+    margin-bottom: 5px;
+    font-family: CircularLight;
+    opacity: 0.9;
+}

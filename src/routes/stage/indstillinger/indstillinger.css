@@ -1,0 +1,69 @@
+.indstillinger-p {
+    font-size: 15px;
+    color: var(--softBlack);
+    font-family: CircularLight;
+}
+
+.indstillinger-element {
+    width: 200px;
+    margin: 5px 0px;
+    padding: 9px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.indstillinger-element:hover {
+    background-color: rgba(25, 25, 25, 0.046);
+}
+
+.indstillinger-element-active {
+    width: 200px;
+    margin: 5px 0px;
+    padding: 9px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: var(--primary);
+}
+
+.indstillinger-p-active {
+    color: #fff !important;
+    font-size: 15px;
+    font-family: CircularLight;
+    opacity: 0.9;
+}
+
+.stage-indstillinger-main {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0px 100px;
+}
+
+.stage-indstillinger-sidebar {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.indstillinger-h1 {
+    font-size: 20px;
+    color: var(--softBlack);
+    font-family: CircularBook;
+}
+
+.indstillinger-h2 {
+    font-size: 15px;
+    color: var(--softBlack);
+    font-family: CircularBook;
+    opacity: 0.9;
+    margin-bottom: 5px;
+}
+
+.indstillinger-p {
+    font-size: 15px;
+    color: var(--softBlack);
+    font-family: CircularLight;
+    opacity: 0.9;
+}
+
+.indstilling {
+    margin-top: 15px;
+}

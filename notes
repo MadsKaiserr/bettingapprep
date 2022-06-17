@@ -1,0 +1,57 @@
+async function patchBet(betId, updateValue, index) {
+    var updateArray = [];
+    var randomID = new Date().getTime();
+    const randomNumber = Math.floor(Math.random()*512);
+    randomID = randomID+"-"+randomNumber;
+    
+    const player = updateValue.player;
+    const indsats = updateValue.indsats;
+    const fullProb = updateValue.fullProb;
+    
+    updateArray.push({
+        "id": randomID,
+        "player": player,
+        "indsats": indsats,
+        "fullProb": fullProb,
+        "bets": []
+    });
+    
+    for (var i in updateValue.bets) {
+        const game = updateValue.bets[i].game;
+        const betType = updateValue.bets[i].betType;
+        const result = updateValue.bets[i].result;
+        const probability = updateValue.bets[i].probability;
+        const title = updateValue.bets[i].title;
+        
+        updateArray[0].bets[i] = {
+            "game": game,
+            "betType": betType,
+            "result": result,
+            "probability": probability,
+            "title": title
+        };
+    }
+    
+    const params = {
+        TableName: dynamodbTableName,
+        Key: {
+            'name': betId
+        },
+        UpdateExpression: "set players["+index+"].odds = list_append(players["+index+"].odds, :bet), players["+index+"].info.money = players["+index+"].info.money - :value",
+        ExpressionAttributeValues: {
+            ':bet': updateArray,
+            ':value': indsats
+        },
+        ReturnValues: 'UPDATED_NEW'
+    }
+    return await dynamodb.update(params).promise().then((response) => {
+        const body = {
+            Operation: "UPDATE",
+            Message: "SUCCESS",
+            Item: response
+        }
+        return util.buildResponse(200, body);
+    }, (error) => {
+        console.error("Kunne ikke opdatere gruppespillet: ", error);
+    });
+}

@@ -1,0 +1,327 @@
+.gruppespil-container {
+    min-height: 600px;
+    width: 100%;
+    padding: 135px 5%;
+    background-color: var(--stageSurface);
+}
+
+.gruppespil-section {
+    background-color: #fff;
+    padding: 30px 50px;
+    border-top: 4px var(--primary) solid;
+    margin: 50px auto;
+    width: 70%;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+}
+
+.invite-p {
+  color: var(--secondary);
+  opacity: 0.7;
+  font-family: Open Sans;
+  font-size: 15px;
+  padding: 17px 15px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.invite-icon {
+    width: 25px;
+    height: 25px;
+    margin-top: 15px;
+    fill: var(--secondary);
+  opacity: 0.7;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.gruppespil-invite {
+    cursor: pointer;
+    width: 500px !important;
+}
+
+.gruppespil-h1 {
+    font-family: Montserrat;
+    font-weight: 500;
+    font-size: 24px;
+    display: inline-block;
+    color: var(--secondary);
+    vertical-align: top;  
+}
+
+  .gruppespil-btn {
+      padding: 4px 11px;
+      background-color: var(--primary);
+      border: 1px var(--primaryAccent);
+      color: #fff;
+      font-size: 12px;
+      font-family: Open Sans;
+      font-weight: 400;
+      border-radius: 3px;
+      vertical-align: top;
+      cursor: pointer;
+      margin-top: 7px;
+      margin-left: 10px;
+  }
+
+  .gruppespil-btn:hover {
+      background-color: var(--primaryAccent) !important;
+  }
+
+  .gruppespil2-btn {
+    padding: 4px 11px;
+    background-color: var(--primary);
+    border: 1px var(--primaryAccent);
+    color: #fff;
+    font-size: 12px;
+    font-family: Open Sans;
+    font-weight: 400;
+    border-radius: 3px;
+    vertical-align: top;
+    cursor: pointer;
+    margin-top: 2px;
+    margin-left: 10px;
+}
+
+.gruppespil2-btn:hover {
+    background-color: var(--primaryAccent) !important;
+}
+
+  .gruppespil-info-info {
+      margin-top: 15px;
+  }
+
+  .gruppespil-info-element {
+    display: inline-block;
+    margin-right: 50px;
+}
+
+  .gruppespil-info-element-p {
+      font-family: CircularBook;
+      font-size: 13px;
+      color: var(--secondary);
+      opacity: 0.7;
+  }
+
+  .gruppespil-info-element-h1 {
+    font-family: CircularBook;
+    font-size: 22px;
+    color: var(--secondary);
+}
+
+.gruppespil-info {
+    margin-bottom: 50px;
+}
+
+.gruppespil-kuponer {
+    padding: 20px 0px;
+}
+
+.gruppespil-kupon ul {
+    width: 100%;
+}
+
+.gruppespil-kupon ul li {
+    width: 100%;
+}
+
+.gruppespil-kupon-1 ul {
+    width: 100%;
+}
+
+.gruppespil-kupon-1 ul li {
+    width: 100%;
+}
+
+.gruppespil-kupon-2 ul {
+    width: 100%;
+}
+
+.gruppespil-kupon-2 ul li {
+    width: 100%;
+}
+
+.gruppespil-kupon {
+    display: inline-block;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border-top: 4px var(--primary) solid;
+    border-radius: 2px;
+    width: 15vw;
+    max-width: 350px;
+    min-width: 280px;
+    min-height: 150px;
+    vertical-align: top;
+    position: relative;
+    margin-right: 20px;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+}
+
+.gruppespil-kupon-1 {
+    display: inline-block;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border-top: 4px var(--red) solid;
+    border-radius: 2px;
+    width: 15vw;
+    max-width: 350px;
+    min-width: 280px;
+    min-height: 150px;
+    vertical-align: top;
+    position: relative;
+    margin-right: 20px;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+}
+
+.gruppespil-kupon-2 {
+    display: inline-block;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border-top: 4px var(--green) solid;
+    border-radius: 2px;
+    width: 15vw;
+    max-width: 350px;
+    min-width: 280px;
+    min-height: 150px;
+    vertical-align: top;
+    position: relative;
+    margin-right: 20px;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+}
+
+.gruppespil-table {
+    margin-top: 10px;
+}
+
+.gruppespil-table-title {
+    font-family: Open Sans;
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--secondary);
+    opacity: 0.5;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.gruppespil-table-404 {
+    font-family: Open Sans;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--secondary);
+    opacity: 0.5;
+    vertical-align: top;
+    text-align: center;
+    padding: 10px 10px;
+    display: inline-block;
+}
+
+.gruppespil-stage-404 {
+    font-family: Open Sans;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--secondary);
+    opacity: 0.6;
+    vertical-align: top;
+    text-align: center;
+    padding: 10px 0px;
+    display: inline-block;
+}
+
+.gruppespil-table-p {
+    font-family: Open Sans;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--secondary);
+    vertical-align: top;
+    display: inline-block;
+    margin-top: 1px;
+}
+
+.gruppespil-table-h1 {
+    font-family: Open Sans;
+    font-weight: 500;
+    font-size: 15px;
+    color: black;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 1px;
+}
+
+.gruppespil-table-place {
+    font-family: Open Sans;
+    font-weight: 500;
+    font-size: 17px;
+    color: var(--secondary);
+    display: inline-block;
+    vertical-align: top;
+}
+
+.gruppespil-table-top {
+    border-bottom: #87889747 1px solid;
+    padding: 5px 0px;
+}
+
+.gruppespil-table-row {
+    padding: 10px 10px;
+    border-bottom: #87889747 1px solid;
+}
+
+.gruppetable-navn {
+    margin-left: 50px;
+    width: 300px;
+}
+
+.gruppetable-el-navn {
+    width: 300px;
+}
+
+.gruppetable-number {
+    width: 160px;
+}
+
+.gruppetable-kapital {
+    width: 200px;
+}
+
+.gruppetable-place {
+    padding-right: 10px;
+}
+
+.gruppespil-table-medlemsskab-silver {
+    border-radius: 50%;
+    width: 10px;
+    vertical-align: top;
+    margin-right: 10px;
+    display: inline-block;
+    background-color: var(--silver);
+    height: 10px;
+}
+
+.gruppespil-table-medlemsskab-primary {
+    border-radius: 50%;
+    width: 10px;
+    vertical-align: top;
+    margin-right: 10px;
+    display: inline-block;
+    background-color: var(--primary);
+    height: 10px;
+}
+
+.gruppespil-table-medlemsskab-gold {
+    border-radius: 50%;
+    width: 10px;
+    vertical-align: top;
+    margin-right: 10px;
+    display: inline-block;
+    background-color: var(--gold);
+    height: 10px;
+}
+
+.gruppespil-table-medlemsskab-special {
+    border-radius: 50%;
+    width: 10px;
+    vertical-align: top;
+    margin-right: 10px;
+    display: inline-block;
+    background-color: var(--red);
+    height: 10px;
+}

@@ -1,0 +1,597 @@
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+import axios from "axios";
+import { useNavigate, Link, NavLink } from 'react-router-dom';
+
+// import "./league.css";
+ 
+function StageLeague () {
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
+
+    const [loadingText, setLoadingText] = useState("Indlæser...");
+    const [nav, setNav] = useState("popular");
+
+    // useEffect(() => {
+    //     if (loadingText !== "Indlæser...") {
+    //         document.getElementById("stage-loader1").classList.remove("display");
+    //         document.getElementById("stage-loader2").classList.remove("display");
+    //     }
+    // }, [loadingText])
+
+
+    const [dataLoad, setDataLoad] = useState(false);
+
+    const [league_name, setLeague_name] = useState("Indlæser...");
+    const [season_year, setSeason_year] = useState("...");
+    const [logo, setLogo] = useState("");
+
+    if (!dataLoad) {
+        setTimeout(function (){
+            getGame();
+        }, 500);
+        setDataLoad(true);
+    }
+
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    var leagueId = urlParams.get("id");
+    leagueId = parseInt(leagueId);
+
+    const [tabelType, setTableType] = useState("");
+    const [tabelO, setTabelO] = useState([]);
+    const [senesteKampe, setSenesteKampe] = useState([]);
+    const [tabelOUsed, setTabelOUsed] = useState(false);
+
+    function getGame() {
+        fetch("https://soccer.sportmonks.com/api/v2.0/seasons/" + leagueId + "?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=goalscorers,league,stages,groups,results,fixtures:order(starting_at|desc)&tz=Europe/Copenhagen")
+        .then(response => response.json())
+        .then(function (result) {
+            console.log(result);
+            setLoadingText("");
+            setLeague_name(result.data.league.data.name);
+            setSeason_year(result.data.name);
+            setLogo(result.data.league.data.logo_path);
+
+            var matchArray = result.data.fixtures.data;
+            var matches = "";
+            for (var u in matchArray) {
+                if (matches === "") {
+                    matches = matchArray[u].id;
+                } else {
+                    matches = matches + "," + matchArray[u].id;
+                }
+            }
+
+            fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+matches+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=localTeam,visitorTeam&tz=Europe/Copenhagen")
+            .then(response => response.json())
+            .then(function (response) {
+                console.log(response);
+                setSenesteKampe(response.data.reverse());
+            }) .catch(error => 
+                console.log('error', error
+            ));
+        }) .catch(error => 
+            console.log('error', error
+        ));
+    }
+
+    function getTabel() {
+        setTabelOUsed(true);
+        fetch("https://soccer.sportmonks.com/api/v2.0/standings/season/"+leagueId+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=standings.league,standings.team,")
+        .then(response => response.json())
+        .then(function (result) {
+            console.log(result);
+            // for (var t in result.data) {
+            //     if (result.data[t].stage_id === stageId) {
+            //         setTabelO(result.data[t].standings.data);
+            //         if (result.data[t].name === "Regular Season") {
+            //             setTabelOLeague(result.data[t].standings.data[0].league.data.name);
+            //         }
+            //         console.log("Table result", result.data[t].standings.data)
+            //     }
+            // }
+            setTabelO(result.data);
+            setTableType("1");
+        })
+        .catch(error => console.log('error', error));
+    }
+
+    const [messageType, setMessageType] = useState("error-con-error");
+    function setNotiMessage(type, heading, message) {
+        if (type === "error") {
+            setMessageType("error-con-error");
+            document.getElementById("errorIcon").classList.add("display");
+        } else if (type === "success") {
+            document.getElementById("errorIcon").classList.remove("display");
+            setMessageType("error-con-success");
+        }
+        document.getElementById("errorCon").classList.add("display");
+        document.getElementById("errorConH").innerHTML = heading;
+        document.getElementById("errorConP").innerHTML = message;
+    }
+
+    useEffect(() => {
+        if (nav === "popular") {
+            document.getElementById("popular").classList.add("display");
+            document.getElementById("kort").classList.remove("display");
+            document.getElementById("corner").classList.remove("display");
+            document.getElementById("goal").classList.remove("display");
+            document.getElementById("spillere").classList.remove("display");
+
+            document.getElementById("popularN").className = "oddsspil-element-active";
+            document.getElementById("kortN").className = "oddsspil-element";
+            document.getElementById("cornerN").className = "oddsspil-element";
+            document.getElementById("goalN").className = "oddsspil-element";
+            document.getElementById("spillereN").className = "oddsspil-element";
+        } else if (nav === "kort") {
+            document.getElementById("popular").classList.remove("display");
+            document.getElementById("kort").classList.add("display");
+            document.getElementById("corner").classList.remove("display");
+            document.getElementById("goal").classList.remove("display");
+            document.getElementById("spillere").classList.remove("display");
+
+            document.getElementById("popularN").className = "oddsspil-element";
+            document.getElementById("kortN").className = "oddsspil-element-active";
+            document.getElementById("cornerN").className = "oddsspil-element";
+            document.getElementById("goalN").className = "oddsspil-element";
+            document.getElementById("spillereN").className = "oddsspil-element";
+        } else if (nav === "corner") {
+            document.getElementById("popular").classList.remove("display");
+            document.getElementById("kort").classList.remove("display");
+            document.getElementById("corner").classList.add("display");
+            document.getElementById("goal").classList.remove("display");
+            document.getElementById("spillere").classList.remove("display");
+
+            document.getElementById("popularN").className = "oddsspil-element";
+            document.getElementById("kortN").className = "oddsspil-element";
+            document.getElementById("cornerN").className = "oddsspil-element-active";
+            document.getElementById("goalN").className = "oddsspil-element";
+            document.getElementById("spillereN").className = "oddsspil-element";
+
+            if (tabelOUsed === false) {
+                getTabel();
+            }
+        } else if (nav === "goal") {
+            document.getElementById("popular").classList.remove("display");
+            document.getElementById("kort").classList.remove("display");
+            document.getElementById("corner").classList.remove("display");
+            document.getElementById("goal").classList.add("display");
+            document.getElementById("spillere").classList.remove("display");
+
+            document.getElementById("popularN").className = "oddsspil-element";
+            document.getElementById("kortN").className = "oddsspil-element";
+            document.getElementById("cornerN").className = "oddsspil-element";
+            document.getElementById("goalN").className = "oddsspil-element-active";
+            document.getElementById("spillereN").className = "oddsspil-element";
+        } else if (nav === "spillere") {
+            document.getElementById("popular").classList.remove("display");
+            document.getElementById("kort").classList.remove("display");
+            document.getElementById("corner").classList.remove("display");
+            document.getElementById("goal").classList.remove("display");
+            document.getElementById("spillere").classList.add("display");
+
+            document.getElementById("popularN").className = "oddsspil-element";
+            document.getElementById("kortN").className = "oddsspil-element";
+            document.getElementById("cornerN").className = "oddsspil-element";
+            document.getElementById("goalN").className = "oddsspil-element";
+            document.getElementById("spillereN").className = "oddsspil-element-active";
+        }
+      }, [nav])
+
+    const navigate = useNavigate();
+
+    function getGroups() {
+        if (tabelType !== "") {
+            return tabelO.map((item) => {
+                if (item.name === "League A" || item.name === "League B" || item.name === "League C" || item.name === "League D") {
+                    var mstime = new Date().getTime();
+                    var randomNumber = Math.floor(Math.random() * 512);
+                    var randomId = mstime+"-"+randomNumber;
+                    return (
+                        <ul>
+                            <p className="tabel-item">{item.name}</p>
+                            {item.standings.data.map((res) => {
+                                return (
+                                    <li key={item.season_id + "-" + randomId}>
+                                        <div className="tabel-top">
+                                            <p className="tabel-top-h1">{res.name}</p>
+                                            <div className="tabel-top-right">
+                                                <div className="tabel-ends">
+                                                    <p className="tabel-3 tabel-h1">KS</p>
+                                                    <p className="tabel-3 tabel-h1">V</p>
+                                                    <p className="tabel-3 tabel-h1">U</p>
+                                                    <p className="tabel-3 tabel-h1">T</p>
+                                                </div>
+                                                <div className="tabel-ends">
+                                                    <p className="tabel-4 tabel-h1">FOR</p>
+                                                    <p className="tabel-4 tabel-h1">IMOD</p>
+                                                    <p className="tabel-4 tabel-h1">MF</p>
+                                                    <p className="tabel-3 tabel-h1">P</p>
+                                                </div>
+                                                <div className="tabel-form">
+                                                    <p className="tabel-h1">FORM</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="tabel-container">
+                                            <ul>
+                                                {res.standings.data.map((thirdRes) => {
+                                                    var goalD = thirdRes.total.goal_difference;
+                                                    if (parseInt(goalD) > 0) {
+                                                        goalD = "+" + goalD;
+                                                    }
+                                                    var form1 = thirdRes.recent_form.slice(0,1);
+                                                    var form2 = thirdRes.recent_form.slice(1,2);
+                                                    var form3 = thirdRes.recent_form.slice(2,3);
+                                                    var formStyle1 = "form-1";
+                                                    var formStyle2 = "form-1";
+                                                    var formStyle3 = "form-1";
+                                                    if (form1 === "L") {
+                                                        formStyle1 = "form-lost";
+                                                    } else if (form1 === "W") {
+                                                        formStyle1 = "form-win";
+                                                    } else if (form1 === "D") {
+                                                        formStyle1 = "form-draw";
+                                                    }
+                                                    if (form2 === "L") {
+                                                        formStyle2 = "form-lost";
+                                                    } else if (form2 === "W") {
+                                                        formStyle2 = "form-win";
+                                                    } else if (form2 === "D") {
+                                                        formStyle2 = "form-draw";
+                                                    }
+                                                    if (form3 === "L") {
+                                                        formStyle3 = "form-lost";
+                                                    } else if (form3 === "W") {
+                                                        formStyle3 = "form-win";
+                                                    } else if (form3 === "D") {
+                                                        formStyle3 = "form-draw";
+                                                    }
+                                                    return (
+                                                        <li key={thirdRes.round_id + "-" + thirdRes.team_name}>
+                                                            <Link to={"/stage/team?team=" + thirdRes.team_id} className={"tabel-element"} style={{borderLeft: "4px solid var(--primary)", paddingLeft: "11px"}}>
+                                                                <div className="tabel-ends">
+                                                                    <p className="tabel-1 tabel-p">{thirdRes.position}</p>
+                                                                    <p className="tabel-2 tabel-h1">{thirdRes.team_name}</p>
+                                                                </div>
+                                                                <div className="tabel-top-right">
+                                                                    <div className="tabel-ends">
+                                                                        <p className="tabel-3 tabel-p">{thirdRes.overall.games_played}</p>
+                                                                        <p className="tabel-3 tabel-p">{thirdRes.overall.won}</p>
+                                                                        <p className="tabel-3 tabel-p">{thirdRes.overall.draw}</p>
+                                                                        <p className="tabel-3 tabel-p">{thirdRes.overall.lost}</p>
+                                                                    </div>
+                                                                    <div className="tabel-ends">
+                                                                        <p className="tabel-4 tabel-p">{thirdRes.overall.goals_scored}</p>
+                                                                        <p className="tabel-4 tabel-p">{thirdRes.overall.goals_against}</p>
+                                                                        <p className="tabel-4 tabel-p">{goalD}</p>
+                                                                        <p className="tabel-3 tabel-h1">{thirdRes.points}</p>
+                                                                    </div>
+                                                                    <div className="tabel-form">
+                                                                        <div className={"form-indi " + formStyle1}></div>
+                                                                        <div className={"form-indi " + formStyle2}></div>
+                                                                        <div className={"form-indi " + formStyle3}></div>
+                                                                    </div>
+                                                                </div>
+                                                            </Link>
+                                                        </li>
+                                                        );
+                                                    }
+                                                )}
+                                            </ul>
+                                        </div>  
+                                    </li>
+                                    );
+                                }
+                            )}
+                        </ul>
+                        );
+                } else {
+                    var liga = "";
+                    if (item.name === "Regular Season") {
+                        liga = item.standings.data[0].league.data.name;
+                    } else {
+                        liga = item.standings.data[0].league.data.name + " - " + item.name;
+                    }
+                    return (
+                        <div>
+                            <div className="tabel-top">
+                                <p className="tabel-top-h1">{liga}</p>
+                                <div className="tabel-top-right">
+                                    <div className="tabel-ends">
+                                        <p className="tabel-3 tabel-h1">F</p>
+                                        <p className="tabel-3 tabel-h1">I</p>
+                                        <p className="tabel-3 tabel-h1">D</p>
+                                    </div>
+                                    <div className="tabel-ends">
+                                        <p className="tabel-3 tabel-h1">KS</p>
+                                        <p className="tabel-3 tabel-h1">V</p>
+                                        <p className="tabel-3 tabel-h1">U</p>
+                                        <p className="tabel-3 tabel-h1">T</p>
+                                        <p className="tabel-3 tabel-h1">P</p>
+                                    </div>
+                                    <div className="tabel-form">
+                                        <p className="tabel-h1">FORM</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="tabel-container">
+                                <ul>
+                                    {item.standings.data.map((fres) => {
+                                        var goalD = fres.total.goal_difference;
+                                        if (parseInt(goalD) > 0) {
+                                            goalD = "+" + goalD;
+                                        }
+                                        var form1 = fres.recent_form.slice(0,1);
+                                        var form2 = fres.recent_form.slice(1,2);
+                                        var form3 = fres.recent_form.slice(2,3);
+                                        var formStyle1 = "form-1";
+                                        var formStyle2 = "form-1";
+                                        var formStyle3 = "form-1";
+                                        if (form1 === "L") {
+                                            formStyle1 = "form-lost";
+                                        } else if (form1 === "W") {
+                                            formStyle1 = "form-win";
+                                        } else if (form1 === "D") {
+                                            formStyle1 = "form-draw";
+                                        }
+                                        if (form2 === "L") {
+                                            formStyle2 = "form-lost";
+                                        } else if (form2 === "W") {
+                                            formStyle2 = "form-win";
+                                        } else if (form2 === "D") {
+                                            formStyle2 = "form-draw";
+                                        }
+                                        if (form3 === "L") {
+                                            formStyle3 = "form-lost";
+                                        } else if (form3 === "W") {
+                                            formStyle3 = "form-win";
+                                        } else if (form3 === "D") {
+                                            formStyle3 = "form-draw";
+                                        }
+                                        return (
+                                            <li key={fres.round_id + "-" + fres.team_name}>
+                                                <Link to={"/stage/team?team=" + fres.team.data.id} className={"tabel-element"} style={{borderLeft: "4px solid var(--primary)", paddingLeft: "11px"}}>
+                                                    <div className="tabel-ends">
+                                                        <p className="tabel-1 tabel-p">{fres.position}</p>
+                                                        <img src={fres.team.data.logo_path} alt="" className="tabel-img" />
+                                                        <p className="tabel-2 tabel-h1">{fres.team_name}</p>
+                                                    </div>
+                                                    <div className="tabel-top-right">
+                                                        <div className="tabel-ends">
+                                                            <p className="tabel-3 tabel-p">{fres.overall.goals_scored}</p>
+                                                            <p className="tabel-3 tabel-p">{fres.overall.goals_against}</p>
+                                                            <p className="tabel-3 tabel-p">{goalD}</p>
+                                                        </div>
+                                                        <div className="tabel-ends">
+                                                            <p className="tabel-3 tabel-p">{fres.overall.games_played}</p>
+                                                            <p className="tabel-3 tabel-p">{fres.overall.won}</p>
+                                                            <p className="tabel-3 tabel-p">{fres.overall.draw}</p>
+                                                            <p className="tabel-3 tabel-p">{fres.overall.lost}</p>
+                                                            <p className="tabel-3 tabel-h1">{fres.points}</p>
+                                                        </div>
+                                                        <div className="tabel-form">
+                                                            <div className={"form-indi " + formStyle1}></div>
+                                                            <div className={"form-indi " + formStyle2}></div>
+                                                            <div className={"form-indi " + formStyle3}></div>
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            </li>
+                                            );
+                                        }
+                                    )}
+                                </ul>
+                            </div>
+                        </div>
+                        );
+                }
+            })
+        }
+    }
+
+    return (
+        <>
+            <div className="stage-main-article-container">
+                <div className={messageType} id="errorCon">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="triangle" viewBox="0 0 16 16" id="errorIcon">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <div className="error-text">
+                        <p className="error-container-h1" id="errorConH">Ingen væddemål</p>
+                        <p className="error-container-p" id="errorConP">Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.</p>
+                    </div>
+                </div>
+                <button className="back-btn" onClick={() => navigate(-1)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="match-back" viewBox="0 0 16 16">
+                        <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+                    </svg>
+                </button>
+                <div className="match-info">
+                    <div className="team-team">
+                        <div className="match-title-text">
+                            <h1 className="match-h1">{league_name}</h1>
+                            <p className="match-p team-p">{season_year}</p>
+                        </div>
+                        <img src={logo} alt="" className="match-img" />
+                    </div>
+                </div>
+                <div className="match-info" id="team_match">
+                    <div className="match-odds-nav" style={{padding: "0px", paddingBottom: "15px"}}>
+                        <button className="oddsspil-element-active" onClick={() => {setNav("popular")}} id="popularN">Oversigt</button>
+                        <button className="oddsspil-element" onClick={() => {setNav("kort")}} id="kortN">Resultater</button>
+                        <button className="oddsspil-element" onClick={() => {setNav("corner")}} id="cornerN">Tabel</button>
+                        <button className="oddsspil-element" onClick={() => {setNav("goal")}} id="goalN">Statistikker</button>
+                        <button className="oddsspil-element" onClick={() => {setNav("spillere")}} id="spillereN">Hold</button>
+                    </div>
+                    <ul className="match-odds-contain display" id="popular">
+                        <div className="team-kampe-section" id="seneste">
+                            <p className="team-kampe-h1">Resultater</p>
+                            <div className="stage-kampe" id="latest">
+                                <ul>
+                                    {senesteKampe.slice(0,5).map((item) => {
+                                        var timeClass = "team-kampe-minut";
+                                        var liveView = "FT";
+                                        var scoreLocal = "stage-stilling-p";
+                                        var scoreVisitor = "stage-stilling-p";
+                                        var teamNameLocal = "stage-kampe-p";
+                                        var teamNameVisitor = "stage-kampe-p";
+                                        if (item.time.status === "LIVE") {
+                                            timeClass = "team-kampe-minut team-kampe-minut-active";
+                                            liveView = item.time.minute+" MIN";
+                                        } else if (item.time.status === "NS") {
+                                            scoreLocal = "stage-stilling-p-none";
+                                            scoreVisitor = "stage-stilling-p-none";
+                                            var calcTime = item.time.starting_at.time;
+                                            calcTime = calcTime.slice(0,-3);
+                                            liveView = calcTime;
+                                        } else if (item.time.status === "FT") {
+                                            if (item.winner_team_id === item.localteam_id) {
+                                                scoreLocal = "stage-stilling-p-fat";
+                                                teamNameLocal = "stage-kampe-p-fat";
+                                            } else if (item.winner_team_id === item.visitorteam_id) {
+                                                scoreVisitor = "stage-stilling-p-fat";
+                                                teamNameVisitor = "stage-kampe-p-fat";
+                                            }
+                                        }
+                                        const gameURL = "/stage/match?game=" + item.id;
+
+                                        var starting_at = item.time.starting_at.timestamp * 1000;
+                                        var starting_at_date = new Date(starting_at).getDate();
+                                        var starting_at_date_str = starting_at_date.toString();
+                                        var starting_at_month = new Date(starting_at).getMonth() + 1;
+                                        var starting_at_month_str = starting_at_month.toString();
+                                        if ((starting_at_month.toString()).length === 1) {
+                                            starting_at_month_str = "0" + starting_at_month;
+                                        }
+                                        if ((starting_at_date.toString()).length === 1) {
+                                            starting_at_date_str = "0" + starting_at_date;
+                                        }
+                                        return (
+                                            <li key={item.id}>
+                                                <div className="team-match">
+                                                    <div className="stage-indhold-down">
+                                                        <Link to={gameURL} className="team-kampe-hold">
+                                                            <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                            <div className="stage-kampe-hold-div">
+                                                                <div className="stage-kampe-team">
+                                                                    <p className={scoreLocal}>{item.scores.localteam_score}</p>
+                                                                    <img alt="." src={item.localTeam.data.logo_path} className="stage-img" />
+                                                                    <p className={teamNameLocal}>{item.localTeam.data.name}</p>
+                                                                </div>
+                                                                <div className="stage-kampe-team">
+                                                                    <p className={scoreVisitor}>{item.scores.visitorteam_score}</p>
+                                                                    <img alt="." src={item.visitorTeam.data.logo_path} className="stage-img" />
+                                                                    <p className={teamNameVisitor}>{item.visitorTeam.data.name}</p>
+                                                                </div>
+                                                            </div>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            );
+                                        }
+                                    )}
+                                </ul>
+                                <div className="stage-indhold-down">
+                                    <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
+                                        <p className="team-kampe-p">Se alle resultater.</p>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                    <ul className="match-odds-contain" id="kort">
+                        <div className="team-kampe-section" id="seneste">
+                            <p className="team-kampe-h1">Resultater</p>
+                            <div className="stage-kampe" id="latest">
+                                <ul>
+                                    {senesteKampe.slice(0,15).map((item) => {
+                                        var timeClass = "team-kampe-minut";
+                                        var liveView = "FT";
+                                        var scoreLocal = "stage-stilling-p";
+                                        var scoreVisitor = "stage-stilling-p";
+                                        var teamNameLocal = "stage-kampe-p";
+                                        var teamNameVisitor = "stage-kampe-p";
+                                        if (item.time.status === "LIVE") {
+                                            timeClass = "team-kampe-minut team-kampe-minut-active";
+                                            liveView = item.time.minute+" MIN";
+                                        } else if (item.time.status === "NS") {
+                                            scoreLocal = "stage-stilling-p-none";
+                                            scoreVisitor = "stage-stilling-p-none";
+                                            var calcTime = item.time.starting_at.time;
+                                            calcTime = calcTime.slice(0,-3);
+                                            liveView = calcTime;
+                                        } else if (item.time.status === "FT") {
+                                            if (item.winner_team_id === item.localteam_id) {
+                                                scoreLocal = "stage-stilling-p-fat";
+                                                teamNameLocal = "stage-kampe-p-fat";
+                                            } else if (item.winner_team_id === item.visitorteam_id) {
+                                                scoreVisitor = "stage-stilling-p-fat";
+                                                teamNameVisitor = "stage-kampe-p-fat";
+                                            }
+                                        }
+                                        const gameURL = "/stage/match?game=" + item.id;
+
+                                        var starting_at = item.time.starting_at.timestamp * 1000;
+                                        var starting_at_date = new Date(starting_at).getDate();
+                                        var starting_at_date_str = starting_at_date.toString();
+                                        var starting_at_month = new Date(starting_at).getMonth() + 1;
+                                        var starting_at_month_str = starting_at_month.toString();
+                                        if ((starting_at_month.toString()).length === 1) {
+                                            starting_at_month_str = "0" + starting_at_month;
+                                        }
+                                        if ((starting_at_date.toString()).length === 1) {
+                                            starting_at_date_str = "0" + starting_at_date;
+                                        }
+                                        return (
+                                            <li key={item.id}>
+                                                <div className="team-match">
+                                                    <div className="stage-indhold-down">
+                                                        <Link to={gameURL} className="team-kampe-hold">
+                                                            <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                            <div className="stage-kampe-hold-div">
+                                                                <div className="stage-kampe-team">
+                                                                    <p className={scoreLocal}>{item.scores.localteam_score}</p>
+                                                                    <img alt="." src={item.localTeam.data.logo_path} className="stage-img" />
+                                                                    <p className={teamNameLocal}>{item.localTeam.data.name}</p>
+                                                                </div>
+                                                                <div className="stage-kampe-team">
+                                                                    <p className={scoreVisitor}>{item.scores.visitorteam_score}</p>
+                                                                    <img alt="." src={item.visitorTeam.data.logo_path} className="stage-img" />
+                                                                    <p className={teamNameVisitor}>{item.visitorTeam.data.name}</p>
+                                                                </div>
+                                                            </div>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            );
+                                        }
+                                    )}
+                                </ul>
+                                <div className="stage-indhold-down">
+                                    <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
+                                        <p className="team-kampe-p">Se alle resultater.</p>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                    <ul className="match-odds-contain" id="corner">
+                        <div className="team-kampe-section" id="seneste">
+                            {getGroups()}
+                        </div>
+                    </ul>
+                    <ul className="match-odds-contain" id="goal"></ul>
+                    <ul className="match-odds-contain" id="spillere"></ul>
+                </div>
+            </div>
+        </>
+    )
+}
+ 
+export default StageLeague; 

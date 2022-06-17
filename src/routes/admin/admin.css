@@ -1,0 +1,134 @@
+.admin-container{
+    width: 80%;
+    background-color: var(--surface);
+    display: inline-block;
+    padding: 0px 50px;
+    vertical-align: top;
+}
+
+.admin-topbar {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
+.profile-pic-icon {
+    fill: #444762;
+    width: 34px;
+    height: 34px;
+    user-select: none;
+    padding: 7px;
+    background-color: #ebedf0;
+    border-radius: 50%;
+  }
+
+.admin-nav-button {
+    border-radius: 3px;
+    background-color: #ebedf0;
+    color: var(--softBlack);
+    border: 0px;
+    cursor: pointer;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+    padding: 7px 19px;
+    margin-right: 10px;
+    font-size: 14px;
+    font-weight: 100;
+    font-family: CircularLight;
+}
+
+.admin-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 750px;
+}
+
+.admin-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 7.5px;
+    margin-bottom: 7.5px;
+}
+
+.admin-section-large {
+    border-radius: 3px;
+    background-color: #fff;
+    width: 100%;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+    min-height: 200px;
+}
+
+.admin-section-big {
+    border-radius: 3px;
+    background-color: #fff;
+    width: 67%;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+    min-height: 200px;
+}
+
+.admin-section-medium {
+    border-radius: 3px;
+    background-color: #fff;
+    width: 50%;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+    min-height: 200px;
+}
+
+.admin-section-small {
+    border-radius: 3px;
+    background-color: #fff;
+    width: 33%;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+    min-height: 200px;
+}
+
+.admin-hjem-small-h1 {
+    font-size: 58px;
+    font-weight: 100;
+    font-family: CircularLight;
+    color: var(--softBlack);
+    line-height: 45px;
+}
+
+.admin-hjem-small-h2 {
+    font-size: 14px;
+    font-weight: 100;
+    font-family: CircularBook;
+    opacity: 0.7;
+    cursor: pointer;
+    color: var(--softBlack);
+    text-decoration: underline dotted;
+}
+
+.admin-home-small {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.admin-offer {
+    background-color: #3d6eeb2d;
+    padding: 15px 0px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 5px;
+    align-items: center;
+  }
+
+  .admin-hjem-main-canvas {
+      margin: 20px;
+  }
+
+.admin-canvas-label {
+    font-size: 20px;
+    font-weight: 100;
+    font-family: CircularBook;
+    color: var(--softBlack);
+    padding-top: 15px;
+    padding-left: 20px;
+}

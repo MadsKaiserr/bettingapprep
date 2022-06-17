@@ -1,0 +1,155 @@
+.admin-medium-h1 {
+    font-size: 58px;
+    font-weight: 100;
+    font-family: CircularLight;
+    color: var(--softBlack);
+    line-height: 45px;
+}
+
+.admin-medium-h2 {
+    font-size: 14px;
+    font-weight: 100;
+    font-family: CircularBook;
+    opacity: 0.7;
+    cursor: pointer;
+    color: var(--softBlack);
+    text-decoration: underline dotted;
+}
+
+.admin-section-medium {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
+.admin-gruppespil-main-canvas {
+    margin: 20px;
+}
+
+.admin-table-button {
+    height: 40px;
+    padding: 0px 10px;
+    background-color: var(--primary);
+    border-radius: 3px;
+    border: 0px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 100;
+    font-family: CircularLight;
+}
+
+.admin-table-button-warning {
+    height: 40px;
+    padding: 0px 10px;
+    background-color: #f9e3e8;
+    border-radius: 3px;
+    border: 1px rgb(205, 61, 100, 0.5) solid;
+    color: var(--softBlack);
+    font-size: 15px;
+    font-weight: 100;
+    font-family: CircularLight;
+}
+
+.admin-section-table-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.admin-table-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-top: 1px solid rgb(60, 66, 87, 0.2);
+}
+
+.admin-table {
+    display: flex;
+    justify-content: center;
+    align-items: left;
+    flex-direction: column;
+}
+
+.admin-table-top {
+    display: flex;
+    background-color: var(--surface);
+    padding: 10px;
+    justify-content: left;
+    align-items: center;
+}
+
+.admin-table-cell {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.admin-table-cell:hover {
+    background-color: #3d6eeb0b;
+}
+
+.admin-table-label {
+    font-size: 15px;
+    color: var(--secondary);
+    font-weight: 100;
+    font-family: CircularBook;
+}
+
+.admin-table-label {
+    font-size: 15px;
+    color: var(--softBlack);
+    font-weight: 100;
+    font-family: CircularBook;
+}
+
+.admin-table-p {
+    font-size: 15px;
+    color: var(--softBlack);
+    font-weight: 100;
+    font-family: CircularLight;
+}
+
+.admin-table-check {
+    width: 17px;
+    height: 17px;
+    transition: 0.2s;
+    background-color: transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 15px;
+    border: 1px var(--onSecondary) solid;
+}
+
+.admin-table-check:hover {
+    background-color: #3d6eeb27;
+}
+
+.admin-navn {
+    width: 210px;
+}
+
+.admin-spillere {
+    width: 150px;
+}
+
+.admin-oprettelse {
+    width: 200px;
+}
+
+.admin-admin {
+    width: 300px;
+}
+
+.admin-synlighed {
+    text-transform: capitalize;
+}
+
+.admin-section-large-gruppespil {
+    padding: 10px 0px;
+}

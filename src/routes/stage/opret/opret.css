@@ -1,0 +1,467 @@
+.opret-h1 {
+  font-family: Montserrat;
+  font-weight: 500;
+  font-size: 30px;
+  color: var(--secondary);
+  margin-bottom: 15px;
+}
+
+.stageopret-container {
+  padding: 135px 25%;
+  min-height: 650px;
+  background-color: var(--stageSurface);
+}
+
+.opret-element-h1 {
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--secondary);
+}
+
+.opret-element-h2 {
+  font-family: Open Sans;
+  font-weight: 300;
+  font-size: 13px;
+  color: #56586f;
+}
+
+.opret-element {
+  margin-bottom: 25px;
+}
+
+.input-icon {
+  width: 23px;
+  height: 23px;
+  fill: var(--secondary);
+  opacity: 0.85;
+  position: absolute;
+  left: 10px;
+  bottom: 15px;
+  transition: 0.2s;
+}
+
+.input-icon-right {
+  width: 16px;
+  height: 16px;
+  fill: var(--secondary);
+  opacity: 0.7;
+  position: absolute;
+  right: 10px;
+  transition: 0.2s;
+  bottom: 20px;
+}
+
+.opret-element-input-container {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 35px;
+}
+
+.opret-element-input {
+  width: 500px;
+  height: 55px;
+  color: var(--secondary);
+  opacity: 0.85;
+  background-color: #ecedee;
+  border-radius: 2px;
+  border: 0px;
+  font-family: Open Sans;
+  font-size: 15px;
+  padding: 0px 20px;
+  margin-top: 10px;
+  border-bottom: transparent 1px solid !important;
+}
+
+.opret-element-input-trans {
+  height: 55px;
+  color: var(--secondary);
+  background-color: transparent;
+  display: inline-block;
+  border: 0px;
+  font-family: Open Sans;
+  font-size: 15px;
+  padding-left: 50px;
+  margin-top: 10px;
+  outline: none;
+  cursor: pointer;
+  border-bottom: var(--secondary) 1px solid !important;
+}
+
+.opret-element-input-container:hover
+  .opret-element-input-trans
+  .opret-element-input-p {
+  opacity: 1 !important;
+}
+
+.opret-element-input-container:hover .input-icon-right {
+  opacity: 1 !important;
+}
+
+#belob {
+  display: none;
+}
+
+.opret-element-input-p {
+  padding-right: 45px;
+  color: var(--secondary);
+  opacity: 0.85;
+  margin-top: 18px;
+  transition: 0.2s;
+}
+
+.opret-element-dropdown {
+  position: absolute;
+  left: 0;
+  top: 65px;
+  display: none;
+  z-index: 9999;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 3px;
+  box-shadow: 0px 3px 15px rgb(39, 40, 45, 0.09);
+}
+
+.opret-drop-element {
+  text-align: center;
+  color: var(--secondary);
+  cursor: pointer;
+}
+
+.opret-drop-element-other {
+  background-color: rgb(246, 248, 250);
+  cursor: default;
+}
+
+.opret-drop-element:hover {
+  background-color: rgb(246, 248, 250);
+}
+
+.opret-drop-element-p {
+  display: inline-block;
+  font-family: Montserrat;
+  font-size: 15px;
+  color: var(--secondary);
+  opacity: 0.9;
+  padding: 10px 0px;
+}
+
+.opret-drop-element-p-other {
+  display: inline-block;
+  font-family: Montserrat;
+  font-size: 15px;
+  color: var(--secondary);
+  opacity: 0.9;
+  padding: 15px 20px;
+}
+
+.opret-drop-element-input {
+  font-family: Montserrat;
+  float: right;
+  font-size: 15px;
+  outline: none;
+  color: black !important;
+  display: inline-block;
+  width: 86px;
+  padding: 0px 10px;
+  border-bottom-right-radius: 3px;
+  height: 50px;
+  border: 0px;
+  background-color: rgb(218, 224, 228);
+}
+
+.opret-element-btn {
+  padding: 13px 25px;
+  margin-top: 15px;
+  margin-right: 15px;
+  background-color: transparent;
+  border: 1px #8788977e solid;
+  border-radius: 5px;
+  font-size: 15px;
+  color: var(--secondary);
+  opacity: 0.85;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.opret-element-btn:hover {
+  opacity: 1 !important;
+  background-color: #3d6eeb09;
+}
+
+.gruppespil-error {
+  color: var(--red);
+  font-size: 13px;
+  font-family: Montserrat;
+}
+
+.opret-element-btn-active {
+  padding: 13px 25px;
+  margin-top: 15px;
+  cursor: pointer;
+  margin-right: 15px;
+  background-color: #3d6eeb1f;
+  border: 1px #3d6eeb8a solid;
+  border-radius: 5px;
+  font-size: 15px;
+  color: var(--secondary);
+  opacity: 0.85;
+  transition: 0.2s;
+}
+
+.opret-title {
+  font-size: 26px;
+  font-family: CircularMedium;
+  font-weight: 100;
+  color: var(--softBlack);
+  margin-bottom: 25px;
+}
+
+.opret-button {
+  padding: 25px 30px;
+  width: 100%;
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: 0.2s;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+}
+
+.opret-button:hover {
+  transform: scale(1.01);
+}
+
+.opret-button-drop {
+  width: 100%;
+  display: flex;
+  position: relative;
+  justify-content: left;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: 0.2s;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+}
+
+.button-dropdown {
+  width: 100%;
+  display: none;
+}
+
+.opret-button-drop:hover {
+  transform: scale(1.01);
+}
+
+.button-dropdown-element {
+  padding: 20px 30px;
+  transition: 0.2s;
+}
+
+.button-dropdown-element:hover {
+  padding: 20px 30px;
+  background-color: var(--stageSurface);
+}
+
+.button-element {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-direction: row;
+  padding: 25px 30px;
+}
+
+.opret-input {
+  padding: 25px 30px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  border-radius: 3px;
+  transition: 0.2s;
+  font-family: CircularBook;
+  font-weight: 100;
+  color: var(--softBlack);
+  font-size: 16px;
+  border: 0px;
+  border-bottom: 1px var(--softBlack) solid !important;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+}
+
+.opret-button-main {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.opret-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.opret-right {
+  opacity: 0.7;
+  fill: var(--softBlack);
+  width: 20px;
+  height: 20px;
+}
+
+.opret-tool {
+  position: absolute;
+  width: 280px;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+  background-color: var(--softBlack);
+  border-radius: 3px;
+  display: none;
+  right: -260px;
+  top: calc(50% - height);
+  transition: 0.2s;
+  font-family: CircularLight;
+  font-weight: 100;
+  color: rgba(255, 255, 255, 0.811);
+  font-size: 13px;
+  padding: 10px 20px;
+}
+
+.opret-back {
+  margin-top: 20px;
+  padding: 3px 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: rpw;
+  gap: 5px;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: 0.2s;
+  border-bottom: 2px var(--softBlack) solid;
+}
+
+.opret-section {
+  width: 100%;
+  display: none;
+}
+
+.opret-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.opret-next {
+  margin-top: 20px;
+  padding: 3px 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: rpw;
+  gap: 5px;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: 0.2s;
+  border-bottom: 2px var(--softBlack) solid;
+}
+
+.opret-back:hover {
+  opacity: 1;
+}
+
+.button-dropdown-p {
+  font-family: CircularBook;
+  font-weight: 100;
+  color: var(--softBlack);
+  font-size: 16px;
+}
+
+.opret-p {
+  font-family: CircularBook;
+  font-weight: 100;
+  color: var(--softBlack);
+  font-size: 16px;
+}
+
+.opret-p2 {
+  font-family: CircularLight;
+  font-weight: 100;
+  color: var(--softBlack);
+  font-size: 15px;
+}
+
+.opret-icon {
+  width: 23px;
+  height: 23px;
+  fill: var(--softBlack);
+}
+
+.opret-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  border: 0px;
+  background-color: transparent;
+}
+
+.opret-overlay::-webkit-datetime-edit {
+  margin-left: 80px;
+  font-family: CircularBook;
+  font-weight: 100;
+  color: var(--softBlack);
+  font-size: 16px;
+}
+
+.opret-overlay::-webkit-inner-spin-button {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.opret-overlay::-webkit-calendar-picker-indicator {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  cursor: pointer;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  height: 73px;
+}
+
+.opret-icon-90 {
+  width: 23px;
+  height: 23px;
+  fill: var(--softBlack);
+  transform: rotate(180deg);
+}
+
+.opret-icon-small {
+  width: 22px;
+  height: 22px;
+  fill: var(--softBlack);
+}
+
+.opret-icon-small-next {
+  width: 22px;
+  height: 22px;
+  fill: var(--softBlack);
+  transform: rotate(180deg);
+}

@@ -1,0 +1,1399 @@
+@media only screen and (max-width: 1588px) {
+  #table-av {
+    display: none !important;
+  }
+  #table-av-data {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 1355px) {
+  #kampe2 {
+    display: none !important;
+  }
+  .team-indhold {
+    flex-direction: column !important;
+  }
+}
+
+@media only screen and (max-width: 1290px) {
+  #table-anv {
+    display: none !important;
+  }
+  #table-anv-data {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 1275px) {
+  .stage-main-small-section {
+    display: none !important;
+  }
+  .stage-main-section {
+    width: 100% !important;
+  }
+  #footer-nyhedsbrev {
+    display: none !important;
+  }
+  #faqside {
+    padding-left: 100px !important;
+    padding-right: 100px !important;
+  }
+  .noti-main {
+    padding: 125px 15% !important;
+  }
+}
+
+@media only screen and (max-width: 1035px) {
+  .gruppetable-el-navn {
+    width: 250px !important;
+  }
+  .gruppetable-navn {
+    width: 250px !important;
+  }
+}
+
+@media only screen and (max-width: 1020px) {
+  .nav-container-stage-right {
+    display: none !important;
+  }
+  .stage-kupon {
+    display: none !important;
+  }
+  .stage-main {
+    width: 100% !important;
+  }
+  .gruppespil-section {
+    width: 85% !important;
+  }
+  .match-title-text {
+    width: 100px !important;
+  }
+}
+
+@media only screen and (max-width: 870px) {
+  .footer-sections {
+    gap: 10vw !important;
+  }
+  .gruppetable-kapital {
+    display: none !important;
+  }
+  .match-odds-nav {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 760px) {
+  #inviteInfo {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .footer-sections {
+    flex-direction: column !important;
+  }
+  #inviteInfo {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .stage-kampe-right {
+    display: none !important;
+  }
+  .stage-kampe-odds {
+    display: none !important;
+  }
+  .stage-kampe-hold {
+    width: 100% !important;
+  }
+  .stage-kampe-minut {
+    width: 18% !important;
+  }
+  .gruppespil-section {
+    width: 100% !important;
+  }
+  #faqside {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  .noti-main {
+    padding: 125px 5% !important;
+  }
+  .team-trup-section {
+    flex-direction: column !important;
+  }
+}
+
+#faqside {
+  padding-left: 300px;
+  padding-right: 300px;
+}
+
+.stageForside {
+  height: 240px;
+  width: 100%;
+  background-color: #fff;
+}
+
+.stage-topbar {
+  width: 100%;
+  background-color: #fff;
+  padding: 0px 5%;
+}
+
+.stage-topbar-element {
+  display: inline-block;
+  padding: 0px 10px;
+  cursor: pointer;
+  margin-right: 30px;
+  border-radius: 2px;
+  border-bottom: 2px transparent solid;
+  transition: 0.2s;
+}
+
+.stage-topbar-element:hover {
+  background-color: var(--surface);
+  border-bottom: 2px var(--surface) solid !important;
+}
+
+.stage-topbar-element-active {
+  border-bottom: 2px var(--primary) solid;
+  display: inline-block;
+  padding: 0px 10px;
+  cursor: pointer;
+  margin-right: 30px;
+  border-radius: 2px;
+  transition: 0.2s;
+}
+
+.kupon-top {
+  top: 100px !important;
+  transition: 0.3s;
+}
+
+.kupon-blue-p {
+  font-family: CircularLight;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 100;
+  cursor: pointer;
+  transition: 0.2s;
+  position: absolute;
+  top: 11.5px;
+  right: 15px;
+}
+
+.kupon-blue-p:hover {
+  text-decoration: underline;
+}
+
+.stage-kupon {
+  display: inline-block;
+  transition: 0.3s;
+  background-color: #fff;
+  border-top: 4px var(--primary) solid;
+  border-radius: 2px;
+  width: 21.3%;
+  top: 210px;
+  min-width: 260px;
+  min-height: 150px;
+  max-width: 400px;
+  vertical-align: top;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+  position: fixed;
+}
+
+.stage-kampe-top-calendar {
+  display: inline-block;
+  float: right;
+  vertical-align: top;
+  text-align: center;
+}
+
+.kupon-header-p {
+  text-align: center;
+  font-family: Open Sans;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 10px 0px;
+  color: var(--secondary);
+}
+
+.bet-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kupon-top-p {
+  font-family: Open Sans;
+  font-weight: 400;
+  font-size: 13px;
+  padding: 5px 15px;
+  color: var(--secondary);
+  opacity: 0.8;
+}
+
+.kupon-bottom {
+  padding: 10px 15px;
+  width: 100%;
+  border-top: 2px #87889775 solid;
+}
+
+.kupon-bottom-info {
+  width: 100%;
+}
+
+.kupon-bottom-info-p {
+  font-family: Open Sans;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--secondary);
+  opacity: 0.8;
+  display: inline-block;
+}
+
+.kupon-info-div {
+  width: 100%;
+  margin-top: 1px;
+}
+
+.kupon-bottom-info-p-right {
+  font-family: Open Sans;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--secondary);
+  opacity: 1;
+  display: inline-block;
+  float: right;
+}
+
+.kupon-confirm {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.kupon-confirm-p {
+  font-family: Open Sans;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--secondary);
+  opacity: 0.9;
+}
+
+.kupon-confirm-h1 {
+  font-family: Open Sans;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--secondary);
+}
+
+.kupon-confirm-div {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.kupon-btn {
+  display: inline-block;
+  vertical-align: top;
+  padding: 7px 14px;
+  background-color: var(--primary);
+  color: #fff;
+  margin-top: 11px;
+  cursor: pointer;
+  border-radius: 2px;
+  float: right;
+  border: 0px;
+  font-weight: 400;
+  font-family: Open Sans;
+}
+
+.kupon-indsats {
+  text-align: right;
+  padding: 10px 0px;
+}
+
+.kupon-input {
+  width: 100px;
+  text-align: right;
+  padding: 7px 10px;
+  border: 1px solid #878897b2;
+  border-radius: 2px;
+}
+
+.kupon-input::-webkit-outer-spin-button,
+.kupon-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.kupon-btn:hover {
+  background-color: var(--primaryAccent) !important;
+}
+
+.kupon-h1 {
+  font-family: Open Sans;
+  font-weight: 500;
+  font-size: 15px;
+  padding: 8px 15px;
+  padding-bottom: 0px !important;
+  color: var(--secondary);
+}
+
+.kupon-p {
+  font-family: Open Sans;
+  font-weight: 400;
+  font-size: 13px;
+  padding: 8px 15px;
+  padding-top: 0px !important;
+  color: var(--secondary);
+  opacity: 0.8;
+}
+
+.kupon-info {
+  display: inline-block;
+  vertical-align: top;
+  width: 210px;
+}
+
+.kupon-odds {
+  display: inline-block;
+  vertical-align: top;
+  float: right;
+  text-align: right;
+}
+
+.kupon-h2 {
+  font-family: Open Sans;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 15px 15px;
+  color: var(--secondary);
+}
+
+.kupon-container {
+  background-color: var(--surface);
+  border-radius: 3px;
+  position: relative;
+  width: 100%;
+}
+
+.kupon-divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--onSecondary);
+  opacity: 0.2;
+}
+
+.kupon-divider-first {
+  width: 100%;
+  height: 1px;
+  background-color: var(--onSecondary);
+  opacity: 0.3;
+}
+
+.kupon-icon1 {
+  width: 23px;
+  height: 23px;
+  fill: var(--secondary);
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.kupon-icon2 {
+  width: 20px;
+  height: 20px;
+  fill: var(--secondary);
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  cursor: pointer;
+}
+
+.calendarIcon {
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
+}
+
+.stage-kampe-calendar {
+  width: 150px;
+  vertical-align: top;
+  height: 30px;
+  position: relative;
+  text-align: left;
+  border-radius: 3px;
+  padding: 0px 10px;
+  margin-right: 20px;
+  margin-top: 5px;
+  background-color: transparent;
+}
+
+.date-picker {
+  cursor: pointer;
+  background-color: transparent;
+  border: 0px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 5px;
+  transition: 0.2s;
+}
+
+.date-picker::-webkit-datetime-edit {
+  margin-left: 40px;
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 14px;
+  margin-top: 1px;
+}
+
+.date-picker::-webkit-inner-spin-button {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.date-picker::-webkit-calendar-picker-indicator {
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+  cursor: pointer;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  height: 20px;
+}
+
+.stage-topbar-element-active:hover {
+  border-bottom: 2px var(--primary) solid !important;
+  background-color: transparent !important;
+}
+
+.stage-topbar-icon {
+  width: 22px;
+  height: 22px;
+  fill: var(--secondary);
+  display: inline-block;
+  vertical-align: top;
+  margin: 20px 0px;
+}
+
+.stage-topbar-element-p {
+  display: inline-block;
+  color: var(--secondary);
+  font-size: 15px;
+  font-family: Montserrat;
+  font-weight: 500;
+  vertical-align: top;
+  margin-top: 21.5px;
+  margin-left: 10px;
+}
+
+.stage-main-container {
+  padding: 0px 5%;
+  padding-top: 45px;
+  padding-bottom: 125px;
+  background-color: var(--surface);
+}
+
+.stage-leftbar {
+  height: 100%;
+  display: inline-block;
+  width: 10%;
+}
+
+.stage-leftbar-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  fill: var(--secondary);
+}
+
+.stage-leftbar-element-h1 {
+  color: var(--secondary);
+  font-family: CircularBook;
+  font-weight: 100;
+  padding-left: 10px;
+  vertical-align: top;
+  font-size: 15px;
+  display: inline-block;
+}
+
+.stage-leftbar-element {
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  border-radius: 3px;
+  margin: 0px -10px;
+}
+
+.stage-leftbar-element:hover {
+  background-color: #eceef1;
+}
+
+.stage-leftbar-title {
+  margin-bottom: 11px;
+}
+
+.stage-leftbar-section {
+  margin-bottom: 35px;
+}
+
+.stage-leftbar-img {
+  width: 20px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.stage-leftbar-profile {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--secondary);
+  display: inline-block;
+}
+
+.stage-leftbar-p {
+  color: var(--secondary);
+  font-family: Montserrat;
+  font-weight: 300;
+  padding-left: 8px;
+  vertical-align: top;
+  font-size: 14px;
+  margin-top: -1px;
+  display: inline-block;
+}
+
+.stage-leftbar-p-profile {
+  color: var(--secondary);
+  font-family: Montserrat;
+  font-weight: 300;
+  padding-left: 8px;
+  vertical-align: top;
+  font-size: 15px;
+  margin-top: 1.5px;
+  display: inline-block;
+}
+
+.stage-leftbar-element-h2 {
+  color: var(--secondary);
+  font-family: Montserrat;
+  font-weight: 600;
+  width: 20px;
+  margin-top: 1.5px;
+  vertical-align: top;
+  font-size: 15px;
+  display: inline-block;
+}
+
+.stage-leftbar-kamp {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 7px;
+  padding: 15px 10px;
+  position: relative;
+  margin-top: 10px;
+}
+
+.stage-kamp-team {
+  margin-bottom: 5px;
+}
+
+.stage-kamp-team-img {
+  height: 18px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.stage-leftbar-more {
+  cursor: pointer;
+  color: var(--secondary);
+  font-family: Montserrat;
+  font-weight: 500;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.stage-leftbar-more:hover {
+  text-decoration: underline;
+}
+
+.stage-kamp-team-p {
+  display: inline-block;
+  color: var(--secondary);
+  font-family: Montserrat;
+  font-weight: 500;
+  vertical-align: top;
+  font-size: 13px;
+  opacity: 0.9;
+  margin-left: 8px;
+}
+
+.stage-kamp-info-p {
+  color: var(--secondary);
+  font-family: Montserrat;
+  font-weight: 300;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.stage-kamp-info {
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  text-align: right;
+}
+
+.kamp-odds {
+  padding-top: 5px;
+}
+
+.kamp-odd {
+  width: 63px;
+  height: 25px;
+  display: inline-block;
+  margin-right: 3px;
+  border: 1px var(--secondary) solid;
+  border-radius: 3px;
+  vertical-align: top;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.kamp-odd:hover {
+  background-color: var(--surface);
+}
+
+.kamp-odd-main {
+  background-color: var(--secondary) !important;
+  transition: 0.2s;
+}
+
+.kamp-odd-main:hover {
+  background-color: var(--secondaryAccent) !important;
+}
+
+.kamp-odds-p {
+  color: var(--secondary);
+  font-family: Montserrat;
+  font-weight: 500;
+  margin-top: 3px;
+  font-size: 13px;
+}
+
+.nogames {
+  display: none;
+  font-weight: 100;
+  font-size: 15px;
+  opacity: 0.9;
+  color: var(--softBlack);
+  margin-left: calc(50% - 175px);
+  font-family: CircularLight;
+}
+
+.stage-kampe-teams-div {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.stage-teams-img {
+  width: 25px;
+  margin: 0px 15px;
+  margin-top: -3px !important;
+}
+
+.stage-teams-h1 {
+  font-size: 14px;
+  font-family: CircularBook;
+  color: var(--softBlack);
+  font-weight: 100;
+}
+
+.stage-teams-h2 {
+  font-size: 12px;
+  font-family: CircularLight;
+  color: var(--softBlack);
+  font-weight: 100;
+  opacity: 0.6;
+}
+
+.noodds {
+  font-weight: 100;
+  font-size: 15px;
+  opacity: 0.9;
+  color: var(--softBlack);
+  font-family: CircularLight;
+}
+
+#stage-main1 {
+  opacity: 0;
+}
+
+#stage-main2 {
+  display: none;
+}
+
+.kamp-odds-p-main {
+  color: #fff;
+  font-family: Montserrat;
+  font-weight: 500;
+  margin-top: 3px;
+  font-size: 13px;
+}
+
+.stage-main {
+  display: inline-block;
+  vertical-align: top;
+  width: 75%;
+  max-width: 1300px;
+  display: inline-flex;
+  padding-right: 10px;
+  justify-content: stretch;
+  flex-flow: column wrap;
+}
+
+.stage-main-kampe-section {
+  width: 100%;
+  gap: 10px;
+  display: flex;
+  justify-content: flex-start;
+  flex-flow: row nowrap;
+}
+
+.stage-main-section {
+  width: 59%;
+  border-radius: 1px;
+  background-color: #fff;
+  min-height: 550px;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+}
+
+.team-icon {
+  fill: var(--softBlack);
+  width: 15px;
+  opacity: 0.7;
+  height: 15px;
+}
+
+.stage-section-indhold {
+  width: 100%;
+}
+
+.loader {
+  pointer-events: none;
+  text-align: center;
+  margin: auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #fff;
+  animation: loading 1s ease infinite;
+}
+
+.spil-loader {
+  pointer-events: none;
+  text-align: center;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  display: none;
+  border-radius: 50%;
+  margin-top: 15px;
+  border: 3px solid transparent;
+  border-top-color: var(--primary);
+  animation: loading 1s ease infinite;
+}
+
+.match-loader {
+  pointer-events: none;
+  text-align: center;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  display: none;
+  margin-left: 50%;
+  border-radius: 50%;
+  margin-top: 50px;
+  border: 3px solid transparent;
+  border-top-color: var(--primary);
+  animation: loading 1s ease infinite;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0turn);
+  }
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.stage-main-small-section {
+  width: 41%;
+  border-radius: 1px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+  min-height: 550px;
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+}
+
+.stage-kampe-h1 {
+  font-family: CircularBook;
+  font-weight: 100;
+  font-size: 16px;
+  padding: 10px 0px;
+  display: inline-block;
+  color: var(--secondary);
+}
+
+.stage-kampe-head {
+  width: 100%;
+  background-color: #1d1f31e9;
+  border-left: 4px var(--primary) solid;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+}
+
+.stage-league {
+  font-family: Open Sans;
+  letter-spacing: 0.2px;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 12px;
+  padding: 0px 16px;
+  color: #fff;
+  opacity: 0.9;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.stage-kampe-right {
+  display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
+  width: calc(45% - 20px);
+  float: right;
+  margin-right: 20px;
+  min-width: 235px;
+  max-width: 250px;
+}
+
+.stage-kampe-right-small {
+  display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 39%;
+  margin-right: 20px;
+  float: right;
+  max-width: 165px;
+  min-width: 150px;
+}
+
+.stage-kampe-odds-lil {
+  display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
+  float: right;
+  width: 70%;
+  padding-right: 20px;
+  max-width: 165px;
+  min-width: 150px;
+}
+
+.stage-kampe-odds {
+  display: inline-flex;
+  padding-right: 20px;
+  justify-content: space-around;
+  align-items: center;
+  width: 45%;
+  min-width: 235px;
+  max-width: 250px;
+}
+
+.stage-kampe-top {
+  width: 100%;
+  padding-left: 20px;
+}
+
+.stage-match {
+  width: 100%;
+  height: 85px;
+  padding: 0px 0px;
+  cursor: pointer;
+  position: relative;
+  border-bottom: 1px solid #87889742;
+  transition: 0.2s;
+}
+
+.stage-match:hover {
+  background-color: var(--surface);
+}
+
+.stage-team {
+  width: 100%;
+  padding: 10px 0px;
+  cursor: pointer;
+  position: relative;
+  transition: 0.2s;
+  padding-left: 5px;
+}
+
+.stage-team:hover {
+  background-color: var(--surface);
+}
+
+.stage-img {
+  max-width: 18px;
+  max-height: 18px;
+}
+
+.stage-indhold-down {
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row nowrap;
+}
+
+.message {
+  display: none;
+}
+
+.message-none {
+  display: none;
+}
+
+.message-co {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.message-close {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  position: absolute;
+  cursor: pointer;
+  top: 10px;
+  right: 10px;
+  background-color: var(--secondary);
+}
+
+.message-error {
+  background-color: #fff;
+  position: fixed;
+  right: 40px;
+  bottom: 30px;
+  display: block;
+  border-left: 7px var(--red) solid;
+  border-radius: 3px;
+  z-index: 9999999;
+}
+
+.message-success {
+  background-color: #fff;
+  position: fixed;
+  display: block;
+  z-index: 9999999;
+  right: 40px;
+  bottom: 30px;
+  border-left: 7px var(--green) solid;
+  border-radius: 3px;
+}
+
+.message-p {
+  padding: 25px 30px;
+  padding-right: 90px !important;
+  z-index: 9999999;
+  font-size: 15px;
+  color: var(--secondary);
+  font-family: CircularLight;
+  font-weight: 100;
+}
+
+.stage-match-small {
+  width: 100%;
+  height: 85px;
+  padding: 0px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #87889742;
+}
+
+.stage-top-p {
+  font-family: Open Sans;
+  color: #898989;
+  font-weight: 400;
+  padding: 5px 0px;
+  opacity: 0.8;
+  font-size: 11px;
+}
+
+.stage-match:hover .stage-kampe-p {
+  opacity: 1 !important;
+}
+
+.stage-kampe-hold {
+  display: inline-flex;
+  flex-flow: row wrap;
+  vertical-align: top;
+  width: 65%;
+  overflow: hidden;
+}
+
+.stage-kampe-hold-div {
+  display: inline-flex;
+  flex-flow: column wrap;
+  vertical-align: top;
+  width: 75%;
+  overflow: hidden;
+}
+
+.stage-kampe-hold-lil {
+  display: inline-flex;
+  flex-flow: row wrap;
+  vertical-align: top;
+  width: 75%;
+  overflow: hidden;
+}
+
+.stage-kampe-team {
+  padding: 2px 0px;
+  display: inline-flex;
+  width: 100%;
+  padding-right: 20px;
+  align-items: center;
+  gap: 10px;
+}
+
+.stage-kampe-team2 {
+  padding: 2px 0px;
+  display: inline-flex;
+  width: 100%;
+  padding-right: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stage-kampe-p {
+  font-family: Open Sans;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--secondary);
+  opacity: 0.95;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.stage-kampe-p-fat {
+  font-family: Open Sans;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--secondary);
+  opacity: 0.95;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.stage-stilling-p {
+  font-family: CircularBook;
+  font-weight: 100;
+  font-size: 16px;
+  width: 10px;
+  text-align: center;
+  color: var(--secondary);
+  display: inline-block;
+}
+
+.stage-stilling-p-fat {
+  font-family: CircularBold;
+  font-weight: 100;
+  font-size: 16px;
+  width: 10px;
+  text-align: center;
+  color: var(--secondary);
+  display: inline-block;
+}
+
+.stage-stilling-p-none {
+  display: none;
+}
+
+.stage-kampe-hold-small {
+  display: inline-block;
+  vertical-align: top;
+  width: 40%;
+  overflow: hidden;
+}
+
+.stage-kampe-logo {
+  display: inline-block;
+  vertical-align: top;
+  height: 18px;
+}
+
+.stage-kampe-minut {
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 13px;
+  width: 23%;
+  max-width: 80px;
+  color: var(--onSecondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kampe-ns {
+  margin-left: 10px !important;
+}
+
+.stage-live-icon {
+  width: 12px;
+  height: 12px;
+  background-color: var(--red);
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  border-radius: 50%;
+  opacity: 0.7;
+  transition: 0.2s;
+  animation: blink-animation 4s steps(5, start) infinite;
+}
+
+@keyframes blink-animation {
+  from {
+    visibility: hidden;
+  }
+  95% {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.stage-kampe-minut-active {
+  color: var(--red) !important;
+  font-weight: 500 !important;
+}
+
+.stage-kampe-minut-small {
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--onSecondary);
+  margin-top: 17px;
+  padding: 0px 10px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.stage-kampe-goals {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.stage-kampe-stilling {
+  display: inline-block;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+.info-section {
+  width: 100%;
+  background: #fff;
+  border-top: var(--primary) solid 4px;
+  margin-bottom: 15px;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+  border-radius: 2px;
+  padding: 30px 30px;
+}
+
+.error-con-error {
+  background-color: #f9e3e8;
+  padding: 20px 20px;
+  margin-bottom: 30px;
+  display: none;
+  width: 74.1%;
+  border-radius: 5px;
+  box-shadow: rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 16%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px;
+}
+
+.error-con-success {
+  background-color: #e4f9e3;
+  padding: 20px 20px;
+  margin-bottom: 30px;
+  display: none;
+  width: 74.1%;
+  border-radius: 5px;
+  box-shadow: rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 16%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px;
+}
+
+.triangle {
+  width: 16px;
+  height: 16px;
+  fill: var(--red);
+  margin-top: 1px;
+  display: none;
+  margin-right: 10px;
+  vertical-align: top;
+}
+
+.error-text {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.error-container-h1 {
+  color: var(--secondary);
+  font-family: CircularBook;
+  font-size: 15px;
+  margin-bottom: 3px;
+}
+
+.error-container-p {
+  color: var(--softBlack);
+  font-family: CircularLight;
+  font-size: 13px;
+}
+
+.info-h1 {
+  font-size: 32px;
+  font-family: CircularMedium;
+  font-weight: 100;
+  color: var(--secondary);
+  margin-bottom: 10px;
+}
+
+.info-p {
+  font-size: 16px;
+  font-family: Montserrat;
+  font-weight: 300;
+  color: var(--secondary);
+  margin-top: 10px;
+  display: inline-block;
+}
+
+.info-p-span {
+  font-size: 16px;
+  font-family: Open Sans;
+  font-weight: 400;
+  color: black;
+  display: inline-block;
+}
+
+.stage-kampe-stilling-small {
+  display: inline-block;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+.stage-kampe-odds-btn {
+  width: 70px;
+  padding: 9px 0px;
+  background-color: var(--primary);
+  border-radius: 2px;
+  border: 0px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+.odd-data-p {
+  font-family: Montserrat;
+  font-weight: 300;
+  font-size: 13px;
+  color: rgb(236, 245, 253);
+  opacity: 0.6;
+}
+
+.odd-data-h1 {
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 13px;
+  color: #fff;
+}
+
+.odd-off {
+  background-color: #ebebeb !important;
+  color: var(--secondary);
+  opacity: 0.6 !important;
+  cursor: default;
+}
+
+.odd-off:hover {
+  background-color: #ebebeb !important;
+}
+
+.odd-off .odd-data-p {
+  font-family: Montserrat;
+  font-weight: 300;
+  font-size: 13px;
+  color: var(--softBlack);
+  opacity: 0.6;
+}
+
+.odd-off .odd-data-h1 {
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--softBlack);
+}
+
+.odd-off .match-odds-offer-h1 {
+  color: var(--softBlack) !important;
+}
+
+.odd-off .match-odds-offer-h2 {
+  color: var(--softBlack) !important;
+}
+
+.stage-kampe-odds-btn:hover {
+  background-color: var(--primaryAccent);
+}
+
+.stage-kampe-section {
+  margin-bottom: 20px;
+}
+
+.stage-kampe-head-p {
+  font-family: Open Sans;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 13px;
+  width: 70px;
+  text-align: center;
+  color: #fff;
+  opacity: 0.9;
+  display: inline-block;
+  text-align: center;
+}
+
+.stage-rightbar {
+  width: 365px;
+  margin-left: 10px;
+  display: inline-block;
+  border-radius: 3px;
+  vertical-align: top;
+  background-color: #fff;
+  height: 710px;
+}

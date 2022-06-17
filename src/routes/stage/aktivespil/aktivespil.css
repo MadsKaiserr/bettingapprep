@@ -1,0 +1,257 @@
+.aktivespil-container {
+  min-height: 600px;
+  width: 100%;
+  padding: 185px 5%;
+  background-color: var(--stageSurface);
+}
+
+.aktivespil-section {
+  background-color: #fff;
+  padding: 30px 50px;
+  border-top: 4px var(--primary) solid;
+  width: 900px;
+}
+
+.aktivespil-h1 {
+  font-family: Montserrat;
+  font-weight: 500;
+  font-size: 35px;
+  color: var(--secondary);
+}
+
+.spil-container ul li {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.main-modal {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.25);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 99999999999999;
+}
+
+.modal-box {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 35px;
+  min-width: 300px;
+  max-width: 550px;
+}
+
+.main-modal-h1 {
+  font-size: 20px;
+  font-family: CircularBook;
+  color: var(--softBlack);
+  font-weight: 100;
+}
+
+.main-modal-h2 {
+  font-size: 16px;
+  padding-top: 5px;
+  font-family: CircularLight;
+  color: var(--softBlack);
+  font-weight: 100;
+}
+
+.modal-p {
+  font-size: 14px;
+  font-family: CircularLight;
+  color: var(--primary);
+  font-weight: 100;
+  opacity: 0.8;
+}
+
+.modal-p:hover {
+  text-decoration: unerline;
+  opacity: 1;
+}
+
+.modal-btn {
+  background-color: var(--primary);
+  padding: 10px 15px;
+  margin-top: 20px;
+  color: #fff;
+  font-size: 15px;
+  font-family: CircularLight;
+  font-weight: 100;
+  border: 0px;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-right: 15px;
+  margin-bottom: 10px;
+  transition: 0.2s;
+}
+
+.modal-btn:hover {
+  transform: scale(1.02);
+  background-color: var(--primaryAccent) !important;
+}
+
+.modal-btn-outline {
+  background-color: transparent;
+  padding: 10px 15px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: var(--softBlack);
+  font-size: 15px;
+  cursor: pointer;
+  font-family: CircularLight;
+  font-weight: 100;
+  border: 1px var(--softBlack) solid;
+  border-radius: 3px;
+  transition: 0.2s;
+}
+
+.modal-btn-outline:hover {
+  transform: scale(1.02);
+  background-color: rgba(37, 53, 80, 0.05) !important;
+}
+
+.aktivespil-divider {
+  width: 700px;
+  height: 2px;
+  background-color: var(--secondary);
+  opacity: 0.1;
+  border-radius: 2px;
+  margin-left: -5px;
+}
+
+.aktivespil-nav {
+  padding: 15px 0px;
+}
+
+.aktivespil-element-active {
+  padding: 10px 5px;
+  background-color: transparent;
+  margin-right: 50px;
+  border-radius: 1px;
+  border: 0px;
+  cursor: pointer;
+  color: var(--secondary);
+  border-bottom: var(--primary) solid 3px;
+}
+
+.aktivespil-element {
+  padding: 10px 5px;
+  background-color: transparent;
+  margin-right: 50px;
+  border-radius: 1px;
+  border: 0px;
+  cursor: pointer;
+  opacity: 0.8;
+  color: var(--secondary);
+  border-bottom: transparent solid 3px;
+}
+
+.aktivespil-element:hover {
+  opacity: 1;
+}
+
+.oddsspil-element-active {
+  padding: 10px 5px;
+  background-color: transparent;
+  margin-right: 15px;
+  border-radius: 1px;
+  border: 0px;
+  cursor: pointer;
+  color: var(--secondary);
+  border-bottom: var(--primary) solid 3px;
+}
+
+.oddsspil-element {
+  padding: 10px 5px;
+  background-color: transparent;
+  margin-right: 15px;
+  border-radius: 1px;
+  border: 0px;
+  cursor: pointer;
+  opacity: 0.8;
+  color: var(--secondary);
+  border-bottom: transparent solid 3px;
+}
+
+.oddsspil-element:hover {
+  opacity: 1;
+}
+
+.spil-container {
+  margin-top: 5px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.spil-element-active {
+  width: 300px;
+  background-color: var(--secondaryAccent);
+  display: inline-block;
+  margin-right: 10px;
+  border-radius: 3px;
+  padding: 10px 20px;
+  border-left: 7px var(--primary) solid;
+  margin-bottom: 15px;
+}
+
+.spil-element-con {
+  display: inline-block;
+  margin-right: 10px;
+  margin-bottom: 15px;
+}
+
+.spil-element-con a {
+  text-decoration: none;
+}
+
+.spil-element {
+  width: 300px;
+  background-color: var(--secondaryAccent);
+  border-radius: 3px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.spil-element:hover {
+  transform: scale(1.01);
+  background-color: #2f3146;
+}
+
+.spil-h1 {
+  color: #fff;
+  font-family: CircularBook;
+  font-weight: 100;
+  font-size: 20px;
+}
+
+.spil-element-bottom {
+  margin-top: 45px;
+}
+
+.spil-divider {
+  width: 100%;
+  background-color: var(--onSecondary);
+  margin-bottom: 5px;
+  height: 1px;
+  opacity: 0.3;
+}
+
+.spil-p {
+  display: inline-block;
+  color: #fff;
+  opacity: 0.6;
+  font-size: 13px;
+}
+
+.spil-p-right {
+  display: inline-block;
+  color: #fff;
+  opacity: 0.6;
+  float: right;
+  font-size: 13px;
+}

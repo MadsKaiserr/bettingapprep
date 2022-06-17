@@ -1,0 +1,9 @@
+.dyst-hero {
+    width: calc(100% + 100px);
+    height: 300px;
+    background: url(../../assets/img/odds_kontor.jpeg);
+    background-size: cover;
+    margin-top: -30px;
+    margin-left: -50px;
+    margin-bottom: 30px;
+}

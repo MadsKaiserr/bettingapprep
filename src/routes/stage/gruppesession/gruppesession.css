@@ -1,0 +1,74 @@
+.gruppespil-p {
+    font-size: 13px;
+    color: var(--secondary);
+    opacity: 0.7;
+    font-family: Open Sans;
+    font-weight: 400;
+    margin-top: 5px;
+    width: 450px;
+}
+
+.gruppeinvite-p {
+    font-size: 13px;
+    color: var(--secondary);
+    opacity: 0.7;
+    font-family: Open Sans;
+    font-weight: 400;
+    margin-top: 5px;
+}
+
+.gruppeinvite-h1 {
+    font-size: 25px;
+    color: var(--secondary);
+    font-family: Open Sans;
+    font-weight: 500;
+}
+
+.gruppeinvite {
+    margin-top: 15px;
+}
+
+.gruppeinvite-info {
+    background-color: var(--stageSurface);
+    width: 170px;
+    text-align: center;
+    opacity: 0.85;
+    border-radius: 5px;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 15px;
+    padding: 20px 0px;
+}
+
+.gruppeinvite-btn {
+    padding: 10px 25px;
+    background-color: var(--primary);
+    color: #fff;
+    font-size: 13px;
+    font-family: CircularBook;
+    font-weight: 100;
+    border-radius: 3px;
+    margin-top: 15px;
+    border: 0px;
+    cursor: pointer;
+}
+
+.gruppeinvite-btn:hover {
+    background-color: var(--primaryAccent) !important;
+}
+
+.gruppesession-btn {
+    padding: 4px 13px;
+    background-color: transparent;
+    border: 1px var(--primary) solid;
+    color: var(--primary);
+    font-size: 12px;
+    font-family: Open Sans;
+    font-weight: 400;
+    border-radius: 3px;
+    vertical-align: top;
+    cursor: pointer;
+    margin-top: 2px;
+    margin-left: 10px;
+    opacity: 0.7;
+}
