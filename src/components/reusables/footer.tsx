@@ -68,7 +68,7 @@ function Footer () {
                         <p className="footer-h4">*Modtag information om nye præmiedyster, rabatkuponer, <br />vigtige kampe og vær den første til at prøve nye funktioner.</p>
                     </div>
                 </div>
-                <p className="footer-copyright">©2022 Alle rettigheder forbeholdes | Mads Kaiser | +45 23 96 58 58</p>
+                <p className="footer-copyright">©2022 Alle rettigheder forbeholdes | Mads Kaiser | +45 23 96 58 58  V1.9.9</p>
             </div>
         </>
     )
