@@ -55,6 +55,7 @@ function StagePlayer () {
 
     const [messageType, setMessageType] = useState("error-con-error");
     function setNotiMessage(type, heading, message) {
+        window.scrollTo(0, 0)
         if (type === "error") {
             setMessageType("error-con-error");
             document.getElementById("errorIcon").classList.add("display");
@@ -95,8 +96,8 @@ function StagePlayer () {
                         <img src={logo} alt="" className="match-img" />
                     </div>
                 </div>
-                <div className="match-info" id="team_match">
-                </div>
+                {/* <div className="match-info" id="team_match">
+                </div> */}
             </div>
         </>
     )

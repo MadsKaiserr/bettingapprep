@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate, Link } from 'react-router-dom';
+import { getKupon, getString } from "../../../services/algo.js";
 
 import lineupPitch from '../../../assets/img/lineup-pitchF.png';
 import goal from '../../../assets/img/football.png';
@@ -22,10 +23,10 @@ function StageMatcharticle () {
     const [tabelOLeague, setTabelOLeague] = useState("");
 
     const [round_id, setRound_id,] = useState("");
-    const [league, setLeague] = useState("");
     const [leagueId, setLeagueId] = useState("");
-    const [continent, setContinent] = useState("");
     const [continentLink, setContinentLink] = useState("");
+    const [continent, setContinent] = useState("");
+    const [league, setLeague] = useState("");
 
     const [matchAllowed, setMatchAllowed] = useState(true);
     const [oversigtAllowed, setOversigtAllowed] = useState(false);
@@ -150,10 +151,13 @@ function StageMatcharticle () {
     const [statText, setStatText] = useState("Statistikker bliver opgivet som kampen spilles...");
 
     function getGame() {
-        fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/"+matchID+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=odds,goals,referee,stats,substitutions,bench,lineup,lineup.player,localTeam,visitorTeam,localCoach,visitorCoach,venue,events,group,round&bookmakers=2&tz=Europe/Copenhagen")
+        fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/"+matchID+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=odds,goals,referee,league.country,stats,substitutions,bench,lineup,lineup.player,localTeam,league,visitorTeam,localCoach,visitorCoach,venue,events,group,round&bookmakers=2&tz=Europe/Copenhagen")
         .then(response => response.json())
         .then(function (result) {
             console.log(result);
+            setLeague(result.data.league.data.name);
+            setContinent(result.data.league.data.country.data.name);
+            setContinentLink(result.data.league.data.country.data.image_path);
             var favoritd = [];
             if (localStorage.getItem("favoritter")) {
                 favoritd = JSON.parse(localStorage.getItem("favoritter"));
@@ -273,42 +277,20 @@ function StageMatcharticle () {
             var wherearewe = "";
             if (result.data.league_id === 271) {
                 wherearewe = "Danmark / Super Liga"
-                setContinent("Danmark");
-                setLeague("Super Liga");
-                setContinentLink("https://cdn.sportmonks.com/images/countries/png/short/dk.png");
             } else if (result.data.league_id === 2) {
                 wherearewe = "Verden / Champions League"
-                setContinent("Verden");
-                setLeague("Champions League");
             } else if (result.data.league_id === 5) {
                 wherearewe = "Europa / Europa League"
-                setContinent("Europa");
-                setLeague("Europa League");
             } else if (result.data.league_id === 8) {
                 wherearewe = "England / Premier League"
-                setContinent("England");
-                setLeague("Premier League");
-                setContinentLink("https://cdn.sportmonks.com/images/soccer/teams/21/18645.png");
             } else if (result.data.league_id === 82) {
                 wherearewe = "Tyskland / Bundesliga"
-                setContinent("Tyskland");
-                setLeague("Bundesliga");
-                setContinentLink("https://cdn.sportmonks.com/images/countries/png/short/de.png");
             } else if (result.data.league_id === 301) {
                 wherearewe = "Frankrig / Ligue 1"
-                setContinent("Frankrig");
-                setLeague("Ligue 1");
-                setContinentLink("https://cdn.sportmonks.com/images/countries/png/short/fr.png");
             } else if (result.data.league_id === 384) {
                 wherearewe = "Italien / Serie A"
-                setContinent("Italien");
-                setLeague("Serie A");
-                setContinentLink("https://cdn.sportmonks.com/images/countries/png/short/it.png");
             } else if (result.data.league_id === 564) {
                 wherearewe = "Spanien / La Liga"
-                setContinent("Spanien");
-                setLeague("La Liga");
-                setContinentLink("https://cdn.sportmonks.com/images/countries/png/short/es.png");
             } else if (result.data.league_id === 720) {
                 wherearewe = "Europa / VM Kvalifikation Europa"
             } else if (result.data.league_id === 1325) {
@@ -319,8 +301,6 @@ function StageMatcharticle () {
                 wherearewe = "Europa / Conference League"
             } else if (result.data.league_id === 732) {
                 wherearewe = "Verden / VM"
-                setContinent("Verden");
-                setLeague("VM");
             } else if (result.data.league_id === 1082) {
                 wherearewe = "Verden / Venskabskamp"
             } else if (result.data.league_id === 1125) {
@@ -329,8 +309,6 @@ function StageMatcharticle () {
                 wherearewe = "Verden / Audi Cup"
             } else if (result.data.league_id === 1538) {
                 wherearewe = "Europa / UEFA Nations League"
-                setContinent("Europa");
-                setLeague("UEFA Nations League");
             } else {
                 wherearewe = "Mindre liga"
             }
@@ -419,10 +397,10 @@ function StageMatcharticle () {
                 if (availOddsReplica[y].type === "3Way Result" || availOddsReplica[y].type === "Double Chance" || availOddsReplica[y].type === "Both Teams To Score" || availOddsReplica[y].type === "Highest Scoring Half" || availOddsReplica[y].type === "Team To Score First" || availOddsReplica[y].type === "Corner Match Bet") {
                     availPopular2.push(availOddsReplica[y]);
                 }
-                if (availOddsReplica[y].type === "First Card Received" || availOddsReplica[y].type === "Time Of First Card" || availOddsReplica[y].type === "A Red Card in the Match" || availOddsReplica[y].type === "Both Teams To Receive 2+ Cards" || availOddsReplica[y].type === "Both Teams To Receive A Card") {
+                if (availOddsReplica[y].type === "First Card Received" || availOddsReplica[y].type === "A Red Card in the Match" || availOddsReplica[y].type === "Both Teams To Receive 2+ Cards" || availOddsReplica[y].type === "Both Teams To Receive A Card") {
                     availKort2.push(availOddsReplica[y]);
                 }
-                if (availOddsReplica[y].type === "2-Way Corners" || availOddsReplica[y].type === "Time Of First Corner" || availOddsReplica[y].type === "First Match Corner" || availOddsReplica[y].type === "Last Match Corner") {
+                if (availOddsReplica[y].type === "First Match Corner" || availOddsReplica[y].type === "Last Match Corner") {
                     availCorner2.push(availOddsReplica[y]);
                 }
                 if (availOddsReplica[y].type === "Clean Sheet - Home" || availOddsReplica[y].type === "Clean Sheet - Away" || availOddsReplica[y].type === "3Way Result 1st Half" || availOddsReplica[y].type === "3Way Result 2nd Half" || availOddsReplica[y].type === "Double Chance - 1st Half" || availOddsReplica[y].type === "Double Chance - 2nd Half") {
@@ -575,6 +553,7 @@ function StageMatcharticle () {
 
     const [messageType, setMessageType] = useState("error-con-error");
     function setNotiMessage(type, heading, message) {
+        window.scrollTo(0, 0)
         if (type === "error") {
             setMessageType("error-con-error");
             document.getElementById("errorIcon").classList.add("display");
@@ -724,7 +703,7 @@ function StageMatcharticle () {
     }
 
     function chooseOdd(btnId, type, row, result) {
-        if (!notUsableBtn.includes(btnId) && matchAllowed !== false) {
+        if (!notUsableBtn.includes(btnId) && matchAllowed !== false && (odds.length < 5 || odds === "")) {
             document.getElementById(btnId).classList.add("odd-off");
             setNotUsableBtn([...notUsableBtn, btnId]);
             sessionStorage.setItem("notUsableBtn", JSON.stringify([...notUsableBtn, btnId]));
@@ -756,6 +735,8 @@ function StageMatcharticle () {
             }
             setKuponBtn("kupon-btn");
             sessionStorage.setItem("odds", JSON.stringify([...odds, jsonNote]))
+        } else if (odds.length > 5) {
+            setNotiMessage("error", "For mange væddemål", "Du har allerede 6 ud af 6 mulige væddemål pr. kupon.")
         }
     }
 
@@ -938,27 +919,6 @@ function StageMatcharticle () {
         .catch(error => console.log('error', error));
     }
 
-    function getMatchInf() {
-        if (continent !== "") {
-            if (continentLink !== "") {
-                return (
-                    <Link to={"/stage/league?id=" + seasonId} className="match-league">
-                        <img src={continentLink} alt="" className="match-league-i" />
-                        <p className="match-league-p"><span className="match-league-light">{continent} - </span>{league} - Runde {round_id}</p>
-                    </Link>
-                );
-            } else {
-                return (
-                    <Link to={"/stage/league?id=" + seasonId} className="match-league">
-                        <p className="match-league-p"><span className="match-league-light">{continent} - </span>{league} - Runde {round_id}</p>
-                    </Link>
-                );
-            }
-        } else {
-            return;
-        }
-    }
-
     const [tabelPut, setTablePut] = useState(false);
 
     function getGroups() {
@@ -978,7 +938,7 @@ function StageMatcharticle () {
                                 {item.standings.data.map((res) => {
                                     return (
                                         <li key={item.season_id + "-" + randomId + item.name + res.name}>
-                                            <div className="tabel-top">
+                                            <Link to={"/stage/league?id=" + item.season_id} className="tabel-top">
                                                 <p className="tabel-top-h1">{res.name}</p>
                                                 <div className="tabel-top-right">
                                                     <div className="tabel-ends">
@@ -997,7 +957,7 @@ function StageMatcharticle () {
                                                         <p className="tabel-h1">FORM</p>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                             <div className="tabel-container">
                                                 <ul>
                                                     {res.standings.data.map((thirdRes) => {
@@ -1084,7 +1044,7 @@ function StageMatcharticle () {
                         }
                         return (
                             <div>
-                                <div className="tabel-top">
+                                <Link to={"/stage/league?id=" + item.season_id} className="tabel-top">
                                     <p className="tabel-top-h1">{liga}</p>
                                     <div className="tabel-top-right">
                                         <div className="tabel-ends">
@@ -1103,7 +1063,7 @@ function StageMatcharticle () {
                                             <p className="tabel-h1">FORM</p>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                                 <div className="tabel-container">
                                     <ul>
                                         {item.standings.data.map((fres) => {
@@ -1197,20 +1157,56 @@ function StageMatcharticle () {
             var possessiontime_str_v_style = {width: possessiontime_str_v};
 
             var shots_total = localStatArray.shots.total + visitorStatArray.shots.total;
-            var shots_str_l_style = {width: ((localStatArray.shots.total / shots_total) * 100) + "%"};
-            var shots_str_v_style = {width: ((visitorStatArray.shots.total / shots_total) * 100) + "%"};
+            var shot_l_fix = (localStatArray.shots.total / shots_total) * 100;
+            if (shot_l_fix === 0 || shots_total === 0) {
+                shot_l_fix = 50;
+            }
+            var shots_str_l_style = {width: shot_l_fix + "%"};
+
+            var shot_v_fix = (visitorStatArray.shots.total / shots_total) * 100;
+            if (shot_v_fix === 0 || shots_total === 0) {
+                shot_v_fix = 50;
+            }
+            var shots_str_v_style = {width: shot_v_fix + "%"};
 
             var ongoal_total = localStatArray.shots.ongoal+ visitorStatArray.shots.ongoal;
-            var ongoal_str_l_style = {width: ((localStatArray.shots.ongoal / ongoal_total) * 100) + "%"};
-            var ongoal_str_v_style = {width: ((visitorStatArray.shots.ongoal / ongoal_total) * 100) + "%"};
+            var ongoal_l_fix = (localStatArray.shots.ongoal / ongoal_total) * 100;
+            if (ongoal_l_fix === 0 || ongoal_total === 0) {
+                ongoal_l_fix = 50;
+            }
+            var ongoal_str_l_style = {width: ongoal_l_fix + "%"};
+
+            var ongoal_v_fix = (visitorStatArray.shots.ongoal / ongoal_total) * 100;
+            if (ongoal_v_fix === 0 || ongoal_total === 0) {
+                ongoal_v_fix = 50;
+            }
+            var ongoal_str_v_style = {width: ongoal_v_fix + "%"};
 
             var freekick_total = localStatArray.free_kick+ visitorStatArray.free_kick;
-            var freekick_str_l_style = {width: ((localStatArray.free_kick / freekick_total) * 100) + "%"};
-            var freekick_str_v_style = {width: ((visitorStatArray.free_kick / freekick_total) * 100) + "%"};
+            var freekick_v_fix = (localStatArray.free_kick / freekick_total) * 100;
+            if (freekick_v_fix === 0 || freekick_total === 0) {
+                freekick_v_fix = 50;
+            }
+            var freekick_str_l_style = {width: freekick_v_fix + "%"};
+
+            var freekick_v_fix = (visitorStatArray.free_kick / freekick_total) * 100;
+            if (freekick_v_fix === 0 || freekick_total === 0) {
+                freekick_v_fix = 50;
+            }
+            var freekick_str_v_style = {width: freekick_v_fix + "%"};
 
             var offsides_total = localStatArray.offsides+ visitorStatArray.offsides;
-            var offsides_str_l_style = {width: ((localStatArray.offsides / offsides_total) * 100) + "%"};
-            var offsides_str_v_style = {width: ((visitorStatArray.offsides / offsides_total) * 100) + "%"};
+            var offsides_l_fix = (localStatArray.offsides / offsides_total) * 100;
+            if (offsides_l_fix === 0 || offsides_total === 0) {
+                offsides_l_fix = 50;
+            }
+            var offsides_str_l_style = {width: offsides_l_fix + "%"};
+
+            var offsides_v_fix = (visitorStatArray.offsides / offsides_total) * 100;
+            if (offsides_v_fix === 0 || offsides_total === 0) {
+                offsides_v_fix = 50;
+            }
+            var offsides_str_v_style = {width: parseInt(offsides_v_fix) + "%"};
 
             var possessiontime_show = {display: "block"};
             var shots_show = {display: "block"};
@@ -1662,7 +1658,10 @@ function StageMatcharticle () {
                     </svg>
                 </button>
                 <div className="match-info" style={{padding: "0px"}}>
-                    {getMatchInf()}
+                    <Link to={"/stage/league?id=" + seasonId} className="match-league">
+                        <img src={continentLink} alt="" className="match-league-i" />
+                        <p className="match-league-p"><span className="match-league-light">{continent} - </span>{league} - Runde {round_id}</p>
+                    </Link>
                     <div className="match-title" style={{padding: "40px"}}>
                         <div className="match-team-cont">
                             <div className="favorit-container-match" onClick={() => setFavoritter(1)} onMouseOver={() => favoritHover(1)} onMouseLeave={() => favoritUnHover(1)}>
@@ -2593,16 +2592,12 @@ function StageMatcharticle () {
                                         } else if (item.type === "Highest Scoring Half") {
                                             label0 = "1. halvleg";
                                             label1 = "2. halvleg";
-                                            label2 = "Ingen mål";
+                                            label2 = "Uafgjort";
                                             overskrift = "Flest mål i halvleg";
                                         } else if (item.type === "Both Teams To Score") {
                                             label0 = "Ja";
                                             label1 = "Nej";
                                             overskrift = "Begge hold scorer";
-                                        } else if (item.type === "Time Of First Corner") {
-                                            label0 = "Ja";
-                                            label1 = "Nej";
-                                            overskrift = "Hjørnespark inden 7:00";
                                         } else if (item.type === "Clean Sheet - Home") {
                                             label0 = "Ja";
                                             label1 = "Nej";
@@ -2611,10 +2606,6 @@ function StageMatcharticle () {
                                             label0 = "Ja";
                                             label1 = "Nej";
                                             overskrift = "Clean Sheet - " + visitorTeam;
-                                        } else if (item.type === "2-Way Corners") {
-                                            label0 = "Over";
-                                            label1 = "Under";
-                                            overskrift = "9.5 hjørnespark";
                                         } else if (item.type === "Corner Match Bet") {
                                             label0 = homeTeam;
                                             label1 = "Ingen hjørnespark";
@@ -3819,89 +3810,6 @@ function StageMatcharticle () {
                         </div>
                         <ul>
                             {odds.map(bet => {
-                                var betType = "Ukendt";
-                                var resultType = "";
-                                if (bet.odds_type === "3Way Result") {
-                                    betType = "Kampresultat";
-                                    resultType = "team";
-                                } else if (bet.odds_type === "Team To Score First") {
-                                    betType = "Første målscorer";
-                                    resultType = "team";
-                                } else if (bet.odds_type === "Double Chance") {
-                                    betType = "Dobbelt chance";
-                                    resultType = "teams";
-                                } else if (bet.odds_type === "Highest Scoring Half") {
-                                    betType = "Flest mål i halvleg";
-                                    resultType = "team";
-                                } else if (bet.odds_type === "Both Teams To Score") {
-                                    betType = "";
-                                    resultType = "Both Teams To Score";
-                                } else if (bet.odds_type === "Time Of First Corner") {
-                                    betType = "";
-                                    resultType = "Time Of First Corner";
-                                } else if (bet.odds_type === "Clean Sheet - Home") {
-                                    betType = "Clean sheet " + homeTeam;
-                                    resultType = "answer";
-                                } else if (bet.odds_type === "Clean Sheet - Away") {
-                                    betType = "Clean sheet " + visitorTeam;
-                                    resultType = "answer";
-                                } else if (bet.odds_type === "2-Way Corners") {
-                                    betType = "";
-                                    resultType = "2-Way Corners";
-                                }
-
-                                var resultString = "Ukendt";
-                                if (resultType === "team") {
-                                    if (bet.odds_result === "0") {
-                                        resultString = bet.hometeam;
-                                    } else if (bet.odds_result === "1") {
-                                        if (betType === "Første målscorer") {
-                                            resultString = "Ingen mål";
-                                        } else if (betType === "Kampresultat" || betType === "Kampresultat - 1. halvleg") {
-                                            resultString = "Uafgjort";
-                                        } else if (betType === "Første kort") {
-                                            resultString = "Ingen kort";
-                                        } else {
-                                            resultString = bet.odds_result;
-                                        }
-                                    } else if (bet.odds_result === "2") {
-                                        resultString = bet.visitorteam;
-                                    }
-                                } else if (resultType === "2-Way Corners") {
-                                    if (bet.odds_result === "0") {
-                                        resultString = "Over 9.5 hjørnespark";
-                                    } else {
-                                        resultString = "Under 9.5 hjørnespark";
-                                    }
-                                } else if (resultType === "teams") {
-                                    if (bet.odds_result === "0") {
-                                        resultString = bet.hometeam + " eller uafgjort";
-                                    } else if (bet.odds_result === "1") {
-                                        resultString = "Uafgjort eller " + bet.visitorteam;
-                                    } else if (bet.odds_result === "2") {
-                                        resultString = bet.hometeam+ " eller " + bet.visitorteam;
-                                    }
-                                } else if (resultType === "Time Of First Corner") {
-                                    if (bet.odds_result === "0") {
-                                        resultString = "Første hjørnespark inden 7:00";
-                                    } else {
-                                        resultString = "Ingen hjørnespark inden 7:00";
-                                    }
-                                } else if (resultType === "Both Teams To Score") {
-                                    if (bet.odds_result === "0") {
-                                        resultString = "Begge hold scorer";
-                                    } else {
-                                        resultString = "Begge hold scorer ikke";
-                                    }
-                                } else if (resultType === "none") {
-                                    resultString = "";
-                                } else if (resultType === "answer") {
-                                    if (bet.odds_result === "0") {
-                                        resultString = "Ja";
-                                    } else {
-                                        resultString = "Nej";
-                                    }
-                                }
                                 return (
                                     <li key={bet.id}>
                                         <div className="kupon-container">
@@ -3913,7 +3821,7 @@ function StageMatcharticle () {
                                             <div className="kupon-divider"></div>
                                             <div className="kupon-info">
                                                 <p className="kupon-h1">{bet.hometeam} - {bet.visitorteam}</p>
-                                                <p className="kupon-p">{betType}: <span className="weight600">{resultString}</span></p>
+                                                <p className="kupon-p">{getKupon(bet.odds_type,homeTeam,visitorTeam)}: <span className="weight600">{getString(bet.odds_type,bet.odds_result,homeTeam,visitorTeam)}</span></p>
                                             </div>
                                             <div className="kupon-odds">
                                                 <p className="kupon-h2">{bet.probability}</p>

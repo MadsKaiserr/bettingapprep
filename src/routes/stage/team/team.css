@@ -17,6 +17,23 @@
     width: 100%;
 }
 
+#statistikker {
+    flex-direction: column !important;
+}
+
+#oversigt {
+    flex-direction: column !important;
+}
+
+.team-indhold-side {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: row;
+}
+
 .favorit-container {
     position: absolute;
     left: 15px;

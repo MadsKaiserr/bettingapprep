@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from "axios";
 import { getUser } from "../../../services/authService.ts";
 import { Link } from 'react-router-dom';
+import { getKupon, getString } from "../../../services/algo.js";
 
 import './forside.css';
  
@@ -145,7 +146,8 @@ function StageForside () {
     }
 
     function place3wayBet(btnId, matchId, homeTeam, visitorTeam, probability, oddsResult, oddsDate) {
-        if (!notUsableBtn.includes(btnId)) {
+        if (!notUsableBtn.includes(btnId) && (odds.length < 5 || odds === "")) {
+            console.log()
             document.getElementById(btnId).classList.add("odd-off");
             setNotUsableBtn([...notUsableBtn, "3Way Result"+btnId]);
             sessionStorage.setItem("notUsableBtn", JSON.stringify([...notUsableBtn, "3Way Result"+btnId]))
@@ -177,6 +179,8 @@ function StageForside () {
             }
             setKuponBtn("kupon-btn");
             sessionStorage.setItem("odds", JSON.stringify([...odds, jsonNote]))
+        } else if (odds.length > 5) {
+            setNotiMessage("error", "For mange væddemål", "Du har allerede 6 ud af 6 mulige væddemål pr. kupon.")
         }
     }
 
@@ -396,12 +400,14 @@ function StageForside () {
                 }
             }
             var winning = 0;
+            var winsArray = [];
             if (doneGames === result.data.length) {
                 for (var u in result.data) {
                     for (var t in checkArray) {
                         if (checkArray[t].game === result.data[u].id) {
                             if (result.data[u].odds.data[result.data[u].odds.data.findIndex(obj => obj.name === checkArray[t].type)].bookmaker.data[0].odds.data[parseInt(checkArray[t].result)].winning === true) {
                                 winning = winning + 1;
+                                winsArray.push(checkArray[t]);
                             }
                         }
                     }
@@ -413,7 +419,8 @@ function StageForside () {
                         game: activeGame,
                         playerIndex: parseInt(k),
                         udbetaling: Number(Number(parseFloat(calcUdbetaling)).toFixed(2)),
-                        odds: parseInt(l)
+                        odds: parseInt(l),
+                        wins: winsArray
                     }
                     axios.patch(betCalcURL, winBody, requestConfig).then(responseTem => {
                         console.log("Vundet - Beregnet", responseTem, winBody);
@@ -430,7 +437,8 @@ function StageForside () {
                     const loseBody = {
                         game: activeGame,
                         playerIndex: parseInt(k),
-                        odds: parseInt(l)
+                        odds: parseInt(l),
+                        wins: winsArray
                     }
             
                     axios.patch(betCalcURL2, loseBody, requestConfig).then(responseItem => {
@@ -796,6 +804,7 @@ function StageForside () {
     const [messageType, setMessageType] = useState("error-con-error");
 
     function setNotiMessage(type, heading, message) {
+    window.scrollTo(0, 0)
         if (type === "error") {
             setMessageType("error-con-error");
             document.getElementById("errorIcon").classList.add("display");
@@ -1056,43 +1065,8 @@ function StageForside () {
                         <p className="kupon-header-p">Single</p>
                         <p className="kupon-blue-p" onClick={() => emptyBets()}>Ryd alle</p>
                     </div>
-                    <ul>
+                    <ul className="stage-ul">
                         {odds.map(bet => {
-                            var betType = "Ukendt";
-                            var resultType = "";
-                            if (bet.odds_type === "3Way Result") {
-                                betType = "Kampresultat";
-                                resultType = "team";
-                            } else if (bet.odds_type === "Team To Score First") {
-                                betType = "Første målscorer";
-                                resultType = "team";
-                            } else if (bet.odds_type === "Over/Under") {
-                                betType = "Antal mål";
-                                resultType = "goals";
-                            }
-
-                            var resultString = "Ukendt";
-                            if (resultType === "team") {
-                                if (bet.odds_result === "0") {
-                                    resultString = bet.hometeam;
-                                } else if (bet.odds_result === "1") {
-                                    if (betType === "Første målscorer") {
-                                        resultString = "Ingen mål";
-                                    } else if (betType === "Kampresultat") {
-                                        resultString = "Uafgjort";
-                                    } else {
-                                        resultString = bet.odds_result;
-                                    }
-                                } else if (bet.odds_result === "2") {
-                                    resultString = bet.visitorteam;
-                                }
-                            } else if (resultType === "goals") {
-                                if (bet.odds_result === 0 || bet.odds_result === 2 || bet.odds_result === 4) {
-                                    resultString = "Over 2.5";
-                                } else {
-                                    resultString = "Under 2.5";
-                                }
-                            }
                             return (
                                 <li key={bet.id}>
                                     <div className="kupon-container">
@@ -1104,7 +1078,7 @@ function StageForside () {
                                         <div className="kupon-divider"></div>
                                         <div className="kupon-info">
                                             <p className="kupon-h1">{bet.hometeam} - {bet.visitorteam}</p>
-                                            <p className="kupon-p">{betType}: <span className="weight600">{resultString}</span></p>
+                                            <p className="kupon-p">{getKupon(bet.odds_type,bet.hometeam,bet.visitorteam)}: <span className="weight600">{getString(bet.odds_type,bet.odds_result,bet.hometeam,bet.visitorteam)}</span></p>
                                         </div>
                                         <div className="kupon-odds">
                                             <p className="kupon-h2">{bet.probability}</p>

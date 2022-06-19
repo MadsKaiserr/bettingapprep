@@ -86,6 +86,7 @@ function StageAktiveSpil () {
     const [messageType, setMessageType] = useState("error-con-error");
 
     function setNotiMessage(type, heading, message) {
+    window.scrollTo(0, 0)
         if (type === "error") {
             setMessageType("error-con-error");
             document.getElementById("errorIcon").classList.add("display");

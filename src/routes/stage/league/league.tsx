@@ -43,10 +43,12 @@ function StageLeague () {
     const [tabelType, setTableType] = useState("");
     const [tabelO, setTabelO] = useState([]);
     const [senesteKampe, setSenesteKampe] = useState([]);
+    const [mostgoals, setMostGoals] = useState([]);
+    const [mostcards, setMostCards] = useState([]);
     const [tabelOUsed, setTabelOUsed] = useState(false);
 
     function getGame() {
-        fetch("https://soccer.sportmonks.com/api/v2.0/seasons/" + leagueId + "?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=goalscorers,league,stages,groups,results,fixtures:order(starting_at|desc)&tz=Europe/Copenhagen")
+        fetch("https://soccer.sportmonks.com/api/v2.0/seasons/" + leagueId + "?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=cardscorers,cardscorers.player,cardscorers.team,assistscorers,goalscorers,goalscorers.team,goalscorers.player,league,stages,groups,results,fixtures:order(starting_at|desc)&tz=Europe/Copenhagen")
         .then(response => response.json())
         .then(function (result) {
             console.log(result);
@@ -54,6 +56,61 @@ function StageLeague () {
             setLeague_name(result.data.league.data.name);
             setSeason_year(result.data.name);
             setLogo(result.data.league.data.logo_path);
+
+            var topscorerArray = result.data.goalscorers.data;
+            var assistArray = result.data.assistscorers.data;
+            var cardArray = result.data.cardscorers.data;
+            var mostgoalsArray = [];
+            var mostAssistsArray = [];
+            var mostCardsArray = [];
+            for (var e in topscorerArray) {
+                if (topscorerArray[e].type === "goals") {
+                    var mostGoalsIndex = mostgoalsArray.findIndex(obj => obj.player.data.fullname === topscorerArray[e].player.data.fullname);
+                    if (mostGoalsIndex === -1) {
+                        mostgoalsArray.push(topscorerArray[e]);
+                    } else {
+                        mostgoalsArray[mostGoalsIndex].goals = mostgoalsArray[mostGoalsIndex].goals + topscorerArray[e].goals;
+                        mostgoalsArray[mostGoalsIndex].penalty_goals = mostgoalsArray[mostGoalsIndex].penalty_goals + topscorerArray[e].penalty_goals;
+                    }
+                }
+            }
+            mostgoalsArray.sort((a, b) => {
+                return b.goals - a.goals;
+            });
+            for (var e in cardArray) {
+                if (cardArray[e].type === "cards") {
+                    var mostCardsIndex = mostCardsArray.findIndex(obj => obj.player.data.fullname === cardArray[e].player.data.fullname);
+                    if (mostCardsIndex === -1) {
+                        mostCardsArray.push(cardArray[e]);
+                    } else {
+                        mostCardsArray[mostCardsIndex].yellowcards = mostCardsArray[mostCardsIndex].yellowcards + cardArray[e].yellowcards;
+                        mostCardsArray[mostCardsIndex].redcards = mostCardsArray[mostCardsIndex].redcards + cardArray[e].redcards;
+                    }
+                }
+            }
+            mostCardsArray.sort((a, b) => {
+                return b.yellowcards - a.yellowcards;
+            });
+            for (var q in assistArray) {
+                var mostAssistsIndex = mostAssistsArray.findIndex(obj => obj.player_id === assistArray[q].player_id);
+                if (mostAssistsIndex === -1) {
+                    mostAssistsArray.push(assistArray[q]);
+                } else {
+                    mostAssistsArray[mostAssistsIndex].assists = mostAssistsArray[mostAssistsIndex].assists + assistArray[q].assists;
+                }
+            }
+            for (var t in mostAssistsArray) {
+                var mostArrayIndex = mostgoalsArray.findIndex(obj => obj.player_id === mostAssistsArray[t].player_id);
+                if (mostArrayIndex !== -1) {
+                    if (mostAssistsArray[t].assists === undefined) {
+                        mostgoalsArray[mostArrayIndex].assists = 0;
+                    } else {
+                        mostgoalsArray[mostArrayIndex].assists = mostAssistsArray[t].assists;
+                    }
+                }
+            }
+            setMostGoals(mostgoalsArray);
+            setMostCards(mostCardsArray);
 
             var matchArray = result.data.fixtures.data;
             var matches = "";
@@ -101,6 +158,7 @@ function StageLeague () {
 
     const [messageType, setMessageType] = useState("error-con-error");
     function setNotiMessage(type, heading, message) {
+    window.scrollTo(0, 0)
         if (type === "error") {
             setMessageType("error-con-error");
             document.getElementById("errorIcon").classList.add("display");
@@ -125,7 +183,7 @@ function StageLeague () {
             document.getElementById("kortN").className = "oddsspil-element";
             document.getElementById("cornerN").className = "oddsspil-element";
             document.getElementById("goalN").className = "oddsspil-element";
-            document.getElementById("spillereN").className = "oddsspil-element";
+            // document.getElementById("spillereN").className = "oddsspil-element";
         } else if (nav === "kort") {
             document.getElementById("popular").classList.remove("display");
             document.getElementById("kort").classList.add("display");
@@ -137,7 +195,7 @@ function StageLeague () {
             document.getElementById("kortN").className = "oddsspil-element-active";
             document.getElementById("cornerN").className = "oddsspil-element";
             document.getElementById("goalN").className = "oddsspil-element";
-            document.getElementById("spillereN").className = "oddsspil-element";
+            // document.getElementById("spillereN").className = "oddsspil-element";
         } else if (nav === "corner") {
             document.getElementById("popular").classList.remove("display");
             document.getElementById("kort").classList.remove("display");
@@ -149,7 +207,7 @@ function StageLeague () {
             document.getElementById("kortN").className = "oddsspil-element";
             document.getElementById("cornerN").className = "oddsspil-element-active";
             document.getElementById("goalN").className = "oddsspil-element";
-            document.getElementById("spillereN").className = "oddsspil-element";
+            // document.getElementById("spillereN").className = "oddsspil-element";
 
             if (tabelOUsed === false) {
                 getTabel();
@@ -165,7 +223,7 @@ function StageLeague () {
             document.getElementById("kortN").className = "oddsspil-element";
             document.getElementById("cornerN").className = "oddsspil-element";
             document.getElementById("goalN").className = "oddsspil-element-active";
-            document.getElementById("spillereN").className = "oddsspil-element";
+            // document.getElementById("spillereN").className = "oddsspil-element";
         } else if (nav === "spillere") {
             document.getElementById("popular").classList.remove("display");
             document.getElementById("kort").classList.remove("display");
@@ -177,7 +235,7 @@ function StageLeague () {
             document.getElementById("kortN").className = "oddsspil-element";
             document.getElementById("cornerN").className = "oddsspil-element";
             document.getElementById("goalN").className = "oddsspil-element";
-            document.getElementById("spillereN").className = "oddsspil-element-active";
+            // document.getElementById("spillereN").className = "oddsspil-element-active";
         }
       }, [nav])
 
@@ -196,7 +254,7 @@ function StageLeague () {
                             {item.standings.data.map((res) => {
                                 return (
                                     <li key={item.season_id + "-" + randomId}>
-                                        <div className="tabel-top">
+                                        <Link to={"/stage/league?id=" + item.season_id} className="tabel-top">
                                             <p className="tabel-top-h1">{res.name}</p>
                                             <div className="tabel-top-right">
                                                 <div className="tabel-ends">
@@ -215,7 +273,7 @@ function StageLeague () {
                                                     <p className="tabel-h1">FORM</p>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </Link>
                                         <div className="tabel-container">
                                             <ul>
                                                 {res.standings.data.map((thirdRes) => {
@@ -298,7 +356,7 @@ function StageLeague () {
                     }
                     return (
                         <div>
-                            <div className="tabel-top">
+                            <Link to={"/stage/league?id=" + item.season_id} className="tabel-top">
                                 <p className="tabel-top-h1">{liga}</p>
                                 <div className="tabel-top-right">
                                     <div className="tabel-ends">
@@ -317,7 +375,7 @@ function StageLeague () {
                                         <p className="tabel-h1">FORM</p>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                             <div className="tabel-container">
                                 <ul>
                                     {item.standings.data.map((fres) => {
@@ -425,7 +483,7 @@ function StageLeague () {
                         <button className="oddsspil-element" onClick={() => {setNav("kort")}} id="kortN">Resultater</button>
                         <button className="oddsspil-element" onClick={() => {setNav("corner")}} id="cornerN">Tabel</button>
                         <button className="oddsspil-element" onClick={() => {setNav("goal")}} id="goalN">Statistikker</button>
-                        <button className="oddsspil-element" onClick={() => {setNav("spillere")}} id="spillereN">Hold</button>
+                        {/* <button className="oddsspil-element" onClick={() => {setNav("spillere")}} id="spillereN">Hold</button> */}
                     </div>
                     <ul className="match-odds-contain display" id="popular">
                         <div className="team-kampe-section" id="seneste">
@@ -586,7 +644,94 @@ function StageLeague () {
                             {getGroups()}
                         </div>
                     </ul>
-                    <ul className="match-odds-contain" id="goal"></ul>
+                    <ul className="match-odds-contain" id="goal">
+                        <div className="league-stats">
+                            <div className="team-kampe-section" id="startopstilling-div">
+                                <div className="tabel-top" style={{padding: "10px 25px"}}>
+                                    <p className="stat-p-h1">Topscorere</p>
+                                    <div className="stat-ends">
+                                        <p className="stat-p-p">M</p>
+                                        <p className="stat-p-p">S</p>
+                                        <p className="stat-p-p">A</p>
+                                    </div>
+                                </div>
+                                <div className="stage-kampe" id="latest">
+                                    <ul>
+                                    {mostgoals.slice(0,20).map((item, index) => {
+                                        var assists = item.assists;
+                                        if (assists === undefined) {
+                                            assists = 0;
+                                        }
+                                        return (
+                                            <li key={item.player.data.player_id + item.player.data.fullname}>
+                                                <Link className="stat-player-element" to={"/stage/spiller?id=" + item.player.data.player_id}>
+                                                    <div className="stat-player">
+                                                        <p className="stat-player-h1">{index + 1}.</p>
+                                                        <img src={item.player.data.image_path} alt="" className="bench-img-image" />
+                                                        <img src={item.team.data.logo_path} alt="" className="top-img-logo" />
+                                                        <div className="bench-info" style={{paddingLeft: "11px"}}>
+                                                            <p className="bench-h1">{item.player.data.display_name}</p>
+                                                            <p className="bench-h2">{item.player.data.nationality}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="stat-int">
+                                                        <div className="stat-text">
+                                                            <p className="stat-player-p">{item.goals}</p>
+                                                            <p className="stat-player-p">{"(" + item.penalty_goals + ")"}</p>
+                                                            <p className="stat-player-p">{assists}</p>
+                                                        </div>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="team-icon" viewBox="0 0 16 16">
+                                                            <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                                        </svg>
+                                                    </div>
+                                                </Link>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                                </div>
+                            </div>
+                            <div className="team-kampe-section" id="startopstilling-div">
+                                <div className="tabel-top" style={{padding: "10px 25px"}}>
+                                    <p className="stat-p-h1">Uddelte kort</p>
+                                    <div className="stat-ends">
+                                        <p className="stat-p-p">G</p>
+                                        <p className="stat-p-p">R</p>
+                                    </div>
+                                </div>
+                                <div className="stage-kampe" id="latest">
+                                    <ul>
+                                    {mostcards.slice(0,20).map((item, index) => {
+                                        return (
+                                            <li key={item.player.data.player_id + item.player.data.fullname}>
+                                                <Link className="stat-player-element" to={"/stage/spiller?id=" + item.player.data.player_id}>
+                                                    <div className="stat-player">
+                                                        <p className="stat-player-h1">{index + 1}.</p>
+                                                        <img src={item.player.data.image_path} alt="" className="bench-img-image" />
+                                                        <img src={item.team.data.logo_path} alt="" className="top-img-logo" />
+                                                        <div className="bench-info" style={{paddingLeft: "11px"}}>
+                                                            <p className="bench-h1">{item.player.data.display_name}</p>
+                                                            <p className="bench-h2">{item.player.data.nationality}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="stat-int">
+                                                        <div className="stat-text">
+                                                            <p className="stat-player-p">{item.yellowcards}</p>
+                                                            <p className="stat-player-p">{item.redcards}</p>
+                                                        </div>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="team-icon" viewBox="0 0 16 16">
+                                                            <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                                        </svg>
+                                                    </div>
+                                                </Link>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
                     <ul className="match-odds-contain" id="spillere"></ul>
                 </div>
             </div>

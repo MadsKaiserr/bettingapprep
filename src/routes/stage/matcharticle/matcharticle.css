@@ -23,6 +23,12 @@
     display: none;
 }
 
+.league-stats {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
 .match-back {
     padding: 5px;
     width: 40px;
@@ -562,9 +568,9 @@
 }
 
 .tabel-h1 {
-    font-size: 15px;
+    font-size: 13px;
     color: var(--softBlack);
-    font-family: CircularMedium;
+    font-family: CircularBook;
     font-weight: 100;
 }
 
@@ -820,6 +826,14 @@
 .bench-img-logo {
     width: 15px;
     left: 33px;
+    top: 20px;
+    height: 15px;
+    position: absolute;
+}
+
+.top-img-logo {
+    width: 15px;
+    left: 62px;
     top: 20px;
     height: 15px;
     position: absolute;

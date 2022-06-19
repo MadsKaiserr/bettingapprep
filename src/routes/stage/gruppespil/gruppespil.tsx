@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from "axios";
 import { getUser } from "../../../services/authService.ts";
 import { Link } from 'react-router-dom';
+import { getKupon, getString } from "../../../services/algo.js";
 
 import "./gruppespil.css";
  
@@ -168,11 +169,12 @@ function StageGruppespil () {
                             </div>
                         </div>
                         <div className="gruppespil-info">
-                            <div className="gruppespil-title">
+                            <div className="gruppespil-title" id="gruppespil-title">
                                 <h1 className="gruppespil-h1">Dine Kuponer</h1>
+                                <p className="gruppespil-scroll">Scroll for at se flere</p>
                             </div>
                             <div className="spil-loader display" id="stage-loader1"></div>
-                            <div className="gruppespil-kuponer">
+                            <div className="gruppespil-kuponer" id="gruppespil-kuponer">
                                 <ul>
                                     {playerOdds.map((item) => {
                                         var kuponClass = "gruppespil-kupon";
@@ -184,146 +186,55 @@ function StageGruppespil () {
                                         var mstime = new Date().getTime();
                                         var randomNumber = Math.floor(Math.random() * 512);
                                         var randomId = mstime+"-"+randomNumber;
+                                        var afgjort = "Ikke afgjort";
+                                        var afgjortStyle = {color: "var(--red)"};
+                                        if (item.calculated === "true") {
+                                            afgjort = "Alle afgjort";
+                                            afgjortStyle = {color: "var(--green)"};
+                                        }
+
+                                        var dato_string = "";
+                                        var dato_time_string = "";
+                                        var dato_day;
+                                        var dato_month;
+                                        var dato_year;
+
+                                        var dato_minutes;
+                                        var dato_hours;
+                                        if (item.iat !== undefined) {
+                                            dato_minutes = new Date(item.iat).getMinutes();
+                                            dato_hours = new Date(item.iat).getHours();
+                                            dato_time_string = dato_hours + ":" + dato_minutes;
+
+                                            var today_day = new Date().getDate();
+                                            var today_month = new Date().getMonth();
+                                            var today_year = new Date().getFullYear();
+                                            dato_day = new Date(item.iat).getDate();
+                                            dato_month = new Date(item.iat).getMonth();
+                                            dato_year = new Date(item.iat).getFullYear();
+                                            if (today_day === dato_day && today_month === dato_month && today_year === dato_year) {
+                                                dato_string = "I dag, " + dato_time_string;
+                                            } else if ((today_day - 1) === dato_day && today_month === dato_month && today_year === dato_year) {
+                                                dato_string = "I går, " + dato_time_string;
+                                            } else if ((today_day - 2) === dato_day && today_month === dato_month && today_year === dato_year) {
+                                                dato_string = "I forgårs, " + dato_time_string;
+                                            } else {
+                                                dato_string = dato_day + "/" + dato_month + " - " + dato_time_string;
+                                            }
+                                        }
                                         return (
                                             <li key={item.id + "-" + randomId} className="display">
                                                 <div className={kuponClass}>
                                                     <div className="kupon-top">
+                                                        <p className="kupon-left-p">{dato_string}</p>
                                                         <p className="kupon-header-p">Single</p>
+                                                        <p className="kupon-right-p" style={afgjortStyle}>{afgjort}</p>
                                                     </div>
                                                     <ul>
                                                         {item.bets.map((element) => {
                                                             var mstime = new Date().getTime();
                                                             var randomNumber = Math.floor(Math.random() * 512);
                                                             var randomId = mstime+"-"+randomNumber;
-
-                                                            var betType = "Ukendt";
-                                                            var resultType = "";
-                                                            if (element.betType === "3Way Result") {
-                                                                betType = "Kampresultat";
-                                                                resultType = "team";
-                                                            } else if (element.betType === "Team To Score First") {
-                                                                betType = "Første målscorer";
-                                                                resultType = "team";
-                                                            } else if (element.betType === "Double Chance") {
-                                                                betType = "Dobbelt chance";
-                                                                resultType = "teams";
-                                                            } else if (element.betType === "Highest Scoring Half") {
-                                                                betType = "Flest mål i halvleg";
-                                                                resultType = "team";
-                                                            } else if (element.betType === "Both Teams To Score") {
-                                                                betType = "Begge hold scorer";
-                                                                resultType = "answer";
-                                                            } else if (element.betType === "Time Of First Corner") {
-                                                                betType = "";
-                                                                resultType = "Time Of First Corner";
-                                                            } else if (element.betType === "Corner Match Bet") {
-                                                                betType = "Flest hjørnespark";
-                                                                resultType = "team";
-                                                            } else if (element.betType === "A Red Card in the Match") {
-                                                                betType = "Rødt kort i kampen";
-                                                                resultType = "answer";
-                                                            } else if (element.betType === "First Match Corner") {
-                                                                betType = "Første hjørnespark";
-                                                                resultType = "team";
-                                                            } else if (element.betType === "Last Match Corner") {
-                                                                betType = "Sidste hjørnespark";
-                                                                resultType = "team";
-                                                            } else if (element.betType === "Both Teams To Receive 2+ Cards") {
-                                                                betType = "Begge hold modtager 2+ kort";
-                                                                resultType = "answer";
-                                                            } else if (element.betType === "Both Teams To Receive A Card") {
-                                                                betType = "Begge hold mfår kort";
-                                                                resultType = "answer";
-                                                            } else if (element.betType === "First Card Received") {
-                                                                betType = "Første hold, som modtager kort";
-                                                                resultType = "team";
-                                                            } else if (element.betType === "Time Of First Card") {
-                                                                betType = "Første kort inden 33:00";
-                                                                resultType = "answer";
-                                                            } else if (element.betType === "3Way Result 1st Half") {
-                                                                betType = "Kampresultat 1. halvleg";
-                                                                resultType = "team";
-                                                            } else if (element.betType === "Team To Score Last") {
-                                                                betType = "Sidste målscorer";
-                                                                resultType = "team";
-                                                            } else if (element.betType === "3Way Result 2nd Half") {
-                                                                betType = "Kampresultat 2. halvleg";
-                                                                resultType = "team";
-                                                            } else if (element.betType === "Double Chance - 1st Half") {
-                                                                betType = "Dobbelt chance 1. halvleg";
-                                                                resultType = "teams";
-                                                            } else if (element.betType === "Double Chance - 2nd Half") {
-                                                                betType = "Dobbelt chance 2. halvleg";
-                                                                resultType = "teams";
-                                                            } else if (element.betType === "Odd/Even") {
-                                                                betType = "Lige/ulige";
-                                                                resultType = "answer";
-                                                            } else if (element.betType === "Own Goal") {
-                                                                betType = "Selvmål";
-                                                                resultType = "answer";
-                                                            } else if (element.betType === "Clean Sheet - Home") {
-                                                                betType = "Clean sheet " + element.hometeam;
-                                                                resultType = "answer";
-                                                            } else if (element.betType === "Clean Sheet - Away") {
-                                                                betType = "Clean sheet " + element.visitorteam;
-                                                                resultType = "answer";
-                                                            } else if (element.betType === "2-Way Corners") {
-                                                                betType = "";
-                                                                resultType = "2-Way Corners";
-                                                            }
-
-                                                            var resultString = "Ukendt";
-                                                            if (resultType === "team") {
-                                                                if (element.result === "0") {
-                                                                    resultString = element.hometeam;
-                                                                } else if (element.result === "1") {
-                                                                    if (betType === "Første målscorer") {
-                                                                        resultString = "Ingen mål";
-                                                                    } else if (betType === "Kampresultat" || betType === "Kampresultat - 1. halvleg") {
-                                                                        resultString = "Uafgjort";
-                                                                    } else if (betType === "Første kort") {
-                                                                        resultString = "Ingen kort";
-                                                                    } else {
-                                                                        resultString = element.result;
-                                                                    }
-                                                                } else if (element.result === "2") {
-                                                                    resultString = element.visitorteam;
-                                                                }
-                                                            } else if (resultType === "2-Way Corners") {
-                                                                if (element.result === "0") {
-                                                                    resultString = "Over 9.5 hjørnespark";
-                                                                } else {
-                                                                    resultString = "Under 9.5 hjørnespark";
-                                                                }
-                                                            } else if (resultType === "teams") {
-                                                                if (element.result === "0") {
-                                                                    resultString = element.hometeam + " eller uafgjort";
-                                                                } else if (element.result === "1") {
-                                                                    resultString = "Uafgjort eller " + element.visitorteam;
-                                                                } else if (element.result === "2") {
-                                                                    resultString = element.hometeam+ " eller " + element.visitorteam;
-                                                                }
-                                                            } else if (resultType === "Time Of First Corner") {
-                                                                if (element.result === "0") {
-                                                                    resultString = "Første hjørnespark inden 7:00";
-                                                                } else {
-                                                                    resultString = "Ingen hjørnespark inden 7:00";
-                                                                }
-                                                            } else if (resultType === "Both Teams To Score") {
-                                                                if (element.result === "0") {
-                                                                    resultString = "Begge hold scorer";
-                                                                } else {
-                                                                    resultString = "Begge hold scorer ikke";
-                                                                }
-                                                            } else if (resultType === "none") {
-                                                                resultString = "";
-                                                            } else if (resultType === "answer") {
-                                                                if (element.result === "0") {
-                                                                    resultString = "Ja";
-                                                                } else {
-                                                                    resultString = "Nej";
-                                                                }
-                                                            }
 
                                                             var returnDate = new Date(element.bet_date*1000);
                                                             var returnMinutes = "" + returnDate.getMinutes();
@@ -347,9 +258,21 @@ function StageGruppespil () {
                                                                 returnDay = "I dag";
                                                             }
 
+                                                            var kuponStyle = {};
+                                                            if (item.wins !== undefined && item.calculated === "true") {
+                                                                var winIndex = item.wins.findIndex(obj => obj.game === element.game && element.betType === obj.type);
+                                                                if (winIndex >= 0) {
+                                                                    kuponStyle = {borderLeft: "4px var(--green) solid"};
+                                                                } else {
+                                                                    kuponStyle = {borderLeft: "4px var(--red) solid"};
+                                                                }
+                                                            } else if (item.calculated === "true") {
+                                                                kuponStyle = {borderLeft: "4px var(--red) solid"};
+                                                            }
+
                                                             return (
                                                                 <li key={randomId} className="display">
-                                                                    <div className="kupon-container">
+                                                                    <Link to={"/stage/match?game=" + element.game} className="kupon-container" style={kuponStyle}>
                                                                         <div className="kupon-divider-first"></div>
                                                                         <div className="bet-top">
                                                                             <p className="kupon-top-p">Dit væddemål</p>
@@ -358,12 +281,12 @@ function StageGruppespil () {
                                                                         <div className="kupon-divider"></div>
                                                                         <div className="kupon-info">
                                                                             <p className="kupon-h1">{element.hometeam} - {element.visitorteam}</p>
-                                                                            <p className="kupon-p">{betType}: <span className="weight600">{resultString}</span></p>
+                                                                            <p className="kupon-p">{getKupon(element.betType,element.hometeam,element.visitorteam)}: <span className="weight600">{getString(element.betType,element.result,element.hometeam,element.visitorteam)}</span></p>
                                                                         </div>
                                                                         <div className="kupon-odds">
                                                                             <p className="kupon-h2">{(Number(element.probability)).toFixed(2)}</p>
                                                                         </div>
-                                                                    </div>
+                                                                    </Link>
                                                                 </li>
                                                                 );
                                                             }

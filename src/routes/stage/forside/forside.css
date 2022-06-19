@@ -173,6 +173,26 @@
   transition: 0.3s;
 }
 
+.kupon-left-p {
+  font-family: CircularLight;
+  color: var(--softBlack);
+  font-size: 13px;
+  font-weight: 100;
+  position: absolute;
+  top: 11.5px;
+  left: 15px;
+}
+
+.kupon-right-p {
+  font-family: CircularLight;
+  color: var(--softBlack);
+  font-size: 13px;
+  font-weight: 100;
+  position: absolute;
+  top: 11.5px;
+  right: 15px;
+}
+
 .kupon-blue-p {
   font-family: CircularLight;
   color: var(--primary);
@@ -197,12 +217,92 @@
   border-radius: 2px;
   width: 21.3%;
   top: 210px;
+  z-index: 99999999;
   min-width: 260px;
   min-height: 150px;
   max-width: 400px;
   vertical-align: top;
   box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
   position: fixed;
+}
+
+.stat-player-element {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 15px;
+  position: relative;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.stat-player-element:hover {
+  background-color: var(--surface);
+}
+
+.stat-player-p {
+  color: var(--softBlack);
+  font-size: 13px;
+  opacity: 0.8;
+  text-align: center;
+  width: 20px;;
+  font-family: CircularBook;
+}
+
+.stat-p-h1 {
+    font-family: CircularBook;
+    font-weight: 100;
+    font-size: 16px;
+    color: var(--softBlack);
+}
+
+.stat-p-p {
+  font-family: CircularBook;
+  font-weight: 100;
+  text-align: center;
+  font-size: 13px;
+  width: 20px;
+  color: var(--softBlack);
+}
+
+.stat-ends {
+  padding-right: 25px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-direction: row;
+  opacity: 0.9;
+}
+
+.stat-player-h1 {
+  color: var(--softBlack);
+  font-size: 15px;
+  text-align: center;
+  width: 20px;;
+  font-family: CircularBook;
+}
+
+.stat-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat-player {
+  display: flex;
+  align-items: center;
+}
+
+.stat-int {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.stage-ul {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .stage-kampe-top-calendar {
@@ -375,9 +475,9 @@
 
 .kupon-container {
   background-color: var(--surface);
-  border-radius: 3px;
   position: relative;
   width: 100%;
+  display: block;
 }
 
 .kupon-divider {
