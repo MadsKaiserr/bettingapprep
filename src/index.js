@@ -37,7 +37,7 @@ import Headerfix from './components/fix/headerfix.tsx';
 import Stagefix from './components/fix/stagefix.tsx';
 import Message from './services/message/message.tsx';
 import Login from './services/login/login.jsx';
-import Reno from './components/reno.tsx';
+// import Reno from './components/reno.tsx';
 
 import StageHeader from './components/reusables/stageHeader.jsx';
 import StageForside from './routes/stage/forside/forside.tsx';
@@ -83,9 +83,9 @@ ReactDOM.render(
             </Route>
           </Route>
 
-          <Route exact path="/kontakt" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
-          <Route exact path="/kom-igang" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
-          <Route exact path="/dyster" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
+          <Route exact path="/kontakt" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="renoKey" />]} />
+          <Route exact path="/kom-igang" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="renoKey" />]} />
+          <Route exact path="/dyster" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="renoKey" />]} />
 
           <Route exact path="/start" element={[<ClearHeader key="clearheaderKey" />, <Start key="startKey" />]} />
           <Route exact path="/about" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <About key="aboutKey" />]} />
@@ -97,10 +97,10 @@ ReactDOM.render(
           <Route exact path="/betingelser" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Betingelser key="betingelserKey" />]} />
           <Route exact path="/privatliv" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Privat key="privatKey" />]} />
 
-          <Route exact path="/blog" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
-          <Route exact path="/blog/nyeste" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
-          <Route exact path="/blog/emner" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
-          <Route exact path="/blog/tips" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
+          <Route exact path="/blog" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="renoKey" />]} />
+          <Route exact path="/blog/nyeste" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="renoKey" />]} />
+          <Route exact path="/blog/emner" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="renoKey" />]} />
+          <Route exact path="/blog/tips" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="renoKey" />]} />
           <Route exact path="/blog/*" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="404Key" />]} />
         
           <Route element={<RequireAuth />}>
