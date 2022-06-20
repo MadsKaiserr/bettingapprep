@@ -37,7 +37,7 @@ import Headerfix from './components/fix/headerfix.tsx';
 import Stagefix from './components/fix/stagefix.tsx';
 import Message from './services/message/message.tsx';
 import Login from './services/login/login.jsx';
-import Reno from './components/reno.jsx';
+import Reno from './components/reno.tsx';
 
 import StageHeader from './components/reusables/stageHeader.jsx';
 import StageForside from './routes/stage/forside/forside.tsx';
