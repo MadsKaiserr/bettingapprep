@@ -59,7 +59,7 @@ import './assets/fonts/Montserrat-Regular.ttf';
 
 import RequireAuth from "./services/RequireAuth";
 import AdminAuth from "./services/AdminAuth.tsx";
-import N404 from './components/N404.tsx';
+import N404 from './components/reusables/N404.tsx';
 
 
 ReactDOM.render(
