@@ -186,9 +186,105 @@ function StageNotifikationer () {
                         return (
                         <li key={noti.id}>
                             <div className="noti-section-success">
-                                <p className="noti-sec-h1">Væddemål vundet</p>
-                                <p className="noti-sec-p">Du har vundet et væddemål, som havde en <span className="noti-span">udbetaling: {noti.udbetaling} kr.</span></p>
-                                <p className="noti-sec-dato">{returnDate+"/"+returnMonth+"/"+calcDate.getFullYear()+" - "+returnHours+":"+returnMinutes}</p>
+                                <div className="noti-left">
+                                    <p className="noti-sec-h1">Væddemål vundet</p>
+                                    <p className="noti-sec-p">Du har vundet et væddemål, som havde en <span className="noti-span">udbetaling: {noti.udbetaling} kr.</span></p>
+                                    <p className="noti-sec-dato">{dato_time_string}</p>
+                                </div>
+                                <ul className="noti-right">
+                                    {noti.kupon.map((item) => {
+                                        var mstime = new Date().getTime();
+                                        var randomNumber = Math.floor(Math.random() * 512);
+                                        var randomId = mstime+"-"+randomNumber;
+                                        return (
+                                            <li key={item.id + "-" + randomId} className="display">
+                                                <div className="noti-kupon">
+                                                    <div className="kupon-top">
+                                                        <p className="kupon-header-p">Single</p>
+                                                    </div>
+                                                    <ul>
+                                                        {item.bets.map((element) => {
+                                                            var mstime = new Date().getTime();
+                                                            var randomNumber = Math.floor(Math.random() * 512);
+                                                            var randomId = mstime+"-"+randomNumber;
+
+                                                            var returnDate = new Date(element.bet_date*1000);
+                                                            var returnMinutes = "" + returnDate.getMinutes();
+                                                            if ((returnMinutes.toString()).length < 2) {
+                                                                returnMinutes = "0" + returnMinutes;
+                                                            }
+
+                                                            var returnHours = "" + returnDate.getHours();
+                                                            if ((returnHours.toString()).length < 2) {
+                                                                returnHours = "0" + returnHours;
+                                                            }
+
+                                                            var returnDay = "";
+                                                            if (new Date().getDate() !== returnDate.getDate()) {
+                                                                var returnMonth = "" + returnDate.getMonth();
+                                                                if ((returnMonth.toString()).length < 2) {
+                                                                    returnMonth = "0" + returnMonth;
+                                                                }
+                                                                returnDay = returnDate.getDate() + "/" + returnMonth + " - ";
+                                                            } else {
+                                                                returnDay = "I dag";
+                                                            }
+
+                                                            var kuponStyle = {};
+                                                            console.log(item.wins, item.calculated)
+                                                            if (item.wins !== undefined) {
+                                                                var winIndex = item.wins.findIndex(obj => obj.game === element.game && element.betType === obj.type && element.result === obj.result);
+                                                                if (winIndex >= 0) {
+                                                                    kuponStyle = {borderLeft: "4px var(--green) solid"};
+                                                                } else {
+                                                                    kuponStyle = {borderLeft: "4px var(--red) solid"};
+                                                                }
+                                                            } else if (item.calculated === "true") {
+                                                                kuponStyle = {borderLeft: "4px var(--red) solid"};
+                                                            }
+
+                                                            return (
+                                                                <li key={randomId} className="display">
+                                                                    <Link to={"/stage/match?game=" + element.game} className="kupon-container" style={kuponStyle}>
+                                                                        <div className="kupon-divider-first"></div>
+                                                                        <div className="bet-top">
+                                                                            <p className="kupon-top-p">Dit væddemål</p>
+                                                                            <p className="kupon-top-p">{returnDay} {returnHours}:{returnMinutes}</p>
+                                                                        </div>
+                                                                        <div className="kupon-divider"></div>
+                                                                        <div className="kupon-info">
+                                                                            <p className="kupon-h1">{element.hometeam} - {element.visitorteam}</p>
+                                                                            <p className="kupon-p">{getKupon(element.betType,element.hometeam,element.visitorteam)}: <span className="weight600">{getString(element.betType,element.result,element.hometeam,element.visitorteam)}</span></p>
+                                                                        </div>
+                                                                        <div className="kupon-odds">
+                                                                            <p className="kupon-h2">{(Number(element.probability)).toFixed(2)}</p>
+                                                                        </div>
+                                                                    </Link>
+                                                                </li>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </ul>
+                                                    <div className="kupon-bottom">
+                                                        <div className="kupon-bottom-info">
+                                                            <p className="kupon-bottom-info-p">Total indsats</p>
+                                                            <p className="kupon-bottom-info-p-right">{item.indsats},00 kr.</p><br />
+                                                            <p className="kupon-bottom-info-p">Total odds</p>
+                                                            <p className="kupon-bottom-info-p-right">{(Number(item.fullProb)).toFixed(2)}</p>
+                                                        </div>
+                                                        <div className="kupon-confirm">
+                                                            <div className="kupon-confirm-div">
+                                                                <p className="kupon-confirm-p">Udbetaling:</p>
+                                                                <p className="kupon-confirm-h1">{(item.indsats * item.fullProb).toFixed(2)} kr.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            );
+                                        }
+                                    )}
+                                </ul>
                             </div>
                         </li>
                     );
@@ -196,9 +292,104 @@ function StageNotifikationer () {
                         return (
                         <li key={noti.id}>
                             <div className="noti-section-error">
-                                <p className="noti-sec-h1">Væddemål tabt</p>
-                                <p className="noti-sec-p">Du har tabt din væddemål <span className="noti-span">nummer: {noti.odds}</span>.</p>
-                                <p className="noti-sec-dato">{returnDate+"/"+returnMonth+"/"+calcDate.getFullYear()+" - "+returnHours+":"+returnMinutes}</p>
+                                <div className="noti-left">
+                                    <p className="noti-sec-h1">Væddemål tabt</p>
+                                    <p className="noti-sec-p">Du har tabt din væddemål <span className="noti-span">nummer: {noti.odds}</span>.</p>
+                                    <p className="noti-sec-dato">{dato_time_string}</p>
+                                </div>
+                                <ul className="noti-right">
+                                    {noti.kupon.map((item) => {
+                                        var mstime = new Date().getTime();
+                                        var randomNumber = Math.floor(Math.random() * 512);
+                                        var randomId = mstime+"-"+randomNumber;
+                                        return (
+                                            <li key={item.id + "-" + randomId} className="display">
+                                                <div className="noti-kupon">
+                                                    <div className="kupon-top">
+                                                        <p className="kupon-header-p">Single</p>
+                                                    </div>
+                                                    <ul>
+                                                        {item.bets.map((element) => {
+                                                            var mstime = new Date().getTime();
+                                                            var randomNumber = Math.floor(Math.random() * 512);
+                                                            var randomId = mstime+"-"+randomNumber;
+
+                                                            var returnDate = new Date(element.bet_date*1000);
+                                                            var returnMinutes = "" + returnDate.getMinutes();
+                                                            if ((returnMinutes.toString()).length < 2) {
+                                                                returnMinutes = "0" + returnMinutes;
+                                                            }
+
+                                                            var returnHours = "" + returnDate.getHours();
+                                                            if ((returnHours.toString()).length < 2) {
+                                                                returnHours = "0" + returnHours;
+                                                            }
+
+                                                            var returnDay = "";
+                                                            if (new Date().getDate() !== returnDate.getDate()) {
+                                                                var returnMonth = "" + returnDate.getMonth();
+                                                                if ((returnMonth.toString()).length < 2) {
+                                                                    returnMonth = "0" + returnMonth;
+                                                                }
+                                                                returnDay = returnDate.getDate() + "/" + returnMonth + " - ";
+                                                            } else {
+                                                                returnDay = "I dag";
+                                                            }
+
+                                                            var kuponStyle = {};
+                                                            if (item.wins !== undefined) {
+                                                                var winIndex = item.wins.findIndex(obj => obj.game === element.game && element.betType === obj.type && element.result === obj.result);
+                                                                if (winIndex >= 0) {
+                                                                    kuponStyle = {borderLeft: "4px var(--green) solid"};
+                                                                } else {
+                                                                    kuponStyle = {borderLeft: "4px var(--red) solid"};
+                                                                }
+                                                            } else if (item.calculated === "true") {
+                                                                kuponStyle = {borderLeft: "4px var(--red) solid"};
+                                                            }
+
+                                                            return (
+                                                                <li key={randomId} className="display">
+                                                                    <Link to={"/stage/match?game=" + element.game} className="kupon-container" style={kuponStyle}>
+                                                                        <div className="kupon-divider-first"></div>
+                                                                        <div className="bet-top">
+                                                                            <p className="kupon-top-p">Dit væddemål</p>
+                                                                            <p className="kupon-top-p">{returnDay} {returnHours}:{returnMinutes}</p>
+                                                                        </div>
+                                                                        <div className="kupon-divider"></div>
+                                                                        <div className="kupon-info">
+                                                                            <p className="kupon-h1">{element.hometeam} - {element.visitorteam}</p>
+                                                                            <p className="kupon-p">{getKupon(element.betType,element.hometeam,element.visitorteam)}: <span className="weight600">{getString(element.betType,element.result,element.hometeam,element.visitorteam)}</span></p>
+                                                                        </div>
+                                                                        <div className="kupon-odds">
+                                                                            <p className="kupon-h2">{(Number(element.probability)).toFixed(2)}</p>
+                                                                        </div>
+                                                                    </Link>
+                                                                </li>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </ul>
+                                                    <div className="kupon-bottom">
+                                                        <div className="kupon-bottom-info">
+                                                            <p className="kupon-bottom-info-p">Total indsats</p>
+                                                            <p className="kupon-bottom-info-p-right">{item.indsats},00 kr.</p><br />
+                                                            <p className="kupon-bottom-info-p">Total odds</p>
+                                                            <p className="kupon-bottom-info-p-right">{(Number(item.fullProb)).toFixed(2)}</p>
+                                                        </div>
+                                                        <div className="kupon-confirm">
+                                                            <div className="kupon-confirm-div">
+                                                                <p className="kupon-confirm-p">Udbetaling:</p>
+                                                                <p className="kupon-confirm-h1">{(item.indsats * item.fullProb).toFixed(2)} kr.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            );
+                                        }
+                                    )}
+                                </ul>
                             </div>
                         </li>
                     );

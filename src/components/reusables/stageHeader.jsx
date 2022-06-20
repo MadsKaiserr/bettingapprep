@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getUser, resetUserSession } from "../../services/authService.ts";
 import { Link, Navigate } from 'react-router-dom';
 import jwtDecode from "jwt-decode";
+import {InstantSearch, SearchBox, Hits} from "react-instantsearch/dom";
+import algoliasearch from 'algoliasearch/lite';
 
 import '../main.css';
 import logo from '../../assets/img/premierleague.png';
@@ -10,6 +12,11 @@ import flag from '../../assets/img/danmark.png';
 import england from '../../assets/img/england.png';
  
 function StageHeader () {
+
+    const searchClient = algoliasearch(
+        'OY1FZUYYG8',
+        '45fbfc95b1c0078ce5f8591b7a5f886b'
+    );
 
     const [dataLoad, setDataLoad] = useState(false);
     const user = getUser();
@@ -67,6 +74,18 @@ function StageHeader () {
         header.classList.toggle("normalHeader", window.scrollY >0);
     })
 
+    function Hit(props) {
+        return (
+          <div onClick={() => {window.open(props.hit.url, "_SELF");}} className="hit-elem">
+            <img src={props.hit.img} alt="" className="hit-img" />
+            <div className="hit-info">
+                <p className="hit-h1">{props.hit.klub}</p>
+                <p className="hit-h2">{props.hit.land}</p>
+            </div>
+          </div>
+        );
+      }
+
     return (
         <>
             <div className="nav-bar-stage">
@@ -84,6 +103,19 @@ function StageHeader () {
                                     <p className="user-element-p">Engelsk</p>
                                 </div>
                             </div>
+                        </div>
+                        <div className="nav-search">
+                            <InstantSearch searchClient={searchClient} indexName="dev_bettingapp">
+                                <div className="search-el">
+                                    <SearchBox onClick={() => {document.getElementById("nav-hits").classList.add("display");document.getElementById("hits-close").classList.add("display")}} translations={{placeholder: "Søg"}}></SearchBox>
+                                    <svg xmlns="http://www.w3.org/2000/svg" id="hits-close" onClick={() => {document.getElementById("nav-hits").classList.remove("display");document.getElementById("hits-close").classList.remove("display")}} className="hits-close" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                    </svg>
+                                </div>
+                                <div className="nav-hits" id="nav-hits">
+                                    <Hits hitComponent={Hit} />
+                                </div>
+                            </InstantSearch>
                         </div>
                     </div>
                     <Link to="/stage">
@@ -147,7 +179,7 @@ function StageHeader () {
                         <Link to="/stage/faq" className="nav-p-stage">FAQ</Link>
                     </div>
                     <div className="nav-link-container">
-                        <Link to="" className="nav-p-stage">Blog</Link>
+                        <Link to="/blog" className="nav-p-stage">Blog</Link>
                     </div>
                 </div>
             </div>

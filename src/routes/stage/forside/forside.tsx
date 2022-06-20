@@ -382,14 +382,13 @@ function StageForside () {
         }
     }
 
-    function multiFetch(l,checkArray, calcUdbetaling, odd_ids, k) {
+    function multiFetch(l,checkArray, calcUdbetaling, odd_ids, k, kupon) {
         var activeGame = localStorage.getItem("activeGame");
         const requestConfig = {
             headers: {
                 "x-api-key": process.env.REACT_APP_API_SECRET
             }
         }
-
         fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+odd_ids+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=odds&bookmakers=2&tz=Europe/Copenhagen")
         .then(response => response.json())
         .then(function (result) {
@@ -420,6 +419,7 @@ function StageForside () {
                         playerIndex: parseInt(k),
                         udbetaling: Number(Number(parseFloat(calcUdbetaling)).toFixed(2)),
                         odds: parseInt(l),
+                        kupon: kupon,
                         wins: winsArray
                     }
                     axios.patch(betCalcURL, winBody, requestConfig).then(responseTem => {
@@ -438,6 +438,7 @@ function StageForside () {
                         game: activeGame,
                         playerIndex: parseInt(k),
                         odds: parseInt(l),
+                        kupon: kupon,
                         wins: winsArray
                     }
             
@@ -499,8 +500,8 @@ function StageForside () {
                                 odd_ids = odd_ids + "," + oddId;
                             }
                         }
-
-                        multiFetch(l,checkArray,calcUdbetaling,odd_ids,k);
+                        var kupon = response.data.players[k].odds[l];
+                        multiFetch(l,checkArray,calcUdbetaling,odd_ids,k,kupon);
                     } else {
                         console.log("Ikke started, eller allerede beregnet: ", response.data.players[k].odds[l].bets[0].hometeam);
                     }

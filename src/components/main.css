@@ -93,9 +93,133 @@
 .nav-flag-container {
   display: inline-block;
   position: absolute;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: row;
   left: 5%;
   top: 0px;
   margin-top: calc((85px - 32px)/2);
+}
+
+.ais-Hits {
+  background-color: #fff;
+  z-index: 17;
+  opacity: 1;
+  position: relative;
+}
+
+.hits-close {
+  width: 27px;
+  display: none;
+  padding: 2px;
+  height: 27px;
+  fill: var(--secondary);
+  border-radius: 50%;
+  transition: 0.1s;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.search-el {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.hits-close:hover {
+  background-color: rgba(24, 30, 47, 0.1);
+}
+
+.ais-SearchBox-input {
+  background-color: var(--stageSurface);
+  border: 0px;
+  box-shadow: rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 16%) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px;
+  border-radius: 3px;
+  height: 37px;
+  padding: 0px 15px;
+  color: var(--softBlack);
+  font-weight: 400;
+  font-family: Open Sans;
+  font-size: 14px;
+  margin-left: 20px;
+}
+
+.ais-Hits-list {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+.nav-hits {
+  width: 1900px;
+  margin-left: -70px;
+  position: absolute;
+  left: 0;
+  top: 80px;
+  background-color: #fff;
+  z-index: 19;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 500px;
+  padding-bottom: 20px;
+  display: none;
+}
+
+.hit-elem {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  transition: 0.2s;
+  padding: 10px 130px;
+}
+
+.hit-elem:hover {
+  background-color: var(--stageSurface);
+}
+
+.ais-Hits-item {
+  width: 100%;
+  text-align: left !important;
+}
+
+.hit-h1 {
+  font-size: 18px;
+  font-weight: 100;
+  font-family: CircularBook;
+  color: var(--softBlack)
+}
+
+.hit-h2 {
+  font-size: 14px;
+  font-weight: 100;
+  font-family: CircularLight;
+  color: var(--softBlack);
+  opacity: 0.8;
+}
+
+.hit-info {
+  display: flex;
+  align-items: left;
+  flex-direction: column;
+}
+
+.hit-img {
+  height: 30px;
+  width: 30px;
+  margin-right: 20px;
+}
+
+.ais-SearchBox-submit {
+  display: none;
+}
+
+.ais-SearchBox-reset {
+  display: none;
 }
 
 .header-fix {
@@ -752,6 +876,12 @@
   line-height: 60px;
   padding-top: 10px;
   padding-bottom: 20px;
+}
+
+.nav-test {
+  width: 200px;
+  height: 50px;
+  background-color: red;
 }
 
 .n404-container {

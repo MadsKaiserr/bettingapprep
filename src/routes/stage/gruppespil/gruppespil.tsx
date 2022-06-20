@@ -260,7 +260,7 @@ function StageGruppespil () {
 
                                                             var kuponStyle = {};
                                                             if (item.wins !== undefined && item.calculated === "true") {
-                                                                var winIndex = item.wins.findIndex(obj => obj.game === element.game && element.betType === obj.type);
+                                                                var winIndex = item.wins.findIndex(obj => obj.game === element.game && element.betType === obj.type && element.result === obj.result);
                                                                 if (winIndex >= 0) {
                                                                     kuponStyle = {borderLeft: "4px var(--green) solid"};
                                                                 } else {

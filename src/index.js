@@ -83,10 +83,13 @@ ReactDOM.render(
             </Route>
           </Route>
 
+          <Route exact path="/kontakt" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
+          <Route exact path="/kom-igang" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
+          <Route exact path="/dyster" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
+
           <Route exact path="/start" element={[<ClearHeader key="clearheaderKey" />, <Start key="startKey" />]} />
           <Route exact path="/about" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <About key="aboutKey" />]} />
           <Route exact path="/signup" element={[<ClearHeader key="clearheaderKey" />, <Signup key="signupKey" />]} />
-          <Route exact path="/kontakt" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Kontakt key="kontaktKey" />]} />
           <Route exact path="/gruppespil" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Gruppespil key="gruppespilKey" />]} />
           <Route exact path="/gruppesession" element={[<Header key="headerKey" />, <Gruppesession key="gruppesessionKey" />]} />
           <Route exact path="/priser" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Priser key="priserKey" />]} />
