@@ -217,7 +217,7 @@
   border-radius: 2px;
   width: 21.3%;
   top: 210px;
-  z-index: 99999999;
+  z-index: 7;
   min-width: 260px;
   min-height: 150px;
   max-width: 400px;
@@ -1101,14 +1101,14 @@
   display: block;
   border-left: 7px var(--red) solid;
   border-radius: 3px;
-  z-index: 9999999;
+  z-index: 7;
 }
 
 .message-success {
   background-color: #fff;
   position: fixed;
   display: block;
-  z-index: 9999999;
+  z-index: 7;
   right: 40px;
   bottom: 30px;
   border-left: 7px var(--green) solid;
@@ -1118,7 +1118,7 @@
 .message-p {
   padding: 25px 30px;
   padding-right: 90px !important;
-  z-index: 9999999;
+  z-index: 7;
   font-size: 15px;
   color: var(--secondary);
   font-family: CircularLight;

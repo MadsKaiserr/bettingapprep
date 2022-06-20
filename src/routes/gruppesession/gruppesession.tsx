@@ -298,12 +298,13 @@ function Gruppesession() {
                         <div className="gruppespil-table">
                             <div className="gruppespil-table-top">
                                 <p className="gruppespil-table-title gruppetable-navn">NAVN</p>
-                                <p className="gruppespil-table-title gruppetable-number">VÆDDEMÅL</p>
+                                <p className="gruppespil-table-title gruppetable-number" id="table-anv">VÆDDEMÅL</p>
                                 <p className="gruppespil-table-title gruppetable-kapital">KAPITAL</p>
-                                <p className="gruppespil-table-title gruppetable-number">AKTIVE VÆDDEMÅL</p>
+                                <p className="gruppespil-table-title gruppetable-number" id="table-av">AKTIVE VÆDDEMÅL</p>
                             </div>
                             <ul>
                                 {tableArray.map((item, index) => {
+                                    console.log(item)
                                     var kapital = item.info.money;
                                     if ((kapital % 1) === 0) {
                                         kapital = kapital + ",00";
@@ -320,15 +321,22 @@ function Gruppesession() {
                                         medlemsskab = "gruppespil-table-medlemsskab-silver";
                                     }
 
+                                    var aktive = 0;
+                                    for (var w in item.odds) {
+                                        if (item.odds[w].calculated === "false") {
+                                            aktive = aktive + 1;
+                                        }
+                                    }
+
                                     return (
                                         <li key={item.player}>
                                             <div className="gruppespil-table-row">
                                                 <p className="gruppespil-table-place gruppetable-place">{index + 1}</p>
                                                 <div className={medlemsskab}></div>
                                                 <p className="gruppespil-table-h1 gruppetable-el-navn">{item.player}</p>
-                                                <p className="gruppespil-table-p gruppetable-number">{item.odds.length}</p>
+                                                <p className="gruppespil-table-p gruppetable-number" id="table-anv-data">{item.odds.length}</p>
                                                 <p className="gruppespil-table-p gruppetable-kapital">{kapital} kr.</p>
-                                                <p className="gruppespil-table-p gruppetable-number">?</p>
+                                                <p className="gruppespil-table-p gruppetable-number" id="table-av-data">{aktive}</p>
                                             </div>
                                         </li>
                                         );

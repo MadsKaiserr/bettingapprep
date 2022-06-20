@@ -116,7 +116,7 @@
   left: 0;
   top: 65px;
   display: none;
-  z-index: 9999;
+  z-index: 12;
   width: 100%;
   background-color: #fff;
   border-radius: 3px;

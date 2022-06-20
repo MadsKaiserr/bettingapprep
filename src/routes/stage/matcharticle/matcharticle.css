@@ -751,7 +751,7 @@
     align-items: center;
     justify-content: flex-start;
     flex-direction: row;
-    z-index: 99;
+    z-index: 7;
     opacity: 1;
     position: relative;
     height: 100%;

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from "axios";
+import { getKupon, getString } from "../../../services/algo.js";
 
 import "./notifikationer.css";
  
@@ -25,6 +26,7 @@ function StageNotifikationer () {
             }
             console.log("API REQUEST");
             axios.get(URL, requestConfigen).then(response => {
+                console.log(response);
                 for (var i in response.data.players) {
                     if (response.data.players[i].player === localStorage.getItem("email")) {
                         setItems(response.data.players[i].info.notifikationer);
@@ -57,31 +59,126 @@ function StageNotifikationer () {
                 <p className="nogames display left" style={{paddingTop: "15px"}}>{errorText}</p>
                 <div className="spil-loader display" id="stage-loader1"></div>
                 {items.slice(0).reverse().map(noti => {
-                    var calcDate = new Date(noti.date);
-                    var returnHours = "" + calcDate.getHours();
-                    if ((returnHours.toString()).length < 2) {
-                        returnHours = "0" + returnHours;
-                    }
-                    var returnMinutes = "" + calcDate.getMinutes();
-                    if ((returnMinutes.toString()).length < 2) {
-                        returnMinutes = "0" + returnMinutes;
-                    }
-                    var returnMonth = "" + calcDate.getMonth();
-                    if ((returnMonth.toString()).length < 2) {
-                        returnMonth = "0" + returnMonth;
-                    }
-                    var returnDate = "" + calcDate.getDate();
-                    if ((returnDate.toString()).length < 2) {
-                        returnDate = "0" + returnDate;
+                    var dato_string = "";
+                    var dato_time_string = "";
+                    var dato_day;
+                    var dato_month;
+                    var dato_year;
+
+                    var dato_minutes;
+                    var dato_hours;
+                    if (noti.date !== undefined) {
+                        dato_minutes = new Date(noti.date).getMinutes();
+                        dato_hours = new Date(noti.date).getHours();
+                        dato_time_string = dato_hours + ":" + dato_minutes;
+
+                        var today_day = new Date().getDate();
+                        var today_month = new Date().getMonth();
+                        var today_year = new Date().getFullYear();
+                        dato_day = new Date(noti.date).getDate();
+                        dato_month = new Date(noti.date).getMonth();
+                        dato_year = new Date(noti.date).getFullYear();
+                        if (today_day === dato_day && today_month === dato_month && today_year === dato_year) {
+                            dato_string = "I dag, " + dato_time_string;
+                        } else if ((today_day - 1) === dato_day && today_month === dato_month && today_year === dato_year) {
+                            dato_string = "I går, " + dato_time_string;
+                        } else if ((today_day - 2) === dato_day && today_month === dato_month && today_year === dato_year) {
+                            dato_string = "I forgårs, " + dato_time_string;
+                        } else {
+                            dato_string = dato_day + "/" + dato_month + " - " + dato_time_string;
+                        }
                     }
 
                     if (noti.type === "bet_place") {
                         return (
                         <li key={noti.id}>
                             <div className="noti-section">
-                                <p className="noti-sec-h1">Du har placeret en kupon</p>
-                                <p className="noti-sec-p">Du har gennemført et køb af en kupon, som med en <span className="noti-span">indsats: {noti.indsats} kr.</span> giver dig en <span className="noti-span">udbetaling: {parseInt(parseFloat(noti.indsats)*parseFloat(noti.fullProb))} kr.</span> hvis du vinder.</p>
-                                <p className="noti-sec-dato">{returnDate+"/"+returnMonth+"/"+calcDate.getFullYear()+" - "+returnHours+":"+returnMinutes}</p>
+                                <div className="noti-left">
+                                    <p className="noti-sec-h1">Du har placeret en kupon</p>
+                                    <p className="noti-sec-p">Du har gennemført et køb af en kupon, som med en <span className="noti-span">indsats: {noti.indsats} kr.</span> giver dig en <span className="noti-span">udbetaling: {parseInt(parseFloat(noti.indsats)*parseFloat(noti.fullProb))} kr.</span> hvis du vinder.</p>
+                                    <p className="noti-sec-dato">{dato_string}</p>
+                                </div>
+                                <ul className="noti-right">
+                                    {noti.kupon.map((item) => {
+                                        var mstime = new Date().getTime();
+                                        var randomNumber = Math.floor(Math.random() * 512);
+                                        var randomId = mstime+"-"+randomNumber;
+                                        return (
+                                            <li key={item.id + "-" + randomId} className="display">
+                                                <div className="noti-kupon">
+                                                    <div className="kupon-top">
+                                                        <p className="kupon-header-p">Single</p>
+                                                    </div>
+                                                    <ul>
+                                                        {item.bets.map((element) => {
+                                                            var mstime = new Date().getTime();
+                                                            var randomNumber = Math.floor(Math.random() * 512);
+                                                            var randomId = mstime+"-"+randomNumber;
+
+                                                            var returnDate = new Date(element.bet_date*1000);
+                                                            var returnMinutes = "" + returnDate.getMinutes();
+                                                            if ((returnMinutes.toString()).length < 2) {
+                                                                returnMinutes = "0" + returnMinutes;
+                                                            }
+
+                                                            var returnHours = "" + returnDate.getHours();
+                                                            if ((returnHours.toString()).length < 2) {
+                                                                returnHours = "0" + returnHours;
+                                                            }
+
+                                                            var returnDay = "";
+                                                            if (new Date().getDate() !== returnDate.getDate()) {
+                                                                var returnMonth = "" + returnDate.getMonth();
+                                                                if ((returnMonth.toString()).length < 2) {
+                                                                    returnMonth = "0" + returnMonth;
+                                                                }
+                                                                returnDay = returnDate.getDate() + "/" + returnMonth + " - ";
+                                                            } else {
+                                                                returnDay = "I dag";
+                                                            }
+
+                                                            return (
+                                                                <li key={randomId} className="display">
+                                                                    <Link to={"/stage/match?game=" + element.game} className="kupon-container">
+                                                                        <div className="kupon-divider-first"></div>
+                                                                        <div className="bet-top">
+                                                                            <p className="kupon-top-p">Dit væddemål</p>
+                                                                            <p className="kupon-top-p">{returnDay} {returnHours}:{returnMinutes}</p>
+                                                                        </div>
+                                                                        <div className="kupon-divider"></div>
+                                                                        <div className="kupon-info">
+                                                                            <p className="kupon-h1">{element.hometeam} - {element.visitorteam}</p>
+                                                                            <p className="kupon-p">{getKupon(element.betType,element.hometeam,element.visitorteam)}: <span className="weight600">{getString(element.betType,element.result,element.hometeam,element.visitorteam)}</span></p>
+                                                                        </div>
+                                                                        <div className="kupon-odds">
+                                                                            <p className="kupon-h2">{(Number(element.probability)).toFixed(2)}</p>
+                                                                        </div>
+                                                                    </Link>
+                                                                </li>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </ul>
+                                                    <div className="kupon-bottom">
+                                                        <div className="kupon-bottom-info">
+                                                            <p className="kupon-bottom-info-p">Total indsats</p>
+                                                            <p className="kupon-bottom-info-p-right">{item.indsats},00 kr.</p><br />
+                                                            <p className="kupon-bottom-info-p">Total odds</p>
+                                                            <p className="kupon-bottom-info-p-right">{(Number(item.fullProb)).toFixed(2)}</p>
+                                                        </div>
+                                                        <div className="kupon-confirm">
+                                                            <div className="kupon-confirm-div">
+                                                                <p className="kupon-confirm-p">Udbetaling:</p>
+                                                                <p className="kupon-confirm-h1">{(item.indsats * item.fullProb).toFixed(2)} kr.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            );
+                                        }
+                                    )}
+                                </ul>
                             </div>
                         </li>
                             );

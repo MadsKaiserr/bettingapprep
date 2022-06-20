@@ -17,7 +17,7 @@
   height: 100px;
   background-color: #fff;
   padding: 0px 5%;
-  z-index: 99999;
+  z-index: 10;
   position: absolute;
   top: 0;
   left: 0;
@@ -31,7 +31,7 @@
   height: 100px;
   background-color: transparent;
   padding: 0px 5%;
-  z-index: 99999;
+  z-index: 9;
   position: absolute;
   top: 0;
   left: 0;
@@ -50,7 +50,7 @@
 
 .nav-container-bottom {
   padding: 25px 5%;
-  z-index: 99999;
+  z-index: 9;
   position: fixed;
   top: 85px;
   transition: 0.5s;
@@ -235,7 +235,7 @@
   text-align: left;
   min-width: 140px;
   transform: scale(1);
-  z-index: 99999999;
+  z-index: 10;
 }
 
 .user-dropdownSpil {
@@ -251,7 +251,7 @@
   text-align: left;
   min-width: 140px;
   transform: scale(1);
-  z-index: 99999999;
+  z-index: 10;
 }
 
 .user-flag-icon {
@@ -276,7 +276,7 @@
   right: 0;
   text-align: left;
   transform: scale(1);
-  z-index: 99999999;
+  z-index: 11;
 }
 
 .user-logo-tem {
@@ -481,9 +481,12 @@
 
 .nav-container-fix {
   display: flex;
-  justify-content: left;
   align-items: center;
-  width: 75%;
+  justify-content: center;
+}
+
+#fix-fix {
+  width: 70% !important;
 }
 
 .nav-container-mid {
@@ -494,6 +497,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  padding-left: 30px;
 }
 
 .nav-scrolled .nav-container-fix .nav-container-mid {
@@ -612,7 +616,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: var(--stageSurface);
+  background-color: #fff;
 }
 
 .footer-copyright {
@@ -738,11 +742,44 @@
   gap: 9px;
 }
 
+.n404-h1 {
+  font-family: CircularMedium;
+  font-weight: 100;
+  color: #fff;
+  font-size: 64px;
+  text-align: center;
+  z-index: 9;
+  line-height: 60px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
+.n404-container {
+  height: 500px;
+  width: 100%;
+  padding-top: 100px;
+  background-color: var(--primary);
+}
+
+.blog-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-direction: row;
+}
+
+.blog-header-h1 {
+  font-family: Montserrat;
+  font-size: 32px;
+  color: var(--softBlack);
+  font-weight: 200;
+}
+
 .footer-input {
   width: 250px;
   padding: 15px 20px;
   border: 0px;
-  background-color: #fff;
+  background-color: var(--stageSurface);
   font-family: circularlight;
   font-weight: 100;
   color: var(--black);

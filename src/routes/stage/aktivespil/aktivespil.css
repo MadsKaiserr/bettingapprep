@@ -34,7 +34,7 @@
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 99999999999999;
+  z-index: 12;
 }
 
 .modal-box {
@@ -77,6 +77,7 @@
   background-color: var(--primary);
   padding: 10px 15px;
   margin-top: 20px;
+  border: 1px var(--primary) solid;
   color: #fff;
   font-size: 15px;
   font-family: CircularLight;
@@ -92,6 +93,7 @@
 .modal-btn:hover {
   transform: scale(1.02);
   background-color: var(--primaryAccent) !important;
+  border: 1px var(--primaryAccent) solid !important;
 }
 
 .modal-btn-outline {

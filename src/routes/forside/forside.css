@@ -2,12 +2,11 @@
   margin-top: 80px;
   text-align: center;
   position: relative;
-  height: 700px;
   overflow: hidden;
 }
 
 .hero-text {
-  z-index: 999;
+  z-index: 6;
   opacity: 1;
   transform: scale(1);
   float: none;
@@ -71,7 +70,7 @@
 .blackCircle {
   width: 350vh;
   height: 1205px;
-  background-color: var(--softBlack);
+  background-color: var(--secondary);
   border-radius: 50%;
   position: absolute;
   bottom: -1070px;
@@ -161,7 +160,131 @@
 }
 
 .section-bet {
-  fill: var(--softBlack);
+  fill: var(--secondary);
+}
+
+.blackSection {
+  height: 30px;
+  background-color: var(--secondary);
+  width: 100%;
+}
+
+.hero-help {
+  width: 80%;
+  margin: auto;
+  margin-top: 200px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.2);
+}
+
+.forside-section {
+  width: 100%;
+  background-color: #fff;
+  padding: 100px 100px;
+  text-align: center;
+}
+
+.fsection-elements {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.fsection-element {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 500px;
+  border-radius: 3px;
+  padding: 25px 40px;
+  transition: 0.2s;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+}
+
+.fsection-element:hover {
+  transform: scale(1.03);
+  cursor:default;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.07);
+}
+
+.fsection-h1 {
+  font-size: 34px;
+  color: var(--secondary);
+  font-weight: 100;
+  padding-bottom: 10px;
+  font-family: CircularMedium;
+}
+
+.fsection-h3 {
+  font-size: 17px;
+  color: var(--softBlack);
+  font-weight: 100;
+  font-family: CircularLight;
+  padding-bottom: 45px;
+}
+
+.fsection-h4 {
+  font-size: 25px;
+  color: var(--secondary);
+  font-weight: 100;
+  padding-bottom: 10px;
+  font-family: CircularMedium;
+}
+
+.fsection-img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 15px;
+  fill: var(--primary);
+}
+
+.fsection-h5 {
+  font-size: 15px;
+  color: var(--primary);
+  font-weight: 100;
+  padding-bottom: 15px;
+  font-family: CircularMedium;
+}
+
+.fsection-p {
+  font-size: 15px;
+  color: var(--softBlack);
+  font-weight: 100;
+  font-family: CircularLight;
+  padding-bottom: 10px;
+}
+
+.fsection-a:hover {
+  opacity: 1;
+}
+
+.fsection-a {
+  font-size: 15px;
+  color: var(--primary);
+  font-weight: 100;
+  opacity: 0.8;
+  transition: 0.2s;
+  cursor: pointer;
+  font-family: CircularLight;
+}
+
+.help-top {
+  background-color: var(--secondary);
+  width: 100%;
+  height: 55px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.help-container {
+  background-color: #1f2138f8;
+  width: 100%;
+  height: 350px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
 }
 
 .ny-window {

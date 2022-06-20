@@ -7,27 +7,7 @@ import savings from '../../assets/img/savings.svg';
 function Abonnement () {
 
     function setMedlemsskab(medlemsskab) {
-        const userEmail = localStorage.getItem("email");
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/user";
-
-        const requestConfig = {
-            headers: {
-                "x-api-key": process.env.REACT_APP_API_SECRET
-            }
-        }
-
-        const requestBody = {
-            "rolle": medlemsskab,
-            "id": userEmail
-        }
-
-        axios.patch(URL, requestBody, requestConfig).then(response => {
-            console.log(response)
-            setNotiMessage("success", "Medlemskab oprettet: " + medlemsskab);
-        }).catch(error => {
-            console.log("Fejl ved indhentning af data" + error)
-            setNotiMessage("error", "Medlemskab error: " + error);
-        })
+        console.log(medlemsskab);
     }
 
     return (

@@ -108,12 +108,35 @@
     color: var(--secondary);
 }
 
+.noti-kupon {
+    display: inline-block;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border-top: 4px var(--primary) solid;
+    border-radius: 2px;
+    width: 20vw;
+    min-width: 280px;
+    min-height: 150px;
+    vertical-align: top;
+    position: relative;
+    margin-right: 20px;
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.05);
+}
+
 .gruppespil-info {
     margin-bottom: 50px;
 }
 
 .gruppespil-kuponer {
     padding: 20px 0px;
+}
+
+.noti-kupon ul {
+    width: 100%;
+}
+
+.noti-kupon ul li {
+    width: 100%;
 }
 
 .gruppespil-kupon ul {
@@ -246,6 +269,8 @@
     vertical-align: top;
     display: inline-block;
     margin-top: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .gruppespil-table-h1 {

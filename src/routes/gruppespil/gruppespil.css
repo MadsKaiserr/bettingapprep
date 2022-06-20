@@ -20,6 +20,11 @@
     opacity: 0.8 !important;
 }
 
+.gruppespil-table ul {
+    width: 100%;
+    white-space: nowrap;
+}
+
 .gruppetable-number2-el2 {
     width: 160px;
     font-weight: 400 !important;
