@@ -31,7 +31,7 @@ import Privat from './routes/privat/privat.tsx';
 
 import ClearHeader from './components/reusables/clearheader.jsx';
 import Header from './components/reusables/header.jsx';
-import BlogHeader from './components/reusables/blogHeader.jsx';
+import BlogHeader from '/components/reusables/blogHeader.jsx';
 import Footer from './components/reusables/footer.tsx';
 import Headerfix from './components/fix/headerfix.tsx';
 import Stagefix from './components/fix/stagefix.tsx';
