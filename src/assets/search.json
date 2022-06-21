@@ -1,0 +1,39 @@
+[
+    {
+        "klub": "AFC Bournemouth",
+        "land": "England",
+        "img": "https://cdn.sportmonks.com/images/soccer/teams/20/52.png",
+        "url": "/stage/team?team=52"
+    },
+    {
+        "klub": "Arsenal",
+        "land": "England",
+        "img": "https://cdn.sportmonks.com/images/soccer/teams/19/19.png",
+        "url": "/stage/team?team=19"
+    },
+    {
+        "klub": "Aston Villa",
+        "land": "England",
+        "img": "https://cdn.sportmonks.com/images/soccer/teams/15/15.png",
+        "url": "/stage/team?team=15"
+    },
+    {
+        "klub": "Brentford",
+        "land": "England",
+        "img": "https://cdn.sportmonks.com/images/soccer/teams/12/236.png",
+        "url": "/stage/team?team=236"
+    },
+    {
+        "klub": "Brighton & Hove Albion",
+        "land": "England",
+        "img": "https://cdn.sportmonks.com/images/soccer/teams/14/78.png",
+        "url": "/stage/team?team=78"
+    }
+    ,
+    {
+        "klub": "Chelsea",
+        "land": "England",
+        "img": "https://cdn.sportmonks.com/images/soccer/teams/18/18.png",
+        "url": "/stage/team?team=18"
+    }
+]
