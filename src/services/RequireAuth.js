@@ -1,6 +1,7 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 import { resetUserSession } from "../services/authService.ts"
 import jwtDecode from "jwt-decode";
+import * as React from 'react';
 
 import Stagefix from '../components/fix/stagefix.tsx';
 import StageHeader from '../components/reusables/stageHeader.jsx';
