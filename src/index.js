@@ -25,7 +25,7 @@ import Headerfix from './components/fix/headerfix';
 import Stagefix from './components/fix/stagefix';
 import Message from './services/message/message';
 import Login from './services/login/login';
-import Reno from './components/reusables/reno';
+// import Reno from './components/reusables/reno';
 
 import StageHeader from './components/reusables/stageHeader';
 import StageForside from './routes/stage/forside/forside';
@@ -46,7 +46,7 @@ import StageGameindstillinger from './routes/stage/gameindstillinger/gameindstil
 import './assets/fonts/Montserrat-Regular.ttf';
 
 import RequireAuth from "./services/RequireAuth";
-import N404 from './components/reusables/N404';
+// import N404 from './components/reusables/N404';
 
 
 ReactDOM.render(
@@ -56,9 +56,9 @@ ReactDOM.render(
         <Routes>
           <Route exact path="/" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Forside key="forsideKey" />]} />
 
-          <Route exact path="/kontakt" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
+          {/* <Route exact path="/kontakt" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
           <Route exact path="/kom-igang" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
-          <Route exact path="/dyster" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
+          <Route exact path="/dyster" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} /> */}
 
           <Route exact path="/start" element={[<ClearHeader key="clearheaderKey" />, <Start key="startKey" />]} />
           <Route exact path="/about" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <About key="aboutKey" />]} />
@@ -92,7 +92,7 @@ ReactDOM.render(
             <Route exact path="/stage/notifikationer" element={[<StageHeader key="stageHeaderKey" />, <StageNotifikationer key="StageNotifikationer" />]} />
             <Route exact path="/stage/gameindstillinger" element={[<StageHeader key="stageHeaderKey" />, <StageGameindstillinger key="StageGameindstillinger" />]} />
           </Route>
-          <Route exact path="/*" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="404Key" />]} />
+          {/* <Route exact path="/*" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="404Key" />]} /> */}
         </Routes>
         <Footer />
     </Router>,
