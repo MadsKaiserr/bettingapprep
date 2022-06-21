@@ -151,7 +151,7 @@ function StageMatcharticle () {
     const [statText, setStatText] = useState("Statistikker bliver opgivet som kampen spilles...");
 
     function getGame() {
-        fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/"+matchID+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=odds,goals,referee,league.country,stats,substitutions,bench,lineup,lineup.player,localTeam,league,visitorTeam,localCoach,visitorCoach,venue,events,group,round&bookmakers=2&tz=Europe/Copenhagen")
+        fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/"+matchID+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=odds,goals,referee,league.country,stats,substitutions,bench,lineup,lineup.player,localTeam,league,visitorTeam,localCoach,visitorCoach,venue,events,group,round&bookmakers=2&tz=Europe/Copenhagen")
         .then(response => response.json())
         .then(function (result) {
             console.log(result);
@@ -886,7 +886,7 @@ function StageMatcharticle () {
 
     function getHead() {
         seth2hUsed(true);
-        fetch("https://soccer.sportmonks.com/api/v2.0/head2head/"+homeTeamId+"/"+visitorTeamId+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=localTeam,visitorTeam")
+        fetch("https://soccer.sportmonks.com/api/v2.0/head2head/"+homeTeamId+"/"+visitorTeamId+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=localTeam,visitorTeam")
         .then(response => response.json())
         .then(function (result) {
             console.log(result);
@@ -900,7 +900,7 @@ function StageMatcharticle () {
 
     function getTabel() {
         setTabelOUsed(true);
-        fetch("https://soccer.sportmonks.com/api/v2.0/standings/season/"+seasonId+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=standings.league,standings.team,")
+        fetch("https://soccer.sportmonks.com/api/v2.0/standings/season/"+seasonId+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=standings.league,standings.team,")
         .then(response => response.json())
         .then(function (result) {
             console.log(result);

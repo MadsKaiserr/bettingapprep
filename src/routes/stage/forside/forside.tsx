@@ -359,7 +359,7 @@ function StageForside () {
             console.log(cacheJSON);
             setLoadingText("");
         } else {
-            fetch("https://soccer.sportmonks.com/api/v2.0/"+leagueQuery+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=localTeam,visitorTeam,odds&bookmakers=2&tz=Europe/Copenhagen")
+            fetch("https://soccer.sportmonks.com/api/v2.0/"+leagueQuery+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=localTeam,visitorTeam,odds&bookmakers=2&tz=Europe/Copenhagen")
             .then(response => response.json())
             .then(function (result) {
                     var t1 = new Date().getTime()
@@ -389,7 +389,7 @@ function StageForside () {
                 "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
             }
         }
-        fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+odd_ids+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=odds&bookmakers=2&tz=Europe/Copenhagen")
+        fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+odd_ids+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=odds&bookmakers=2&tz=Europe/Copenhagen")
         .then(response => response.json())
         .then(function (result) {
             var doneGames = 0;

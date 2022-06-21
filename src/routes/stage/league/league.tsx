@@ -47,7 +47,7 @@ function StageLeague () {
     const [tabelOUsed, setTabelOUsed] = useState(false);
 
     function getGame() {
-        fetch("https://soccer.sportmonks.com/api/v2.0/seasons/" + leagueId + "?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=cardscorers,cardscorers.player,cardscorers.team,assistscorers,goalscorers,goalscorers.team,goalscorers.player,league,stages,groups,results,fixtures:order(starting_at|desc)&tz=Europe/Copenhagen")
+        fetch("https://soccer.sportmonks.com/api/v2.0/seasons/" + leagueId + "?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=cardscorers,cardscorers.player,cardscorers.team,assistscorers,goalscorers,goalscorers.team,goalscorers.player,league,stages,groups,results,fixtures:order(starting_at|desc)&tz=Europe/Copenhagen")
         .then(response => response.json())
         .then(function (result) {
             console.log(result);
@@ -121,7 +121,7 @@ function StageLeague () {
                 }
             }
 
-            fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+matches+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=localTeam,visitorTeam&tz=Europe/Copenhagen")
+            fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+matches+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=localTeam,visitorTeam&tz=Europe/Copenhagen")
             .then(response => response.json())
             .then(function (response) {
                 console.log(response);
@@ -136,7 +136,7 @@ function StageLeague () {
 
     function getTabel() {
         setTabelOUsed(true);
-        fetch("https://soccer.sportmonks.com/api/v2.0/standings/season/"+leagueId+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=standings.league,standings.team,")
+        fetch("https://soccer.sportmonks.com/api/v2.0/standings/season/"+leagueId+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=standings.league,standings.team,")
         .then(response => response.json())
         .then(function (result) {
             console.log(result);

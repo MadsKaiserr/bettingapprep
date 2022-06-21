@@ -60,7 +60,7 @@ function StageTeam () {
     const [mostgoals, setMostGoals] = useState([]);
 
     function getGame() {
-        fetch("https://soccer.sportmonks.com/api/v2.0/teams/"+matchID+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=goalscorers.player,goalscorers.team,assistscorers.player,assistscorers.team,league,latest,squad,upcoming,transfers,stats,fifaranking,uefaranking,goalscorers,assistscorers,trophies,rivals,activeSeasons&tz=Europe/Copenhagen")
+        fetch("https://soccer.sportmonks.com/api/v2.0/teams/"+matchID+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=goalscorers.player,goalscorers.team,assistscorers.player,assistscorers.team,league,latest,squad,upcoming,transfers,stats,fifaranking,uefaranking,goalscorers,assistscorers,trophies,rivals,activeSeasons&tz=Europe/Copenhagen")
         .then(response => response.json())
         .then(function (result) {
             console.log(result);
@@ -134,7 +134,7 @@ function StageTeam () {
                 }
             }
 
-            fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+matches+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=localTeam,visitorTeam&tz=Europe/Copenhagen")
+            fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+matches+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=localTeam,visitorTeam&tz=Europe/Copenhagen")
             .then(response => response.json())
             .then(function (response) {
                 console.log(response);
@@ -285,7 +285,7 @@ function StageTeam () {
 
     function getSquad() {
         setSquadUsed(true);
-        fetch("https://soccer.sportmonks.com/api/v2.0/squad/season/"+season+"/team/"+matchID+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=player")
+        fetch("https://soccer.sportmonks.com/api/v2.0/squad/season/"+season+"/team/"+matchID+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=player")
         .then(response => response.json())
         .then(function (result) {
             console.log("SQUAD", result.data);
@@ -352,7 +352,7 @@ function StageTeam () {
 
     function getTabel(liga) {
         setTabelOUsed(true);
-        fetch("https://soccer.sportmonks.com/api/v2.0/standings/season/"+liga+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=standings.league,standings.team,")
+        fetch("https://soccer.sportmonks.com/api/v2.0/standings/season/"+liga+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=standings.league,standings.team,")
         .then(response => response.json())
         .then(function (result) {
             console.log(result);
