@@ -19,7 +19,7 @@ import Privat from './routes/privat/privat';
 
 import ClearHeader from './components/reusables/clearheader';
 import Header from './components/reusables/header';
-import BlogHeader from './components/reusables/blogHeader';
+// import BlogHeader from './components/reusables/blogHeader';
 import Footer from './components/reusables/footer';
 import Headerfix from './components/fix/headerfix';
 import Stagefix from './components/fix/stagefix';
@@ -70,11 +70,11 @@ ReactDOM.render(
           <Route exact path="/betingelser" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Betingelser key="betingelserKey" />]} />
           <Route exact path="/privatliv" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Privat key="privatKey" />]} />
 
-          <Route exact path="/blog" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
+          {/* <Route exact path="/blog" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
           <Route exact path="/blog/nyeste" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
           <Route exact path="/blog/emner" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
           <Route exact path="/blog/tips" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
-          <Route exact path="/blog/*" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="404Key" />]} />
+          <Route exact path="/blog/*" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="404Key" />]} /> */}
         
           <Route element={<RequireAuth />}>
             <Route exact path="/stage/" element={[<StageHeader key="stageHeaderKey" />, <Stagefix key="stageFixKey" />, <StageForside key="stageForsideKey" />]} />
