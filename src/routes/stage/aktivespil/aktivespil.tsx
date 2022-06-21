@@ -5,7 +5,6 @@ import axios from "axios";
 import { Link } from 'react-router-dom';
 
 import "./aktivespil.css";
-import { DocumentGrid } from 'docx';
  
 function StageAktiveSpil () {
 
