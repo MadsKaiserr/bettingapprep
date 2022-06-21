@@ -30,7 +30,7 @@ function StageFind () {
 
         const requestConfig = {
             headers: {
-                "x-api-key": process.env.REACT_APP_API_SECRET
+                "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
             }
         }
 

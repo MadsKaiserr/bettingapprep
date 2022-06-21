@@ -49,7 +49,7 @@ function StageOpret () {
 
         const requestConfig = {
             headers: {
-                "x-api-key": process.env.REACT_APP_API_SECRET
+                "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
             }
         }
 
@@ -70,7 +70,7 @@ function StageOpret () {
                     if (spilMax !== "Maks-beløb pr. kupon" && spilMin !== "Min-beløb pr. kupon" && spilNavn !== "" && spilVarighed !== "" && spilStart !== "Startbeløb") {
                         const gruppespilConfig = {
                             headers: {
-                                "x-api-key": process.env.REACT_APP_API_SECRET
+                                "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
                             }
                         }
                 

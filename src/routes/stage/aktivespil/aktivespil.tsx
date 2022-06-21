@@ -33,7 +33,7 @@ function StageAktiveSpil () {
 
         const requestConfig = {
             headers: {
-                "x-api-key": process.env.REACT_APP_API_SECRET
+                "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
             }
         }
 
@@ -104,7 +104,7 @@ function StageAktiveSpil () {
         const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/adgangsbilletter?player=" + user_email;
         const requestConfig = {
             headers: {
-                "x-api-key": process.env.REACT_APP_API_SECRET
+                "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
             }
         }
 
@@ -123,7 +123,7 @@ function StageAktiveSpil () {
                     const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/adgangsbilletter";
                     const requestConfig = {
                         headers: {
-                            "x-api-key": process.env.REACT_APP_API_SECRET
+                            "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
                         }
                     }
 

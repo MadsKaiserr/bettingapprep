@@ -255,7 +255,7 @@ function StageForside () {
     
             const betConfig = {
                 headers: {
-                    "x-api-key": process.env.REACT_APP_API_SECRET
+                    "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
                 }
             }
 
@@ -386,7 +386,7 @@ function StageForside () {
         var activeGame = localStorage.getItem("activeGame");
         const requestConfig = {
             headers: {
-                "x-api-key": process.env.REACT_APP_API_SECRET
+                "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
             }
         }
         fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+odd_ids+"?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=odds&bookmakers=2&tz=Europe/Copenhagen")
@@ -465,7 +465,7 @@ function StageForside () {
 
         const requestConfigen = {
             headers: {
-                "x-api-key": process.env.REACT_APP_API_SECRET
+                "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
             }
         }
 
