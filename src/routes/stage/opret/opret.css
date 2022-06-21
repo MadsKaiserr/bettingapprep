@@ -330,7 +330,7 @@
   border-radius: 3px;
   display: none;
   right: -260px;
-  top: calc(50% - height);
+  top: 50%;
   transition: 0.2s;
   font-family: CircularLight;
   font-weight: 100;
