@@ -1,5 +1,5 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
-import { resetUserSession } from "./authService"
+import { resetUserSession } from "./authService.js"
 import jwtDecode from "jwt-decode";
 import * as React from 'react';
 
