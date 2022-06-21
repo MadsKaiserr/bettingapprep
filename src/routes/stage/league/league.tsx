@@ -37,8 +37,7 @@ function StageLeague () {
 
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    var leagueId = urlParams.get("id");
-    leagueId = parseInt(leagueId);
+    var leagueId = parseInt(urlParams.get("id"));
 
     const [tabelType, setTableType] = useState("");
     const [tabelO, setTabelO] = useState([]);

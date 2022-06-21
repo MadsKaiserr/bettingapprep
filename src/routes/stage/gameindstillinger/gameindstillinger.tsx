@@ -29,7 +29,7 @@ function StageGameindstillinger () {
     }
 
     function getGame() {
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppesession?game=" + activeGame;
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession?game=" + activeGame;
 
         const requestConfig = {
             headers: {

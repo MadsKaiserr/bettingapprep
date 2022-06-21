@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from "axios";
-import { getUser } from "../../../services/authService.ts";
+import { getUser } from "../../../services/authService";
 import { Link } from 'react-router-dom';
 import { getKupon, getString } from "../../../services/algo.js";
 
@@ -146,7 +146,7 @@ function StageForside () {
     }
 
     function place3wayBet(btnId, matchId, homeTeam, visitorTeam, probability, oddsResult, oddsDate) {
-        if (!notUsableBtn.includes(btnId) && (odds.length < 5 || odds === "")) {
+        if (!notUsableBtn.includes(btnId) && odds.length < 5) {
             console.log()
             document.getElementById(btnId).classList.add("odd-off");
             setNotUsableBtn([...notUsableBtn, "3Way Result"+btnId]);
@@ -250,7 +250,7 @@ function StageForside () {
                     placeBetBTN.innerHTML = "Placér bet";
                 }
             } else {
-                const placeBetUrl = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/bet";
+                const placeBetUrl = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/bet";
             const userEmail = localStorage.getItem("email");
     
             const betConfig = {
@@ -412,7 +412,7 @@ function StageForside () {
                     }
                 }
                 if (winning === parseInt(checkArray.length)) {
-                    const betCalcURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/updatewin";
+                    const betCalcURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/updatewin";
 
                     const winBody = {
                         game: activeGame,
@@ -432,7 +432,7 @@ function StageForside () {
                         }
                     })
                 } else {
-                    const betCalcURL2 = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/updatelose";
+                    const betCalcURL2 = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/updatelose";
 
                     const loseBody = {
                         game: activeGame,
@@ -461,7 +461,7 @@ function StageForside () {
 
     function gameCall() {
         var activeGame = localStorage.getItem("activeGame");
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppesession?game=" + activeGame;
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession?game=" + activeGame;
 
         const requestConfigen = {
             headers: {

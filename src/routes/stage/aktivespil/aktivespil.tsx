@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { getUser } from "../../../services/authService.ts";
+import { getUser } from "../../../services/authService";
 import axios from "axios";
 import { Link } from 'react-router-dom';
 
@@ -29,7 +29,7 @@ function StageAktiveSpil () {
     }
 
     function getGroups() {
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppespil";
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppespil";
 
         const requestConfig = {
             headers: {
@@ -101,7 +101,7 @@ function StageAktiveSpil () {
 
     function billetHandler() {
         const user_email = localStorage.getItem("email");
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/adgangsbilletter?player=" + user_email;
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/adgangsbilletter?player=" + user_email;
         const requestConfig = {
             headers: {
                 "x-api-key": process.env.REACT_APP_API_SECRET
@@ -120,7 +120,7 @@ function StageAktiveSpil () {
                     }
                 }
                 if (foundBillet === true && billetIndex >= 0) {
-                    const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/adgangsbilletter";
+                    const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/adgangsbilletter";
                     const requestConfig = {
                         headers: {
                             "x-api-key": process.env.REACT_APP_API_SECRET

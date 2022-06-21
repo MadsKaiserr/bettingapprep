@@ -26,7 +26,7 @@ function StageFind () {
       }, [loading])
 
     function apiCall() {
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppespil";
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppespil";
 
         const requestConfig = {
             headers: {

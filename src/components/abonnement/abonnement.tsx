@@ -1,14 +1,8 @@
 import * as React from 'react';
 import axios from "axios";
-import { setNotiMessage } from "../../services/errorMessage.ts";
 import { Link } from 'react-router-dom';
-import savings from '../../assets/img/savings.svg';
  
 function Abonnement () {
-
-    function setMedlemsskab(medlemsskab) {
-        console.log(medlemsskab);
-    }
 
     return (
         <>
@@ -110,7 +104,7 @@ function Abonnement () {
                                     </div>
                                 </div>
                                 <Link to="/signup">
-                                    <button className="square-btn-default plan-btn" onClick={() => { if(!localStorage.getItem("auth")) {window.open("/signup", "_self");} else {setMedlemsskab("premium")}}}>Køb abonnement</button>
+                                    <button className="square-btn-default plan-btn" onClick={() => { if(!localStorage.getItem("auth")) {window.open("/signup", "_self");}}}>Køb abonnement</button>
                                 </Link>
                             </div>
                         </div>

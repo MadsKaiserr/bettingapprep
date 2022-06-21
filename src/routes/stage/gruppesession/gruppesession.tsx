@@ -26,7 +26,7 @@ function StageGruppesession () {
     const urlParams = new URLSearchParams(queryString);
 
     function apiCall() {
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppesession?game="+ urlParams.get('game');
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession?game="+ urlParams.get('game');
 
         const requestConfig = {
             headers: {
@@ -60,8 +60,8 @@ function StageGruppesession () {
             });
             for (var u in response.data.players) {
                 if (response.data.players[u].player === localStorage.getItem("email")) {
-                    if (response.data.players[i].player === localStorage.getItem("email")) {
-                        localStorage.setItem("notifikationer", response.data.players[i].info.notifikationer.length);
+                    if (response.data.players[u].player === localStorage.getItem("email")) {
+                        localStorage.setItem("notifikationer", response.data.players[u].info.notifikationer.length);
                     }
                 }
             }
@@ -86,7 +86,7 @@ function StageGruppesession () {
 
         if (yourIndex === -1 && varighedDate > nowDate) {
             console.log(activeGame)
-            const tilmeldUrl = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppesession";
+            const tilmeldUrl = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession";
             const userEmail = localStorage.getItem("email");
 
             const tilmeldConfig = {

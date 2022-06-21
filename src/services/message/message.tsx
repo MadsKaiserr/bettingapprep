@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { remNotiMessage } from "../errorMessage.ts";
+import { remNotiMessage } from "../errorMessage";
 import axios from "axios";
  
 function Message () {

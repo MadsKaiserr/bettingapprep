@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import './priser.css';
-import Abonnement from '../../components/abonnement/abonnement.tsx';
-import Spiloffer from '../../components/spiloffer/spiloffer.tsx';
+import Abonnement from '../../components/abonnement/abonnement';
+import Spiloffer from '../../components/spiloffer/spiloffer';
  
 function Priser () {
 

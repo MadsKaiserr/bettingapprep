@@ -17,7 +17,7 @@ function StageNotifikationer () {
         window.scrollTo(0, 0)
         if (localStorage.getItem("activeGame") && localStorage.getItem("activeGame") !== "") {
             var activeGame = localStorage.getItem("activeGame");
-            const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppesession?game=" + activeGame;
+            const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession?game=" + activeGame;
     
             const requestConfigen = {
                 headers: {
@@ -95,7 +95,7 @@ function StageNotifikationer () {
                             <div className="noti-section">
                                 <div className="noti-left">
                                     <p className="noti-sec-h1">Du har placeret en kupon</p>
-                                    <p className="noti-sec-p">Du har gennemført et køb af en kupon, som med en <span className="noti-span">indsats: {noti.indsats} kr.</span> giver dig en <span className="noti-span">udbetaling: {parseInt(parseFloat(noti.indsats)*parseFloat(noti.fullProb))} kr.</span> hvis du vinder.</p>
+                                    <p className="noti-sec-p">Du har gennemført et køb af en kupon, som med en <span className="noti-span">indsats: {noti.indsats} kr.</span> giver dig en <span className="noti-span">udbetaling: {parseFloat(noti.indsats)*parseFloat(noti.fullProb)} kr.</span> hvis du vinder.</p>
                                     <p className="noti-sec-dato">{dato_string}</p>
                                 </div>
                                 <ul className="noti-right">

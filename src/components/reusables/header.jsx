@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import axios from "axios";
-import { showLogin } from "../../services/login.ts";
+import React from 'react';
+import { showLogin } from "../../services/login";
 import { Link } from 'react-router-dom';
 
 import '../main.css';
@@ -9,7 +8,6 @@ import '../../styles/utilities.css';
 
 import logo from '../../assets/img/premierleague.png';
 import flag from '../../assets/img/danmark.png';
-import england from '../../assets/img/england.png';
  
 function Header () {
 

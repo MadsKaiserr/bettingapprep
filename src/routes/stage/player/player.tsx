@@ -36,8 +36,7 @@ function StagePlayer () {
 
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    var playerID = urlParams.get("id");
-    playerID = parseInt(playerID);
+    var playerID = parseInt(urlParams.get("id"));
 
     function getGame() {
         fetch("https://soccer.sportmonks.com/api/v2.0/players/" + playerID + "?api_token="+process.env.REACT_APP_BETTING_API_SECRET+"&include=&tz=Europe/Copenhagen")

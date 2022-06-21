@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { showLogin } from "../../services/login.ts";
+import { showLogin } from "../../services/login";
 
 import '../main.css';
 import '../../styles/main.css';

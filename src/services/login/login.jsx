@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { remLogin } from "../login.ts";
-import { setUserSession } from "../authService.ts";
+import { remLogin } from "../login";
+import { setUserSession } from "../authService";
 import axios from "axios";
  
 function Login () {
@@ -10,7 +10,7 @@ function Login () {
     const [kodeord, setKodeord] = useState("");
     const [message, setMessage] = useState("");
 
-    const loginURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/login";
+    const loginURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/login";
 
     const loginHandler = (event) => {
         event.preventDefault();
@@ -24,7 +24,7 @@ function Login () {
         } else {
             const requestConfig = {
                 headers: {
-                    "x-api-key": process.env.REACT_APP_API_SECRET
+                    "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
                 }
             }
     

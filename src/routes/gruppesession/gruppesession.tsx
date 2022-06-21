@@ -28,7 +28,7 @@ function Gruppesession() {
     const urlParams = new URLSearchParams(queryString);
 
     function apiCall() {
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppesession?game="+ urlParams.get('game');
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession?game="+ urlParams.get('game');
 
         const requestConfig = {
             headers: {
@@ -97,7 +97,7 @@ function Gruppesession() {
 
         if (yourIndex === -1 && localStorage.getItem("auth") && varighedDate > nowDate) {
             console.log(activeGame)
-            const tilmeldUrl = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppesession";
+            const tilmeldUrl = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession";
             var userEmail;
 
             const tilmeldConfig = {

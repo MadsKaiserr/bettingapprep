@@ -7,7 +7,7 @@ const RequireAuth = () => {
 
     if (localStorage.getItem("auth")) {
 
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/verified";
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/verified";
 
         const requestConfig = {
             headers: {

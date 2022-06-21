@@ -6,7 +6,7 @@ import {
     Link,
     NavLink,
   } from 'react-router-dom';
-import { resetUserSession } from "../../services/authService.ts";
+import { resetUserSession } from "../../services/authService";
 
 import '../main.css';
  

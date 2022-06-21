@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from "axios";
-import { resetUserSession } from "../../services/authService.ts";
+import { resetUserSession } from "../../services/authService";
 
 import './signup.css';
  
@@ -64,7 +64,7 @@ function Signup () {
         }
     }, [kodeord])
 
-    const signupURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/signup";
+    const signupURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/signup";
 
     const signupHandler = (event) => {
         event.preventDefault();

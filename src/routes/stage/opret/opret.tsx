@@ -40,12 +40,12 @@ function StageOpret () {
     const [spilMax, setMax] = useState("Maks-beløb pr. kupon");
     const [spilSynlighed, setSynlighed] = useState("offentlig");
 
-    const signupURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppesession";
+    const signupURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession";
     const user_email = localStorage.getItem("email");
 
     function opretHandler() {
         setNotiMessage("remove", "", "");
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/playergruppespil?player=" + user_email;
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/playergruppespil?player=" + user_email;
 
         const requestConfig = {
             headers: {

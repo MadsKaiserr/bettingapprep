@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { getUser, resetUserSession } from "../../services/authService.ts";
+import { useState } from 'react';
+import { getUser, resetUserSession } from "../../services/authService";
 import { Link, Navigate } from 'react-router-dom';
 import jwtDecode from "jwt-decode";
 import {InstantSearch, SearchBox, Hits} from "react-instantsearch/dom";

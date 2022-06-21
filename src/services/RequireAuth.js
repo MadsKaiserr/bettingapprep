@@ -1,12 +1,12 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
-import { resetUserSession } from "../services/authService.ts"
+import { resetUserSession } from "../services/authService"
 import jwtDecode from "jwt-decode";
 import * as React from 'react';
 
-import Stagefix from '../components/fix/stagefix.tsx';
-import StageHeader from '../components/reusables/stageHeader.jsx';
-import StageForside from '../routes/stage/forside/forside.tsx';
-import StageTutorial from '../routes/stage/tutorial/tutorial.tsx';
+import Stagefix from '../components/fix/stagefix';
+import StageHeader from '../components/reusables/stageHeader';
+import StageForside from '../routes/stage/forside/forside';
+import StageTutorial from '../routes/stage/tutorial/tutorial';
 
 const RequireAuth = () => {
     const location = useLocation();

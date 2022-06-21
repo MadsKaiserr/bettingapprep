@@ -5,61 +5,48 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './styles/main.css';
 import './styles/utilities.css';
 
-import Admin from './routes/admin/admin.tsx';
-import AdminBetalinger from './routes/admin/sections/betalinger/betalinger.tsx';
-import AdminUsers from './routes/admin/sections/brugere/users.tsx';
-import AdminGruppespil from './routes/admin/sections/gruppespil/gruppespil.tsx';
-import AdminAnalyser from './routes/admin/sections/analyser/analyser.tsx';
-import AdminMarketing from './routes/admin/sections/marketing/marketing.tsx';
-import AdminNotifikationer from './routes/admin/sections/notifikationer/notifikationer.tsx';
-import AdminIndstillinger from './routes/admin/sections/indstillinger/indstillinger.tsx';
-import AdminProfil from './routes/admin/sections/profil/profil.tsx';
+import Start from './routes/start/start';
+import About from './routes/about/about';
+import Signup from './routes/signup/signup';
+import Forside from './routes/forside/forside';
+import Gruppespil from './routes/gruppespil/gruppespil';
+// import Kontakt from "./routes/kontakt/kontakt";
+import Gruppesession from './routes/gruppesession/gruppesession';
+import Priser from './routes/priser/priser';
+import Faq from './routes/faq/faq';
+import Betingelser from './routes/betingelser/betingelser';
+import Privat from './routes/privat/privat';
 
-import AdminSide from './components/reusables/adminside.tsx';
+import ClearHeader from './components/reusables/clearheader';
+import Header from './components/reusables/header';
+import BlogHeader from './components/reusables/blogHeader';
+import Footer from './components/reusables/footer';
+import Headerfix from './components/fix/headerfix';
+import Stagefix from './components/fix/stagefix';
+import Message from './services/message/message';
+import Login from './services/login/login';
+import Reno from './components/reusables/reno';
 
-import Start from './routes/start/start.tsx';
-import About from './routes/about/about.tsx';
-import Signup from './routes/signup/signup.tsx';
-import Forside from './routes/forside/forside.tsx';
-import Gruppespil from './routes/gruppespil/gruppespil.tsx';
-import Kontakt from "./routes/kontakt/kontakt.tsx";
-import Gruppesession from './routes/gruppesession/gruppesession.tsx';
-import Priser from './routes/priser/priser.tsx';
-import Faq from './routes/faq/faq.tsx';
-import Betingelser from './routes/betingelser/betingelser.tsx';
-import Privat from './routes/privat/privat.tsx';
-
-import ClearHeader from './components/reusables/clearheader.jsx';
-import Header from './components/reusables/header.jsx';
-import BlogHeader from './components/reusables/blogHeader.jsx';
-import Footer from './components/reusables/footer.tsx';
-import Headerfix from './components/fix/headerfix.tsx';
-import Stagefix from './components/fix/stagefix.tsx';
-import Message from './services/message/message.tsx';
-import Login from './services/login/login.jsx';
-import Reno from './components/reusables/reno.tsx';
-
-import StageHeader from './components/reusables/stageHeader.jsx';
-import StageForside from './routes/stage/forside/forside.tsx';
-import StageFaq from './routes/stage/faq/faq.tsx';
-import StageAktiveSpil from './routes/stage/aktivespil/aktivespil.tsx';
-import StageOpret from './routes/stage/opret/opret.tsx';
-import StageFind from './routes/stage/find/find.tsx';
-import StageGruppespil from './routes/stage/gruppespil/gruppespil.tsx';
-import StageGruppesession from './routes/stage/gruppesession/gruppesession.tsx';
-import StageIndstillinger from './routes/stage/indstillinger/indstillinger.tsx';
-import StageMatcharticle from './routes/stage/matcharticle/matcharticle.tsx';
-import StageTeam from './routes/stage/team/team.tsx';
-import StageLeague from './routes/stage/league/league.tsx';
-import StagePlayer from './routes/stage/player/player.tsx';
-import StageNotifikationer from './routes/stage/notifikationer/notifikationer.tsx';
-import StageGameindstillinger from './routes/stage/gameindstillinger/gameindstillinger.tsx';
+import StageHeader from './components/reusables/stageHeader';
+import StageForside from './routes/stage/forside/forside';
+import StageFaq from './routes/stage/faq/faq';
+import StageAktiveSpil from './routes/stage/aktivespil/aktivespil';
+import StageOpret from './routes/stage/opret/opret';
+import StageFind from './routes/stage/find/find';
+import StageGruppespil from './routes/stage/gruppespil/gruppespil';
+import StageGruppesession from './routes/stage/gruppesession/gruppesession';
+import StageIndstillinger from './routes/stage/indstillinger/indstillinger';
+import StageMatcharticle from './routes/stage/matcharticle/matcharticle';
+import StageTeam from './routes/stage/team/team';
+import StageLeague from './routes/stage/league/league';
+import StagePlayer from './routes/stage/player/player';
+import StageNotifikationer from './routes/stage/notifikationer/notifikationer';
+import StageGameindstillinger from './routes/stage/gameindstillinger/gameindstillinger';
 
 import './assets/fonts/Montserrat-Regular.ttf';
 
 import RequireAuth from "./services/RequireAuth";
-import AdminAuth from "./services/AdminAuth.tsx";
-import N404 from './components/reusables/N404.tsx';
+import N404 from './components/reusables/N404';
 
 
 ReactDOM.render(
@@ -68,20 +55,6 @@ ReactDOM.render(
         <Login />
         <Routes>
           <Route exact path="/" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Forside key="forsideKey" />]} />
-
-          <Route element={<RequireAuth />}>
-            <Route element={<AdminAuth key="adminAuth"/>}>
-              <Route exact path="/admin/hjem" element={[<AdminSide key="adminSideKey" />, <Admin key="adminKey" />]} />
-              <Route exact path="/admin/betalinger" element={[<AdminSide key="adminSideKey" />, <AdminBetalinger key="adminBetalingerKey" />]} />
-              <Route exact path="/admin/users" element={[<AdminSide key="adminSideKey" />, <AdminUsers key="adminUsersKey" />]} />
-              <Route exact path="/admin/gruppespil" element={[<AdminSide key="adminSideKey" />, <AdminGruppespil key="adminGruppespilKey" />]} />
-              <Route exact path="/admin/analyser" element={[<AdminSide key="adminSideKey" />, <AdminAnalyser key="adminAnalyserKey" />]} />
-              <Route exact path="/admin/marketing" element={[<AdminSide key="adminSideKey" />, <AdminMarketing key="adminMarketingKey" />]} />
-              <Route exact path="/admin/indstillinger" element={[<AdminSide key="adminSideKey" />, <AdminIndstillinger key="adminIndstillingerKey" />]} />
-              <Route exact path="/admin/notifikationer" element={[<AdminSide key="adminSideKey" />, <AdminNotifikationer key="adminNotifikationerKey" />]} />
-              <Route exact path="/admin/profil" element={[<AdminSide key="adminSideKey" />, <AdminProfil key="adminProfilKey" />]} />
-            </Route>
-          </Route>
 
           <Route exact path="/kontakt" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
           <Route exact path="/kom-igang" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />

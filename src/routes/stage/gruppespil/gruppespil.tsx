@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from "axios";
-import { getUser } from "../../../services/authService.ts";
+import { getUser } from "../../../services/authService";
 import { Link } from 'react-router-dom';
 import { getKupon, getString } from "../../../services/algo.js";
 
@@ -39,7 +39,7 @@ function StageGruppespil () {
       }, [loadingText])
 
     function apiCall() {
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppesession?game=" + activeGame;
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession?game=" + activeGame;
 
         const requestConfig = {
             headers: {
@@ -108,6 +108,20 @@ function StageGruppespil () {
         setDataLoad(true);
     }
 
+    function adminSettings() {
+        if (gameAdmin === localStorage.getItem("email")){
+            return (
+                <Link to="">
+                    <button className="gruppespil2-btn">Indstillinger</button>
+                </Link>
+            );
+        } else {
+            return (
+                <></>
+            );
+        }
+    }
+
     if (!localStorage.getItem("activeGame")) {
         return (
             <>
@@ -126,20 +140,6 @@ function StageGruppespil () {
         )
     } else {
         const game_settings = "/stage/gameindstillinger?game=" + activeGame;
-
-        function adminSettings() {
-            if (gameAdmin === localStorage.getItem("email")){
-                return (
-                    <Link to={game_settings}>
-                        <button className="gruppespil2-btn">Indstillinger</button>
-                    </Link>
-                );
-            } else {
-                return (
-                    <></>
-                );
-            }
-        }
 
         return (
             <>

@@ -523,7 +523,7 @@ function StageMatcharticle () {
 
     function gameCall() {
         var activeGame = localStorage.getItem("activeGame");
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/gruppesession?game=" + activeGame;
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession?game=" + activeGame;
 
         const requestConfigen = {
             headers: {
@@ -605,7 +605,7 @@ function StageMatcharticle () {
                     placeBetBTN.innerHTML = "Placér bet";
                 }
             } else {
-                const placeBetUrl = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/bet";
+                const placeBetUrl = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/bet";
             const userEmail = localStorage.getItem("email");
     
             const betConfig = {
@@ -703,7 +703,7 @@ function StageMatcharticle () {
     }
 
     function chooseOdd(btnId, type, row, result) {
-        if (!notUsableBtn.includes(btnId) && matchAllowed !== false && (odds.length < 5 || odds === "")) {
+        if (!notUsableBtn.includes(btnId) && matchAllowed !== false && odds.length < 5) {
             document.getElementById(btnId).classList.add("odd-off");
             setNotUsableBtn([...notUsableBtn, btnId]);
             sessionStorage.setItem("notUsableBtn", JSON.stringify([...notUsableBtn, btnId]));
@@ -1149,83 +1149,83 @@ function StageMatcharticle () {
     function getStats() {
         var localStatArray = statsL;
         var visitorStatArray = statsV;
-        if (localStatArray.corners !== undefined && visitorStatArray.corners !== undefined) {
-            var possessiontime_str_l = localStatArray.possessiontime + "%";
-            var possessiontime_str_v = visitorStatArray.possessiontime + "%";
+        if (localStatArray["corners"] !== undefined && visitorStatArray["corners"] !== undefined) {
+            var possessiontime_str_l = localStatArray["possessiontime"] + "%";
+            var possessiontime_str_v = visitorStatArray["possessiontime"] + "%";
 
             var possessiontime_str_l_style = {width: possessiontime_str_l};
             var possessiontime_str_v_style = {width: possessiontime_str_v};
 
-            var shots_total = localStatArray.shots.total + visitorStatArray.shots.total;
-            var shot_l_fix = (localStatArray.shots.total / shots_total) * 100;
+            var shots_total = localStatArray["shots"].total + visitorStatArray["shots"].total;
+            var shot_l_fix = (localStatArray["shots"].total / shots_total) * 100;
             if (shot_l_fix === 0 || shots_total === 0) {
                 shot_l_fix = 50;
             }
             var shots_str_l_style = {width: shot_l_fix + "%"};
 
-            var shot_v_fix = (visitorStatArray.shots.total / shots_total) * 100;
+            var shot_v_fix = (visitorStatArray["shots"].total / shots_total) * 100;
             if (shot_v_fix === 0 || shots_total === 0) {
                 shot_v_fix = 50;
             }
             var shots_str_v_style = {width: shot_v_fix + "%"};
 
-            var ongoal_total = localStatArray.shots.ongoal+ visitorStatArray.shots.ongoal;
-            var ongoal_l_fix = (localStatArray.shots.ongoal / ongoal_total) * 100;
+            var ongoal_total = localStatArray["shots"].ongoal+ visitorStatArray["shots"].ongoal;
+            var ongoal_l_fix = (localStatArray["shots"].ongoal / ongoal_total) * 100;
             if (ongoal_l_fix === 0 || ongoal_total === 0) {
                 ongoal_l_fix = 50;
             }
             var ongoal_str_l_style = {width: ongoal_l_fix + "%"};
 
-            var ongoal_v_fix = (visitorStatArray.shots.ongoal / ongoal_total) * 100;
+            var ongoal_v_fix = (visitorStatArray["shots"].ongoal / ongoal_total) * 100;
             if (ongoal_v_fix === 0 || ongoal_total === 0) {
                 ongoal_v_fix = 50;
             }
             var ongoal_str_v_style = {width: ongoal_v_fix + "%"};
 
-            var freekick_total = localStatArray.free_kick+ visitorStatArray.free_kick;
-            var freekick_v_fix = (localStatArray.free_kick / freekick_total) * 100;
+            var freekick_total = localStatArray["free_kick"]+ visitorStatArray["free_kick"];
+            var freekick_v_fix = (localStatArray["free_kick"] / freekick_total) * 100;
             if (freekick_v_fix === 0 || freekick_total === 0) {
                 freekick_v_fix = 50;
             }
             var freekick_str_l_style = {width: freekick_v_fix + "%"};
 
-            var freekick_v_fix = (visitorStatArray.free_kick / freekick_total) * 100;
+            var freekick_v_fix = (visitorStatArray["free_kick"] / freekick_total) * 100;
             if (freekick_v_fix === 0 || freekick_total === 0) {
                 freekick_v_fix = 50;
             }
             var freekick_str_v_style = {width: freekick_v_fix + "%"};
 
-            var offsides_total = localStatArray.offsides+ visitorStatArray.offsides;
-            var offsides_l_fix = (localStatArray.offsides / offsides_total) * 100;
+            var offsides_total = localStatArray["offsides"]+ visitorStatArray["offsides"];
+            var offsides_l_fix = (localStatArray["offsides"] / offsides_total) * 100;
             if (offsides_l_fix === 0 || offsides_total === 0) {
                 offsides_l_fix = 50;
             }
             var offsides_str_l_style = {width: offsides_l_fix + "%"};
 
-            var offsides_v_fix = (visitorStatArray.offsides / offsides_total) * 100;
+            var offsides_v_fix = (visitorStatArray["offsides"] / offsides_total) * 100;
             if (offsides_v_fix === 0 || offsides_total === 0) {
                 offsides_v_fix = 50;
             }
-            var offsides_str_v_style = {width: parseInt(offsides_v_fix) + "%"};
+            var offsides_str_v_style = {width: offsides_v_fix + "%"};
 
             var possessiontime_show = {display: "block"};
             var shots_show = {display: "block"};
             var ongoal_show = {display: "block"};
             var freekick_show = {display: "block"};
             var offsides_show = {display: "block"};
-            if (localStatArray.possessiontime === null) {
+            if (localStatArray["possessiontime"] === null) {
                 possessiontime_show = {display: "none"};
             }
-            if (localStatArray.shots.total === null) {
+            if (localStatArray["shots"].total === null) {
                 shots_show = {display: "none"};
             }
-            if (localStatArray.shots.ongoal === null) {
+            if (localStatArray["shots"].ongoal === null) {
                 ongoal_show = {display: "none"};
             }
-            if (localStatArray.free_kick === null) {
+            if (localStatArray["free_kick"] === null) {
                 freekick_show = {display: "none"};
             }
-            if (localStatArray.offsides === null) {
+            if (localStatArray["offsides"] === null) {
                 offsides_show = {display: "none"};
             }
 
@@ -1246,10 +1246,10 @@ function StageMatcharticle () {
                         <p className="stats-h1">Afslutninger</p>
                         <div className="stats-stat">
                             <div className="stats-left" style={shots_str_l_style}>
-                                <p className="stats-p">{localStatArray.shots.total}</p>
+                                <p className="stats-p">{localStatArray["shots"].total}</p>
                             </div>
                             <div className="stats-right" style={shots_str_v_style}>
-                                <p className="stats-p">{visitorStatArray.shots.total}</p>
+                                <p className="stats-p">{visitorStatArray["shots"].total}</p>
                             </div>
                         </div>
                     </div>
@@ -1257,10 +1257,10 @@ function StageMatcharticle () {
                         <p className="stats-h1">Skud på mål</p>
                         <div className="stats-stat">
                             <div className="stats-left" style={ongoal_str_l_style}>
-                                <p className="stats-p">{localStatArray.shots.ongoal}</p>
+                                <p className="stats-p">{localStatArray["shots"].ongoal}</p>
                             </div>
                             <div className="stats-right" style={ongoal_str_v_style}>
-                                <p className="stats-p">{visitorStatArray.shots.ongoal}</p>
+                                <p className="stats-p">{visitorStatArray["shots"].ongoal}</p>
                             </div>
                         </div>
                     </div>
@@ -1268,10 +1268,10 @@ function StageMatcharticle () {
                         <p className="stats-h1">Frispark</p>
                         <div className="stats-stat">
                             <div className="stats-left" style={freekick_str_l_style}>
-                                <p className="stats-p">{localStatArray.free_kick}</p>
+                                <p className="stats-p">{localStatArray["free_kick"]}</p>
                             </div>
                             <div className="stats-right" style={freekick_str_v_style}>
-                                <p className="stats-p">{visitorStatArray.free_kick}</p>
+                                <p className="stats-p">{visitorStatArray["free_kick"]}</p>
                             </div>
                         </div>
                     </div>
@@ -1279,10 +1279,10 @@ function StageMatcharticle () {
                         <p className="stats-h1">Offsides</p>
                         <div className="stats-stat">
                             <div className="stats-left" style={offsides_str_l_style}>
-                                <p className="stats-p">{localStatArray.offsides}</p>
+                                <p className="stats-p">{localStatArray["offsides"]}</p>
                             </div>
                             <div className="stats-right" style={offsides_str_v_style}>
-                                <p className="stats-p">{visitorStatArray.offsides}</p>
+                                <p className="stats-p">{visitorStatArray["offsides"]}</p>
                             </div>
                         </div>
                     </div>
@@ -1638,6 +1638,9 @@ function StageMatcharticle () {
         //         );
         //     });
         // }
+        return (
+            <></>
+        );
     }
 
     return (

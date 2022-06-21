@@ -28,7 +28,7 @@ function StageIndstillinger () {
     });
 
     function apiCall() {
-        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/prod/user?user="+ localStorage.getItem("email");
+        const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/user?user="+ localStorage.getItem("email");
 
         const requestConfig = {
             headers: {
