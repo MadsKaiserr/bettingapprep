@@ -8,7 +8,6 @@ import lineupPitch from '../../../assets/img/lineup-pitchF.png';
 import goal from '../../../assets/img/football.png';
 
 import "./matcharticle.css";
-import { Duplex } from 'stream';
  
 function StageMatcharticle () {
 
