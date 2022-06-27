@@ -243,15 +243,67 @@ function StageAktiveSpil () {
                                     if (localStorage.getItem("activeGame") === item.id) {
                                         activeClass = "spil-element-active";
                                     }
+                                    var slut_dato = new Date(item.varighed).getTime();
+                                    var slut_day = new Date(slut_dato).getDate();
+                                    var slut_month = new Date(slut_dato).getMonth();
+                                    var slut_month_str = "";
+                                    if (slut_month + 1 === 1) {
+                                        slut_month_str = "Januar"
+                                    } else if (slut_month + 1 === 2) {
+                                        slut_month_str = "Februar"
+                                    } else if (slut_month + 1 === 3) {
+                                        slut_month_str = "Marts"
+                                    } else if (slut_month + 1 === 4) {
+                                        slut_month_str = "April"
+                                    } else if (slut_month + 1 === 5) {
+                                        slut_month_str = "Maj"
+                                    } else if (slut_month + 1 === 6) {
+                                        slut_month_str = "Juni"
+                                    } else if (slut_month + 1 === 7) {
+                                        slut_month_str = "Juli"
+                                    }
+
+                                    var oprettelse_day = new Date(item.oprettelse).getDate();
+                                    var oprettelse_month = new Date(item.oprettelse).getMonth();
+                                    var oprettelse_month_str = "";
+                                    if (oprettelse_month + 1 === 1) {
+                                        oprettelse_month_str = "Januar"
+                                    } else if (oprettelse_month + 1 === 2) {
+                                        oprettelse_month_str = "Februar"
+                                    } else if (oprettelse_month + 1 === 3) {
+                                        oprettelse_month_str = "Marts"
+                                    } else if (oprettelse_month + 1 === 4) {
+                                        oprettelse_month_str = "April"
+                                    } else if (oprettelse_month + 1 === 5) {
+                                        oprettelse_month_str = "Maj"
+                                    } else if (oprettelse_month + 1 === 6) {
+                                        oprettelse_month_str = "Juni"
+                                    } else if (oprettelse_month + 1 === 7) {
+                                        oprettelse_month_str = "Juli"
+                                    }
+
+                                    var dif_mil = slut_dato - item.oprettelse;
+                                    var dif_days = dif_mil / (1000*3600*24);
+
+                                    var today = new Date().getTime();
+                                    var dif_today = today - item.oprettelse;
+                                    var dif_today_days = dif_today / (1000*3600*24);
+
+                                    var days_gang = 100 / dif_days;
                                     return (
                                         <li key={id}>
                                             <div className="spil-element-con" onClick={() => setActiveGame(id, index, name)}>
                                                 <div className={activeClass}>
+                                                    <div className="spil-avatar"></div>
                                                     <p className="spil-h1">{name}</p>
                                                     <div className="spil-element-bottom">
-                                                        <div className="spil-divider"></div>
-                                                        <p className="spil-p">{fornavn}</p>
-                                                        <div className="spil-p-right">{bank},-</div>
+                                                        <div className="input-range-con">
+                                                            <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />
+                                                        </div>
+                                                        <div className="input-bottom">
+                                                            <p className="input-under-p">{oprettelse_day} {oprettelse_month_str}</p>
+                                                            <p className="input-under-p">{slut_day} {slut_month_str}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -276,15 +328,67 @@ function StageAktiveSpil () {
                                     if (localStorage.getItem("activeGame") === item.id) {
                                         activeClass = "spil-element-active";
                                     }
+                                    var slut_dato = new Date(item.varighed).getTime();
+                                    var slut_day = new Date(slut_dato).getDate();
+                                    var slut_month = new Date(slut_dato).getMonth();
+                                    var slut_month_str = "";
+                                    if (slut_month + 1 === 1) {
+                                        slut_month_str = "Januar"
+                                    } else if (slut_month + 1 === 2) {
+                                        slut_month_str = "Februar"
+                                    } else if (slut_month + 1 === 3) {
+                                        slut_month_str = "Marts"
+                                    } else if (slut_month + 1 === 4) {
+                                        slut_month_str = "April"
+                                    } else if (slut_month + 1 === 5) {
+                                        slut_month_str = "Maj"
+                                    } else if (slut_month + 1 === 6) {
+                                        slut_month_str = "Juni"
+                                    } else if (slut_month + 1 === 7) {
+                                        slut_month_str = "Juli"
+                                    }
+
+                                    var oprettelse_day = new Date(item.oprettelse).getDate();
+                                    var oprettelse_month = new Date(item.oprettelse).getMonth();
+                                    var oprettelse_month_str = "";
+                                    if (oprettelse_month + 1 === 1) {
+                                        oprettelse_month_str = "Januar"
+                                    } else if (oprettelse_month + 1 === 2) {
+                                        oprettelse_month_str = "Februar"
+                                    } else if (oprettelse_month + 1 === 3) {
+                                        oprettelse_month_str = "Marts"
+                                    } else if (oprettelse_month + 1 === 4) {
+                                        oprettelse_month_str = "April"
+                                    } else if (oprettelse_month + 1 === 5) {
+                                        oprettelse_month_str = "Maj"
+                                    } else if (oprettelse_month + 1 === 6) {
+                                        oprettelse_month_str = "Juni"
+                                    } else if (oprettelse_month + 1 === 7) {
+                                        oprettelse_month_str = "Juli"
+                                    }
+
+                                    var dif_mil = slut_dato - item.oprettelse;
+                                    var dif_days = dif_mil / (1000*3600*24);
+
+                                    var today = new Date().getTime();
+                                    var dif_today = today - item.oprettelse;
+                                    var dif_today_days = dif_today / (1000*3600*24);
+
+                                    var days_gang = 100 / dif_days;
                                     return (
                                         <li key={id}>
                                             <div className="spil-element-con" onClick={() => setActiveGame(id, index, name)}>
                                                 <div className={activeClass}>
+                                                    <div className="spil-avatar"></div>
                                                     <p className="spil-h1">{name}</p>
                                                     <div className="spil-element-bottom">
-                                                        <div className="spil-divider"></div>
-                                                        <p className="spil-p">{fornavn}</p>
-                                                        <div className="spil-p-right">{bank},-</div>
+                                                        <div className="input-range-con">
+                                                            <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />
+                                                        </div>
+                                                        <div className="input-bottom">
+                                                            <p className="input-under-p">{oprettelse_day} {oprettelse_month_str}</p>
+                                                            <p className="input-under-p">{slut_day} {slut_month_str}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -308,15 +412,67 @@ function StageAktiveSpil () {
                                     if (localStorage.getItem("activeGame") === item.id) {
                                         activeClass = "spil-element-active";
                                     }
+                                    var slut_dato = new Date(item.varighed).getTime();
+                                    var slut_day = new Date(slut_dato).getDate();
+                                    var slut_month = new Date(slut_dato).getMonth();
+                                    var slut_month_str = "";
+                                    if (slut_month + 1 === 1) {
+                                        slut_month_str = "Januar"
+                                    } else if (slut_month + 1 === 2) {
+                                        slut_month_str = "Februar"
+                                    } else if (slut_month + 1 === 3) {
+                                        slut_month_str = "Marts"
+                                    } else if (slut_month + 1 === 4) {
+                                        slut_month_str = "April"
+                                    } else if (slut_month + 1 === 5) {
+                                        slut_month_str = "Maj"
+                                    } else if (slut_month + 1 === 6) {
+                                        slut_month_str = "Juni"
+                                    } else if (slut_month + 1 === 7) {
+                                        slut_month_str = "Juli"
+                                    }
+
+                                    var oprettelse_day = new Date(item.oprettelse).getDate();
+                                    var oprettelse_month = new Date(item.oprettelse).getMonth();
+                                    var oprettelse_month_str = "";
+                                    if (oprettelse_month + 1 === 1) {
+                                        oprettelse_month_str = "Januar"
+                                    } else if (oprettelse_month + 1 === 2) {
+                                        oprettelse_month_str = "Februar"
+                                    } else if (oprettelse_month + 1 === 3) {
+                                        oprettelse_month_str = "Marts"
+                                    } else if (oprettelse_month + 1 === 4) {
+                                        oprettelse_month_str = "April"
+                                    } else if (oprettelse_month + 1 === 5) {
+                                        oprettelse_month_str = "Maj"
+                                    } else if (oprettelse_month + 1 === 6) {
+                                        oprettelse_month_str = "Juni"
+                                    } else if (oprettelse_month + 1 === 7) {
+                                        oprettelse_month_str = "Juli"
+                                    }
+
+                                    var dif_mil = slut_dato - item.oprettelse;
+                                    var dif_days = dif_mil / (1000*3600*24);
+
+                                    var today = new Date().getTime();
+                                    var dif_today = today - item.oprettelse;
+                                    var dif_today_days = dif_today / (1000*3600*24);
+
+                                    var days_gang = 100 / dif_days;
                                     return (
                                         <li key={id}>
                                             <div className="spil-element-con" onClick={() => setActiveGame(id, index, name)}>
                                                 <div className={activeClass}>
+                                                    <div className="spil-avatar"></div>
                                                     <p className="spil-h1">{name}</p>
                                                     <div className="spil-element-bottom">
-                                                        <div className="spil-divider"></div>
-                                                        <p className="spil-p">{fornavn}</p>
-                                                        <div className="spil-p-right">{bank},-</div>
+                                                        <div className="input-range-con">
+                                                            <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />
+                                                        </div>
+                                                        <div className="input-bottom">
+                                                            <p className="input-under-p">{oprettelse_day} {oprettelse_month_str}</p>
+                                                            <p className="input-under-p">{slut_day} {slut_month_str}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -340,15 +496,67 @@ function StageAktiveSpil () {
                                     if (localStorage.getItem("activeGame") === item.id) {
                                         activeClass = "spil-element-active";
                                     }
+                                    var slut_dato = new Date(item.varighed).getTime();
+                                    var slut_day = new Date(slut_dato).getDate();
+                                    var slut_month = new Date(slut_dato).getMonth();
+                                    var slut_month_str = "";
+                                    if (slut_month + 1 === 1) {
+                                        slut_month_str = "Januar"
+                                    } else if (slut_month + 1 === 2) {
+                                        slut_month_str = "Februar"
+                                    } else if (slut_month + 1 === 3) {
+                                        slut_month_str = "Marts"
+                                    } else if (slut_month + 1 === 4) {
+                                        slut_month_str = "April"
+                                    } else if (slut_month + 1 === 5) {
+                                        slut_month_str = "Maj"
+                                    } else if (slut_month + 1 === 6) {
+                                        slut_month_str = "Juni"
+                                    } else if (slut_month + 1 === 7) {
+                                        slut_month_str = "Juli"
+                                    }
+
+                                    var oprettelse_day = new Date(item.oprettelse).getDate();
+                                    var oprettelse_month = new Date(item.oprettelse).getMonth();
+                                    var oprettelse_month_str = "";
+                                    if (oprettelse_month + 1 === 1) {
+                                        oprettelse_month_str = "Januar"
+                                    } else if (oprettelse_month + 1 === 2) {
+                                        oprettelse_month_str = "Februar"
+                                    } else if (oprettelse_month + 1 === 3) {
+                                        oprettelse_month_str = "Marts"
+                                    } else if (oprettelse_month + 1 === 4) {
+                                        oprettelse_month_str = "April"
+                                    } else if (oprettelse_month + 1 === 5) {
+                                        oprettelse_month_str = "Maj"
+                                    } else if (oprettelse_month + 1 === 6) {
+                                        oprettelse_month_str = "Juni"
+                                    } else if (oprettelse_month + 1 === 7) {
+                                        oprettelse_month_str = "Juli"
+                                    }
+
+                                    var dif_mil = slut_dato - item.oprettelse;
+                                    var dif_days = dif_mil / (1000*3600*24);
+
+                                    var today = new Date().getTime();
+                                    var dif_today = today - item.oprettelse;
+                                    var dif_today_days = dif_today / (1000*3600*24);
+
+                                    var days_gang = 100 / dif_days;
                                     return (
                                         <li key={id}>
                                             <div className="spil-element-con" onClick={() => setActiveGame(id, index, name)}>
                                                 <div className={activeClass}>
+                                                    <div className="spil-avatar"></div>
                                                     <p className="spil-h1">{name}</p>
                                                     <div className="spil-element-bottom">
-                                                        <div className="spil-divider"></div>
-                                                        <p className="spil-p">{fornavn}</p>
-                                                        <div className="spil-p-right">{bank},-</div>
+                                                        <div className="input-range-con">
+                                                            <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />
+                                                        </div>
+                                                        <div className="input-bottom">
+                                                            <p className="input-under-p">{oprettelse_day} {oprettelse_month_str}</p>
+                                                            <p className="input-under-p">{slut_day} {slut_month_str}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

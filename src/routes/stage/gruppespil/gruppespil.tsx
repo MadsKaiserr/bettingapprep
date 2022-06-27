@@ -15,8 +15,10 @@ function StageGruppespil () {
     const user = getUser();
     const username = user !== 'undefined' && user ? user.username : '';
 
-    const [dataLoad, setDataLoad] = useState(false);
     const [playerOdds, setPlayerOdds] = useState([]);
+
+    const [time, setTime] = useState(false);
+    const [timeText, setTimeText] = useState("");
 
     const [tableArray, setTableArray] = useState([]);
 
@@ -24,6 +26,10 @@ function StageGruppespil () {
     const [first, setFirst] = useState("Indlæser...");
     const [kuponer, setKuponer] = useState("Indlæser...");
     const [gameName, setGameName] = useState("");
+    const [beskeder, setBeskeder] = useState([]);
+    const [beskederLength, setBeskederLength] = useState(0);
+
+    const [beskedText, setBeskedText] = useState("");
 
     const [gameAdmin, setGameAdmin] = useState("");
 
@@ -36,9 +42,18 @@ function StageGruppespil () {
             document.getElementById("stage-loader1").classList.remove("display");
             document.getElementById("stage-loader2").classList.remove("display");
         }
-      }, [loadingText])
+    }, [loadingText])
 
-    function apiCall() {
+    useEffect(() => {
+        if (time === true) {
+            setTimeout(function (){
+                setTime(false);
+                setTimeText("")
+            }, 15000);
+        }
+    }, [time])
+
+    useEffect(() => {
         const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession?game=" + activeGame;
 
         const requestConfig = {
@@ -57,7 +72,13 @@ function StageGruppespil () {
                     localStorage.setItem("notifikationer", response.data.players[k].info.notifikationer.length);
                 }
             }
-            setPlayerOdds(myPlayer);
+            setBeskeder(response.data.beskeder);
+            if (response.data.beskeder.length >= 5) {
+                setBeskederLength(response.data.beskeder.length);
+            } else {
+                setBeskederLength(5);
+            }
+            setPlayerOdds(myPlayer.reverse());
             setGameName(response.data.name);
 
             var startValue = parseInt(response.data.start_amount);
@@ -98,15 +119,7 @@ function StageGruppespil () {
         }).catch(error => {
             console.log("Fejl ved indhentning af data" + error)
         })
-    }
-
-    if (dataLoad === false) {
-        setTimeout(function (){
-            apiCall();
-            console.log("API: Called");
-        }, 500);
-        setDataLoad(true);
-    }
+    }, [])
 
     function adminSettings() {
         if (gameAdmin === localStorage.getItem("email")){
@@ -122,13 +135,62 @@ function StageGruppespil () {
         }
     }
 
+    const sendBesked = event => {
+        event.preventDefault();
+        if (beskedText !== "" && time !== true) {
+            setTimeText("")
+            const URL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/besked";
+
+            const requestConfig = {
+                headers: {
+                    "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
+                }
+            }
+    
+            const auth = JSON.parse(localStorage.getItem("auth"));
+
+            var beskedArray = beskeder;
+            beskedArray.push({
+                name: auth.username,
+                besked: beskedText,
+                iat: new Date().getTime()
+            })
+            if (beskederLength >= 5) {
+                setBeskederLength(beskederLength + 1);
+            }
+            setBeskeder(beskedArray);
+    
+            const verifyBody = {
+                beskedA: {
+                    name: auth.username,
+                    besked: beskedText
+                },
+                game: localStorage.getItem("activeGame")
+            }
+
+            console.log(verifyBody)
+    
+            axios.patch(URL, verifyBody, requestConfig).then(response => {
+                console.log(response);
+                setBeskedText("");
+            }).catch(error => {
+                console.log(error);
+            })
+            setTime(true);
+        } else if (beskedText === "") {
+            setTimeText("Din besked kan ikke være tom.")
+        } else {
+            setTimeText("Der skal gå minimum 15 sekunder mellem hver besked.")
+        }
+    }
+
     if (!localStorage.getItem("activeGame")) {
         return (
             <>
                 <div className="gruppespil-container">
                     <div className="gruppespil-section">
                         <div className="gruppespil-title">
-                            <h1 className="gruppespil-h1">Velkommen til, {username}</h1><br></br>
+                            <h1 className="gruppespil-h1">Velkommen, {username}</h1><br></br>
                             <p className="info-p">Du har ikke noget valgt spil.</p>
                             <Link to="/stage/aktive-spil">
                                 <button className="gruppespil-btn">Vælg spil</button>
@@ -169,6 +231,81 @@ function StageGruppespil () {
                             </div>
                         </div>
                         <div className="gruppespil-info">
+                            <div className="gruppespil-title">
+                                <h1 className="gruppespil-h1">Chat</h1>
+                            </div>
+                            <div className="chat-container">
+                                <ul>
+                                    {beskeder.slice(beskederLength - 5,beskederLength).map((item) => {
+                                        var nameVar = "chat-name";
+                                        if (item.name === JSON.parse(localStorage.getItem("auth")).username) {
+                                            nameVar = "chat-name-active";
+                                        }
+
+                                        var dato_string = "";
+                                        var dato_time_string = "";
+                                        var dato_day;
+                                        var dato_month;
+                                        var dato_year;
+
+                                        var dato_minutes;
+                                        var dato_hours;
+                                        if (item.iat !== undefined) {
+                                            dato_minutes = new Date(parseInt(item.iat)).getMinutes();
+                                            dato_hours = new Date(parseInt(item.iat)).getHours();
+                                            if ((dato_minutes.toString()).length === 1) {
+                                                 dato_time_string = dato_hours + ":0" + dato_minutes;
+                                            } else {
+                                                dato_time_string = dato_hours + ":" + dato_minutes;
+                                            }
+
+                                            var today_day = new Date().getDate();
+                                            var today_month = new Date().getMonth();
+                                            var today_year = new Date().getFullYear();
+                                            dato_day = new Date(parseInt(item.iat)).getDate();
+                                            dato_month = new Date(parseInt(item.iat)).getMonth();
+                                            dato_year = new Date(parseInt(item.iat)).getFullYear();
+                                            if (today_day === dato_day && today_month === dato_month && today_year === dato_year) {
+                                                dato_string = "I dag, " + dato_time_string;
+                                            } else if ((today_day - 1) === dato_day && today_month === dato_month && today_year === dato_year) {
+                                                dato_string = "I går, " + dato_time_string;
+                                            } else if ((today_day - 2) === dato_day && today_month === dato_month && today_year === dato_year) {
+                                                dato_string = "I forgårs, " + dato_time_string;
+                                            } else {
+                                                dato_string = dato_day + "/" + dato_month + " - " + dato_time_string;
+                                            }
+                                        }
+
+                                        return (
+                                            <li key={item.iat}>
+                                                <div className="chat-element">
+                                                    <div className="chat-top">
+                                                        <div className="chat-top-left">
+                                                            <div className="chat-pic"></div>
+                                                            <p className={nameVar}>{item.name}</p>
+                                                            <p className="chat-dato">{dato_string}</p>
+                                                        </div>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="chat-int" viewBox="0 0 16 16">
+                                                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                                        </svg>
+                                                    </div>
+                                                    <p className="chat-p">{item.besked}</p>
+                                                </div>
+                                            </li>
+                                            );
+                                        }
+                                    )}
+                                </ul>
+                                <form className="chat-input" onSubmit={sendBesked}>
+                                    <input id="chat_input" type="text" className="chat-field" value={beskedText} placeholder="Skriv en besked" onChange={event => setBeskedText(event.target.value)} onSubmit={sendBesked} />
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="chat-send" onClick={sendBesked} viewBox="0 0 16 16">
+                                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                                    </svg>
+                                </form>
+                                <p className="chat-error">{timeText}</p>
+                            </div>
+                        </div>
+                        <div className="gruppespil-info">
                             <div className="gruppespil-title" id="gruppespil-title">
                                 <h1 className="gruppespil-h1">Dine Kuponer</h1>
                                 <p className="gruppespil-scroll">Scroll for at se flere</p>
@@ -178,19 +315,22 @@ function StageGruppespil () {
                                 <ul>
                                     {playerOdds.map((item) => {
                                         var kuponClass = "gruppespil-kupon";
+                                        var potentiel = <span>Potentiel</span>;
                                         if (item.vundet === 1) {
                                             kuponClass = "gruppespil-kupon-1";
+                                            potentiel = <span className="potentiel-tabt">Tabt</span>;
                                         } else if (item.vundet === 2) {
                                             kuponClass = "gruppespil-kupon-2";
+                                            potentiel = <span className="potentiel-vundet">Vundet</span>;
                                         }
                                         var mstime = new Date().getTime();
                                         var randomNumber = Math.floor(Math.random() * 512);
                                         var randomId = mstime+"-"+randomNumber;
                                         var afgjort = "Ikke afgjort";
-                                        var afgjortStyle = {color: "var(--red)"};
+                                        var afgjortStyle = {color: "var(--softBlack)"};
                                         if (item.calculated === "true") {
                                             afgjort = "Alle afgjort";
-                                            afgjortStyle = {color: "var(--green)"};
+                                            afgjortStyle = {color: "var(--primary)"};
                                         }
 
                                         var dato_string = "";
@@ -249,7 +389,7 @@ function StageGruppespil () {
 
                                                             var returnDay = "";
                                                             if (new Date().getDate() !== returnDate.getDate()) {
-                                                                var returnMonth = "" + returnDate.getMonth();
+                                                                var returnMonth = "" + (returnDate.getMonth() + 1);
                                                                 if ((returnMonth.toString()).length < 2) {
                                                                     returnMonth = "0" + returnMonth;
                                                                 }
@@ -301,7 +441,7 @@ function StageGruppespil () {
                                                         </div>
                                                         <div className="kupon-confirm">
                                                             <div className="kupon-confirm-div">
-                                                                <p className="kupon-confirm-p">Udbetaling:</p>
+                                                                <p className="kupon-confirm-p">{potentiel} udbetaling:</p>
                                                                 <p className="kupon-confirm-h1">{(item.indsats * item.fullProb).toFixed(2)} kr.</p>
                                                             </div>
                                                         </div>
@@ -328,7 +468,6 @@ function StageGruppespil () {
                                 </div>
                                 <ul>
                                     {tableArray.map((item, index) => {
-                                        console.log(item)
                                         var kapital = item.info.money;
                                         if ((kapital % 1) === 0) {
                                             kapital = kapital + ",00";
@@ -372,6 +511,7 @@ function StageGruppespil () {
                         <div className="gruppespil-info" id="inviteInfo">
                             <div className="gruppespil-title">
                                 <h1 className="gruppespil-h1">Inviter venner</h1>
+                                <p className="gruppespil-scroll">Klik for at kopiere</p>
                             </div>
                             <div className="opret-element-input gruppespil-invite" onClick={() => {navigator.clipboard.writeText("http://localhost:3000/stage/gruppesession?game=" + activeGame + "&type=invite")}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="invite-icon" viewBox="0 0 16 16">

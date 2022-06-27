@@ -55,7 +55,7 @@ function Footer () {
                             <Link to="/betingelser" className="footer-h3">Betingelser</Link>
                             <Link to="/privatliv" className="footer-h3">Privatlivspolitik</Link>
                             <Link to="/faq" className="footer-h3">FAQ</Link>
-                            <Link to="/kom-igang" className="footer-h3">Kom igang</Link>
+                            <Link to="/signup" className="footer-h3">Opret konto</Link>
                             <Link to="/priser" className="footer-h3">Priser</Link>
                         </div>
                     </div>

@@ -10,7 +10,7 @@ import About from './routes/about/about';
 import Signup from './routes/signup/signup';
 import Forside from './routes/forside/forside';
 import Gruppespil from './routes/gruppespil/gruppespil';
-// import Kontakt from "./routes/kontakt/kontakt";
+import Kontakt from "./routes/kontakt/kontakt";
 import Gruppesession from './routes/gruppesession/gruppesession';
 import Priser from './routes/priser/priser';
 import Faq from './routes/faq/faq';
@@ -56,7 +56,7 @@ ReactDOM.render(
         <Routes>
           <Route exact path="/" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Forside key="forsideKey" />]} />
 
-          <Route exact path="/kontakt" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
+          <Route exact path="/kontakt" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Kontakt key="renoKey" />]} />
           <Route exact path="/kom-igang" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
           <Route exact path="/dyster" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Reno key="renoKey" />]} />
 

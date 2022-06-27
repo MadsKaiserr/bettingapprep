@@ -7,8 +7,10 @@ import logo from '../../assets/img/premierleague.png';
 function BlogHeader () {
 
     window.addEventListener("scroll", function(){
-        var header = document.getElementById("nav-bar-main");
-        header.classList.toggle("nav-scrolled", window.scrollY >0);
+        if (document.getElementById("nav-bar-main")) {
+            var header = document.getElementById("nav-bar-main");
+            header.classList.toggle("nav-scrolled", window.scrollY >0);
+        }
     })
 
     var auth = <div className="nav-container-right">

@@ -1644,6 +1644,61 @@ function StageMatcharticle () {
 
     return (
         <>
+            <div className="match-kupon">
+                <div className="kupon-top">
+                    <p className="kupon-header-p">Single</p>
+                    <p className="kupon-blue-p" onClick={() => emptyBets()}>Ryd alle</p>
+                </div>
+                <ul>
+                    {odds.map(bet => {
+                        return (
+                            <li key={bet.id}>
+                                <div className="kupon-container">
+                                    <div className="kupon-divider-first"></div>
+                                    <p className="kupon-top-p">Dit væddemål</p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" onClick={() => {delBet(bet.id, bet.match);}} viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                    </svg>
+                                    <div className="kupon-divider"></div>
+                                    <div className="kupon-info">
+                                        <p className="kupon-h1">{bet.hometeam} - {bet.visitorteam}</p>
+                                        <p className="kupon-p">{getKupon(bet.odds_type,homeTeam,visitorTeam)}: <span className="weight600">{getString(bet.odds_type,bet.odds_result,homeTeam,visitorTeam)}</span></p>
+                                    </div>
+                                    <div className="kupon-odds">
+                                        <p className="kupon-h2">{bet.probability}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        );
+                    })}
+                </ul>
+                <div className="kupon-bottom">
+                    <div className="kupon-bottom-info">
+                        <div className="kupon-indsats">
+                            <input type="number" className="kupon-input" autoComplete="off" id="indsatsInput" placeholder="Indsats" onChange={event => {setIndsats(parseInt(event.target.value)); updateUdbetaling()}}/>
+                        </div>
+                        <div className="kupon-info-div">
+                            <p className="kupon-bottom-info-p">Total indsats</p>
+                            <p className="kupon-bottom-info-p-right">{indsats},00 kr.</p>
+                        </div>
+                        <div className="kupon-info-div">
+                            <p className="kupon-bottom-info-p">Total odds</p>
+                            <p className="kupon-bottom-info-p-right">{returnOdds.toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div className="kupon-confirm">
+                        <div className="kupon-confirm-div">
+                            <p className="kupon-confirm-p">Udbetaling:</p>
+                            <p className="kupon-confirm-h1">{udbetaling.toFixed(2)} kr.</p>
+                        </div>
+                        <button className={kuponBtn} id="placeBetBTN" onClick={() => {
+                        var placeBetBTN = document.getElementById("placeBetBTN");
+                        placeBetBTN.innerHTML = "<div class='loader'></div>";
+                        placeBet();
+                    }}>Placér bet</button>
+                    </div>
+                </div>
+            </div>
             <div className="stage-main-article-container">
                 <div className={messageType} id="errorCon">
                     <svg xmlns="http://www.w3.org/2000/svg" className="triangle" viewBox="0 0 16 16" id="errorIcon">
@@ -3805,61 +3860,6 @@ function StageMatcharticle () {
                                 </ul>
                             </div>
                         </div>
-                            <div className="match-kupon">
-                        <div className="kupon-top">
-                            <p className="kupon-header-p">Single</p>
-                            <p className="kupon-blue-p" onClick={() => emptyBets()}>Ryd alle</p>
-                        </div>
-                        <ul>
-                            {odds.map(bet => {
-                                return (
-                                    <li key={bet.id}>
-                                        <div className="kupon-container">
-                                            <div className="kupon-divider-first"></div>
-                                            <p className="kupon-top-p">Dit væddemål</p>
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" onClick={() => {delBet(bet.id, bet.match);}} viewBox="0 0 16 16">
-                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                                            </svg>
-                                            <div className="kupon-divider"></div>
-                                            <div className="kupon-info">
-                                                <p className="kupon-h1">{bet.hometeam} - {bet.visitorteam}</p>
-                                                <p className="kupon-p">{getKupon(bet.odds_type,homeTeam,visitorTeam)}: <span className="weight600">{getString(bet.odds_type,bet.odds_result,homeTeam,visitorTeam)}</span></p>
-                                            </div>
-                                            <div className="kupon-odds">
-                                                <p className="kupon-h2">{bet.probability}</p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        <div className="kupon-bottom">
-                            <div className="kupon-bottom-info">
-                                <div className="kupon-indsats">
-                                    <input type="number" className="kupon-input" autoComplete="off" id="indsatsInput" placeholder="Indsats" onChange={event => {setIndsats(parseInt(event.target.value)); updateUdbetaling()}}/>
-                                </div>
-                                <div className="kupon-info-div">
-                                    <p className="kupon-bottom-info-p">Total indsats</p>
-                                    <p className="kupon-bottom-info-p-right">{indsats},00 kr.</p>
-                                </div>
-                                <div className="kupon-info-div">
-                                    <p className="kupon-bottom-info-p">Total odds</p>
-                                    <p className="kupon-bottom-info-p-right">{returnOdds.toFixed(2)}</p>
-                                </div>
-                            </div>
-                            <div className="kupon-confirm">
-                                <div className="kupon-confirm-div">
-                                    <p className="kupon-confirm-p">Udbetaling:</p>
-                                    <p className="kupon-confirm-h1">{udbetaling.toFixed(2)} kr.</p>
-                                </div>
-                                <button className={kuponBtn} id="placeBetBTN" onClick={() => {
-                                var placeBetBTN = document.getElementById("placeBetBTN");
-                                placeBetBTN.innerHTML = "<div class='loader'></div>";
-                                placeBet();
-                            }}>Placér bet</button>
-                            </div>
-                        </div>
-                    </div>
                         </div>
                     </div>
                 </div>

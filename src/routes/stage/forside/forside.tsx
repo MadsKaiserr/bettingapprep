@@ -782,7 +782,7 @@ function StageForside () {
         if (localStorage.getItem("activeGame")) {
             return (
                 <div className="info-section">
-                    <p className="info-h1">Velkommen til, {username}</p>
+                    <p className="info-h1">Velkommen, {username}</p>
                     <p className="info-p">Valgte spil: <span className="info-p-span">{activeGameName}</span></p><br />
                     <p className="info-p">Placering: <span className="info-p-span">{position}</span> af <span className="info-p-span">{positionCount}</span></p><br />
                     <p className="info-p">Tilgængelige ligaer: <span className="info-p-span">Superliga</span>, <span className="info-p-span">Scottish Premiership</span></p><br />
@@ -792,7 +792,7 @@ function StageForside () {
         } else {
             return (
                 <div className="info-section">
-                    <p className="info-h1">Velkommen til, {username}</p>
+                    <p className="info-h1">Velkommen, {username}</p>
                     <p className="info-p">Du har ikke noget valgt spil.</p>
                     <Link to="/stage/aktive-spil">
                         <button className="gruppespil-btn">Vælg spil</button>

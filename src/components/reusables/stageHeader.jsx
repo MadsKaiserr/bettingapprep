@@ -70,8 +70,10 @@ function StageHeader () {
     }
 
     window.addEventListener("scroll", function(){
-        var header = document.getElementById("nav-bar");
-        header.classList.toggle("normalHeader", window.scrollY >0);
+        if (document.getElementById("nav-bar")) {
+            var header = document.getElementById("nav-bar");
+            header.classList.toggle("normalHeader", window.scrollY >0);
+        }
     })
 
     function Hit(props) {

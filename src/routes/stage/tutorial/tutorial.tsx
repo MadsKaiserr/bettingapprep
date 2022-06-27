@@ -50,6 +50,9 @@ function StageTutorial () {
 
     function skipHandler() {
         document.getElementById("tut-container").classList.add("display-not");
+        var local = JSON.parse(localStorage.getItem("auth"));
+        local.tutorial = true;
+        localStorage.setItem("auth", JSON.stringify(local));
         body.classList.remove("no-scroll");
     }
 
@@ -82,7 +85,7 @@ function StageTutorial () {
                 </div>
                 <div className="tut-element" id="tut1">
                     <div className="info-section" id="tut1pic">
-                        <p className="info-h1">Velkommen til, {JSON.parse(localStorage.getItem("auth")).username}</p>
+                        <p className="info-h1">Velkommen, {JSON.parse(localStorage.getItem("auth")).username}</p>
                         <p className="info-p">Valgte spil: <span className="info-p-span">Betting.App Dysten</span></p><br />
                         <p className="info-p">Placering: <span className="info-p-span">1</span> af <span className="info-p-span">2</span></p><br />
                         <p className="info-p">Tilgængelige ligaer: <span className="info-p-span">Europa</span>, <span className="info-p-span">Nations League</span></p><br />
