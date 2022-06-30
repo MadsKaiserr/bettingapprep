@@ -15,7 +15,7 @@ function Priser () {
 
     
     const buyPremium = async e => {
-        const stripePromise = await loadStripe('pk_live_51L8ohSHmQPuzRZTtZmQUwFnQsFvPkzpqNWh9DIhZUPTJqk8bYD04gE7tJn1EUfoEtHYdpJdIVbwYjFpgN0Ygafkm00KLCar95Z')
+        const stripePromise = await loadStripe('pk_test_51L8ohSHmQPuzRZTtLiNLkrvy2P1EobTAfX90Gl56CIHdj3yHfQU8XpOtdJ8IGxDlP3qPt2CTpRA4H33KBAn7WZK000YexYChIT')
         const stripe = await stripePromise;
         const { error } = await stripe.redirectToCheckout({
         lineItems: [{
