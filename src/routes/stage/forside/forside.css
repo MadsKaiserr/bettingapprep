@@ -598,7 +598,7 @@
   padding: 0px 5%;
   padding-top: 45px;
   padding-bottom: 125px;
-  background-color: var(--surface);
+  background-color: var(--stageSurface);
 }
 
 .stage-leftbar {

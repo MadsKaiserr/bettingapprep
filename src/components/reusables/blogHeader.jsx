@@ -2,7 +2,7 @@ import React from 'react';
 import { showLogin } from "../../services/login";
 import { Link } from 'react-router-dom';
 
-import logo from '../../assets/img/premierleague.png';
+import logo from '../../assets/img/long-logo-primary.png';
  
 function BlogHeader () {
 
@@ -42,7 +42,7 @@ function BlogHeader () {
                 <div className="nav-container-fix" id="fix-fix">
                     <div className="nav-container-left">
                         <Link to="/blog" className="blog-header">
-                            <img src={logo} alt="BettingApp Logo" className="main-logo" />
+                            <img src={logo} alt="Tipsspillet Logo" className="main-logo" />
                             <p className="blog-header-h1">BLOG</p>
                         </Link>
                     </div>

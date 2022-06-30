@@ -7,7 +7,7 @@ import {InstantSearch, SearchBox, Hits} from "react-instantsearch/dom";
 import algoliasearch from 'algoliasearch/lite';
 
 import '../main.css';
-import logo from '../../assets/img/premierleague.png';
+import logo from '../../assets/img/long-logo-primary.png';
 import flag from '../../assets/img/danmark.png';
 import england from '../../assets/img/england.png';
  
@@ -121,7 +121,7 @@ function StageHeader () {
                         </div>
                     </div>
                     <Link to="/stage">
-                        <img src={logo} alt="BettingApp Logo" className="main-logo middle-logo" />
+                        <img src={logo} alt="Tipsspillet Logo" className="main-logo middle-logo" />
                     </Link>
                     <div className="nav-container-stage-right">
                         <div className="nav-profile">

@@ -75,13 +75,13 @@
 }
 
 .main-logo {
-  height: 65px;
+  height: 55px;
   transition: 0.2s;
   cursor: pointer;
 }
 
 .middle-logo {
-  height: 50px !important;
+  height: 60px !important;
   text-align: center !important;
 }
 
@@ -567,12 +567,6 @@
   display: inline-block;
 }
 
-@media only screen and (max-width: 1440px) {
-  .nav-container-fix {
-    width: 66% !important;
-  }
-}
-
 .nav-error {
   display: flex;
   align-items: center;
@@ -617,11 +611,10 @@
   height: 100%;
   gap: 70px;
   display: flex;
+  padding-left: 50px;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  padding-left: 30px;
 }
 
 .nav-scrolled .nav-container-fix .nav-container-mid {

@@ -6,7 +6,7 @@ import '../main.css';
 import '../../styles/main.css';
 import '../../styles/utilities.css';
 
-import footerLogo from '../../assets/img/premierleagueJpg.png';
+import footerLogo from '../../assets/img/logo.png';
 
 import instagram from '../../assets/img/linked.png';
 import facebook from '../../assets/img/facebook.png';
@@ -20,7 +20,7 @@ function Footer () {
                     <div className="footer-section">
                         <Link className="footer-by" to="/">
                             <img src={footerLogo} alt="" className="footer-i" />
-                            <p className="footer-h1">Betting.App</p>
+                            <p className="footer-h1">Tipsspillet</p>
                         </Link>
                         <p className="footer-bytext">Opret betting-dyster mod venner <br />og familie, og bet med virtuelle penge.</p>
                         <div className="footer-socials">

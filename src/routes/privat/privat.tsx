@@ -10,9 +10,9 @@ function Privat () {
     return (
         <>
             <div className="stage-main-container" style={{paddingLeft: "300px", paddingRight: "300px"}}>
-                <h1 className="betingelser-h1">Betting.App Privatlivspolitik</h1>
+                <h1 className="betingelser-h1">Tipsspillet Privatlivspolitik</h1>
                 <p className="betingelser-h2">Sidst opdateret 24. maj, 2022</p>
-                <p className="betingelser-p">Velkommen til Betting.App</p>
+                <p className="betingelser-p">Velkommen til Tipsspillet</p>
                 <p className="betingelser-p">Følgende politik er gældende i forbindelse med anvendelsen af internetsiden. Ved at gå ind på denne internetside anerkender og tiltræder du følgende privatlivspolitik. Såfremt du ikke kan acceptere disse vilkår, skal du ikke benytte denne internetside</p>
                 <div className="betingelser-section">
                     <p className="betingelser-h3">Sektion A - Cookie og privatliv</p>

@@ -5,7 +5,7 @@ import '../main.css';
 import '../../styles/main.css';
 import '../../styles/utilities.css';
 
-import logo from '../../assets/img/premierwhite.png';
+import logo from '../../assets/img/long-logo-white.png';
  
 function Header () {
 
@@ -13,7 +13,7 @@ function Header () {
         <>
             <div className="nav-bar-clear">
                 <Link to="/">
-                    <img src={logo} alt="BettingApp Logo" className="main-logo" />
+                    <img src={logo} alt="Tipsspillet Logo" className="main-logo" />
                 </Link>
             </div>
         </>

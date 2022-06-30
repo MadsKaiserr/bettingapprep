@@ -6,8 +6,8 @@ import '../main.css';
 import '../../styles/main.css';
 import '../../styles/utilities.css';
 
-import logo from '../../assets/img/premierleague.png';
-import flag from '../../assets/img/danmark.png';
+import logo from '../../assets/img/long-logo-primary.png';
+// import flag from '../../assets/img/danmark.png';
  
 function Header () {
 
@@ -19,9 +19,9 @@ function Header () {
     })
 
     var auth = <div className="nav-container-right">
-              <div className="nav-forside-flag-container">
+              {/* <div className="nav-forside-flag-container">
                  <img src={flag} alt="Danmarks flag" className="nav-flag" />
-             </div>
+             </div> */}
     <p className="nav-btn-outline" onClick={() => showLogin()}>Log ind</p>
     <Link to="/signup">
     <button className="nav-btn-default">Opret Profil<span className="nav-in">Det gratis</span></button></Link></div>;
@@ -33,18 +33,18 @@ function Header () {
 
     if (isAuthenticated) {
         auth = <div className="nav-container-right">
-             <div className="nav-forside-flag-container">
+             {/* <div className="nav-forside-flag-container">
                  <img src={flag} alt="Danmarks flag" className="nav-flag" />
-             </div>
+             </div> */}
              <Link to="/stage">
                 <p className="nav-btn-outline">Begynd at bette</p>
             </Link>
             </div>;
     } else {
         auth = <div className="nav-container-right">
-             <div className="nav-forside-flag-container">
+             {/* <div className="nav-forside-flag-container">
                  <img src={flag} alt="Danmarks flag" className="nav-flag" />
-             </div>
+             </div> */}
             <p className="nav-btn-outline" onClick={() => showLogin()}>Log ind</p>
             <Link to="/signup">
             <button className="nav-btn-default">Opret Profil<div className="nav-in-before"></div><span className="nav-in">Det gratis</span></button></Link></div>;;
@@ -56,7 +56,7 @@ function Header () {
                 <div className="nav-container-fix">
                     <div className="nav-container-left">
                         <Link to="/">
-                            <img src={logo} alt="BettingApp Logo" className="main-logo" />
+                            <img src={logo} alt="Tipsspillet Logo" className="main-logo" />
                         </Link>
                     </div>
                     <div className="nav-container-mid">
