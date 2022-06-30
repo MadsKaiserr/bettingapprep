@@ -19,7 +19,7 @@ function Priser () {
         const stripe = await stripePromise;
         const { error } = await stripe.redirectToCheckout({
         lineItems: [{
-            price: 'price_1LGRplHmQPuzRZTtGSDDMK3S',
+            price: 'price_1LGPKhHmQPuzRZTt6V11b9HO',
             quantity: 1,
         }],
         mode: 'payment',
