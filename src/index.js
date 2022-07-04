@@ -13,6 +13,7 @@ import Gruppespil from './routes/gruppespil/gruppespil';
 import Kontakt from "./routes/kontakt/kontakt";
 import Gruppesession from './routes/gruppesession/gruppesession';
 import Priser from './routes/priser/priser';
+import Done from './routes/priser/done';
 import Faq from './routes/faq/faq';
 import Betingelser from './routes/betingelser/betingelser';
 import Privat from './routes/privat/privat';
@@ -66,6 +67,7 @@ ReactDOM.render(
           <Route exact path="/gruppespil" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Gruppespil key="gruppespilKey" />]} />
           <Route exact path="/gruppesession" element={[<Header key="headerKey" />, <Gruppesession key="gruppesessionKey" />]} />
           <Route exact path="/priser" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Priser key="priserKey" />]} />
+          <Route exact path="/priser/done" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Done key="doneKey" />]} />
           <Route exact path="/faq" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Faq key="faqKey" />]} />
           <Route exact path="/betingelser" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Betingelser key="betingelserKey" />]} />
           <Route exact path="/privatliv" element={[<Header key="headerKey" />, <Headerfix key="headerFixKey" />, <Privat key="privatKey" />]} />

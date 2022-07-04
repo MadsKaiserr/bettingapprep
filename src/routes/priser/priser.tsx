@@ -23,8 +23,8 @@ function Priser () {
             quantity: 1,
         }],
         mode: 'payment',
-        successUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/success',
-        cancelUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/cancel',
+        successUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=success',
+        cancelUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=cancel',
         });
     };
 
