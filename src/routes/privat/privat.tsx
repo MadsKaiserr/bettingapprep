@@ -9,7 +9,8 @@ function Privat () {
 
     return (
         <>
-            <div className="stage-main-container" style={{paddingLeft: "300px", paddingRight: "300px"}}>
+            <div className="stage-main-container">
+                <div className="betingelser-container">
                 <h1 className="betingelser-h1">Tipsspillet Privatlivspolitik</h1>
                 <p className="betingelser-h2">Sidst opdateret 24. maj, 2022</p>
                 <p className="betingelser-p">Velkommen til Tipsspillet</p>
@@ -56,6 +57,7 @@ Videregivelse af personoplysninger som navn og e-mail m.v. vil kun ske, hvis du 
                         <p className="betingelser-p">Du har ret til at få oplyst, hvilke personoplysninger, vi behandler om dig i et almindeligt format (dataportabilitet). Du kan desuden til enhver tid gøre indsigelse mod, at oplysninger anvendes. Du kan også tilbagekalde dit samtykke til, at der bliver behandlet oplysninger om dig. Hvis de oplysninger, der behandles om dig, er forkerte har du ret til at de bliver rettet eller slettet. Henvendelse herom kan ske til: mebondekaiser@gmail.com. Hvis du vil klage over vores behandling af dine personoplysninger, har du også mulighed for at tage kontakt til Datatilsynet.<br /><br />
 Ønsker du ikke længere, at vi skal behandle dine personoplysninger, eller at vi skal begrænse behandlingen af dine personoplysninger, kan du også sende os en anmodning herom til ovennævnte e-mailadresse.</p>
                     </div>
+                </div>
                 </div>
             </div>
         </>

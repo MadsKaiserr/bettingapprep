@@ -54,9 +54,6 @@
 }
 
 @media only screen and (max-width: 1020px) {
-  .nav-container-stage-right {
-    display: none !important;
-  }
   .stage-kupon {
     display: none !important;
   }
@@ -68,6 +65,18 @@
   }
   .match-title-text {
     width: 100px !important;
+  }
+  .nav-error {
+    display: none !important;
+  }
+  .nav-link {
+    display: none !important;
+  }
+  .nav-profile-btn {
+    display: none !important;
+  }
+  .user-dropdown{
+    display: none !important;
   }
 }
 

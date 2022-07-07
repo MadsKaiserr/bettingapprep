@@ -12,7 +12,8 @@ function Betingelser () {
 
     return (
         <>
-            <div className="stage-main-container" style={{paddingLeft: "300px", paddingRight: "300px"}}>
+            <div className="stage-main-container">
+                <div className="betingelser-container">
                 <h1 className="betingelser-h1">Tipsspillet Betingelser</h1>
                 <p className="betingelser-h2">Sidst opdateret 24. maj, 2022</p>
                 <p className="betingelser-p">Velkommen til Tipsspillet</p>
@@ -78,6 +79,7 @@ function Betingelser () {
                         <p className="betingelser-h4">4 - Fejl på data</p>
                         <p className="betingelser-p">...</p>
                     </div>
+                </div>
                 </div>
             </div>
         </>

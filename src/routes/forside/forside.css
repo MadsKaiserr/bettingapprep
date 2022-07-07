@@ -15,7 +15,7 @@
 
 .hero-divider {
   height: 2px;
-  width: clamp(40px, 5vw, 70px);
+  width: clamp(60px, 5vw, 70px);
   background-color: #4a545e;
   margin: 15px auto;
   margin-bottom: 22px !important;
@@ -32,13 +32,13 @@
 
 .hero-info-block-h1 {
   color: #292929;
-  font-size: clamp(25px, 5vw, 44px);
+  font-size: clamp(32px, 5vw, 44px);
   font-family: CircularBook;
 }
 
 .hero-info-block-h2 {
   color: #566578;
-  font-size: clamp(8px, 2vw, 13px);
+  font-size: clamp(10px, 2vw, 13px);
   font-family: Open Sans;
   font-weight: 700;
   opacity: 0.85;
@@ -180,7 +180,7 @@
 .forside-section {
   width: 100%;
   background-color: #fff;
-  padding: 100px 100px;
+  padding: 100px clamp(40px, 4vw, 100px);
   text-align: center;
 }
 
@@ -211,7 +211,7 @@
 }
 
 .fsection-h1 {
-  font-size: 34px;
+  font-size: clamp(30px, 5vw, 46px);
   color: var(--secondary);
   font-weight: 100;
   padding-bottom: 10px;
@@ -227,7 +227,7 @@
 }
 
 .fsection-h4 {
-  font-size: clamp(17px, 3vw, 25px);
+  font-size: clamp(23px, 4vw, 25px);
   color: var(--secondary);
   font-weight: 100;
   padding-bottom: 10px;
@@ -242,7 +242,7 @@
 }
 
 .fsection-h5 {
-  font-size: clamp(12px, 2vw, 15px);
+  font-size: clamp(14px, 3vw, 15px);
   color: var(--primary);
   font-weight: 100;
   padding-bottom: 15px;
@@ -250,7 +250,7 @@
 }
 
 .fsection-p {
-  font-size: clamp(12px, 2vw, 15px);
+  font-size: clamp(14px, 3vw, 15px);
   color: var(--softBlack);
   font-weight: 100;
   font-family: CircularLight;
@@ -262,7 +262,7 @@
 }
 
 .fsection-a {
-  font-size: clamp(12px, 2vw, 15px);
+  font-size: clamp(14px, 3vw, 15px);
   color: var(--primary);
   font-weight: 100;
   opacity: 0.8;

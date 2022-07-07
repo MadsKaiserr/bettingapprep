@@ -28,7 +28,6 @@
 
 .signup-section {
   margin: auto;
-  width: 650px;
 }
 
 .login-req {
@@ -197,7 +196,8 @@
 }
 
 .login-popup {
-  width: 550px;
+  max-width: 550px;
+  width: 90vw;
   min-height: 500px;
   margin: auto;
   margin-top: 100px !important;
@@ -208,7 +208,8 @@
 }
 
 .signup-popup {
-  width: 550px;
+  max-width: 550px;
+  width: 90vw;
   min-height: 500px;
   margin: auto;
   background-color: #fff;

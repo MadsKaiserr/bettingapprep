@@ -74,6 +74,8 @@ function Header () {
                     <Link to="/priser" className="side-nav-p" onClick={() => {closeMenu()}}>Priser</Link>
                     <Link to="/blog" className="side-nav-p" onClick={() => {closeMenu()}}>Blog</Link>
                     <Link to="/faq" className="side-nav-p" onClick={() => {closeMenu()}}>Spørgsmål og svar</Link>
+                    <p className="side-nav-p" onClick={() => {closeMenu(); showLogin()}}>Login</p>
+                    <Link to="/signup" className="side-nav-p" onClick={() => {closeMenu()}}>Opret konto</Link>
                 </div>
             </div>
             </div>;
