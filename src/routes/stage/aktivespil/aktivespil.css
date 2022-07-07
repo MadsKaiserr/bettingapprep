@@ -232,6 +232,14 @@
   font-size: 18px;
 }
 
+.spil-h2 {
+  color: var(--softBlack);
+  font-family: CircularLight;
+  font-weight: 100;
+  opacity: 0.7;
+  font-size: 12px;
+}
+
 .spil-element-bottom {
   width: 100%;
   display: flex;
@@ -246,9 +254,23 @@
   font-weight: 100;
 }
 
+.input-under-p2 {
+  color: var(--softBlack);
+  opacity: 0.5;
+  font-size: 12px;
+  font-family: CircularLight;
+  font-weight: 100;
+}
+
 .input-bottom {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.input-bottom2 {
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 

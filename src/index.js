@@ -49,6 +49,9 @@ import './assets/fonts/Montserrat-Regular.ttf';
 import RequireAuth from "./services/RequireAuth";
 import N404 from './components/reusables/N404';
 
+import Experience from './components/experience/experience';
+import Name from './components/name/name';
+
 
 ReactDOM.render(
     <Router>
@@ -79,7 +82,7 @@ ReactDOM.render(
           <Route exact path="/blog/*" element={[<BlogHeader key="headerKey" />, <Headerfix key="headerFixKey" />, <N404 key="404Key" />]} />
         
           <Route element={<RequireAuth />}>
-            <Route exact path="/stage/" element={[<StageHeader key="stageHeaderKey" />, <Stagefix key="stageFixKey" />, <StageForside key="stageForsideKey" />]} />
+            <Route exact path="/stage/" element={[<StageHeader key="stageHeaderKey" />, <Stagefix key="stageFixKey" />, <StageForside key="stageForsideKey" />, <Experience key="stageExp" />, <Name key="stageBane" />]} />
             <Route exact path="/stage/aktive-spil" element={[<StageHeader key="stageHeaderKey" />, <StageAktiveSpil key="StageAktiveSpilKey" />]} />
             <Route exact path="/stage/faq" element={[<StageHeader key="stageHeaderKey" />, <Stagefix key="stageFixKey" />, <StageFaq key="StageFaqKey" />]} />
             <Route exact path="/stage/opret-spil" element={[<StageHeader key="stageHeaderKey" />, <StageOpret key="StageOpretKey" />]} />

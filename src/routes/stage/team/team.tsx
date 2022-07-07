@@ -152,7 +152,13 @@ function StageTeam () {
                         }
                     }
                 }
-                setSenesteFive(senesteSlash.reverse());
+                senesteSlash.sort((a, b) => {
+                    return b.time.starting_at.timestamp - a.time.starting_at.timestamp;
+                });
+                setSenesteFive(senesteSlash);
+                kommendeSlash.sort((a, b) => {
+                    return a.time.starting_at.timestamp - b.time.starting_at.timestamp;
+                });
                 setKommendeFive(kommendeSlash);
             }) .catch(error => 
                 console.log('error', error
@@ -779,7 +785,7 @@ function StageTeam () {
                                             var starting_at = item.time.starting_at.timestamp * 1000;
                                             var starting_at_date = new Date(starting_at).getDate();
                                             var starting_at_date_str = starting_at_date.toString();
-                                            var starting_at_month = new Date(starting_at).getMonth();
+                                            var starting_at_month = new Date(starting_at).getMonth() + 1;
                                             var starting_at_month_str = starting_at_month.toString();
                                             if ((starting_at_month.toString()).length === 1) {
                                                 starting_at_month_str = "0" + starting_at_month;
@@ -892,7 +898,7 @@ function StageTeam () {
                                             var starting_at = item.time.starting_at.timestamp * 1000;
                                             var starting_at_date = new Date(starting_at).getDate();
                                             var starting_at_date_str = starting_at_date.toString();
-                                            var starting_at_month = new Date(starting_at).getMonth();
+                                            var starting_at_month = new Date(starting_at).getMonth() + 1;
                                             var starting_at_month_str = starting_at_month.toString();
                                             if ((starting_at_month.toString()).length === 1) {
                                                 starting_at_month_str = "0" + starting_at_month;
@@ -1020,7 +1026,7 @@ function StageTeam () {
                                         var starting_at = item.time.starting_at.timestamp * 1000;
                                         var starting_at_date = new Date(starting_at).getDate();
                                         var starting_at_date_str = starting_at_date.toString();
-                                        var starting_at_month = new Date(starting_at).getMonth();
+                                        var starting_at_month = new Date(starting_at).getMonth() + 1;
                                         var starting_at_month_str = starting_at_month.toString();
                                         if ((starting_at_month.toString()).length === 1) {
                                             starting_at_month_str = "0" + starting_at_month;
@@ -1028,12 +1034,21 @@ function StageTeam () {
                                         if ((starting_at_date.toString()).length === 1) {
                                             starting_at_date_str = "0" + starting_at_date;
                                         }
+
+                                        var starting_at_year = new Date(starting_at).getFullYear();
+                                        var yearClass = "display-not";
+                                        if (starting_at_year !== new Date().getFullYear()) {
+                                            yearClass = "team-kampe-minut";
+                                        }
                                         return (
                                             <li key={item.id}>
                                                 <div className="team-match">
                                                     <div className="stage-indhold-down">
                                                         <Link to={gameURL} className="team-kampe-hold">
-                                                            <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                            <div className="time-con">
+                                                                <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                                <p className={yearClass}>{starting_at_year}</p>
+                                                            </div>
                                                             <div className="stage-kampe-hold-div">
                                                                 <div className="stage-kampe-team">
                                                                     <p className={scoreLocal}>{item.scores.localteam_score}</p>
@@ -1132,7 +1147,7 @@ function StageTeam () {
                                         var starting_at = item.time.starting_at.timestamp * 1000;
                                         var starting_at_date = new Date(starting_at).getDate();
                                         var starting_at_date_str = starting_at_date.toString();
-                                        var starting_at_month = new Date(starting_at).getMonth();
+                                        var starting_at_month = new Date(starting_at).getMonth() + 1;
                                         var starting_at_month_str = starting_at_month.toString();
                                         if ((starting_at_month.toString()).length === 1) {
                                             starting_at_month_str = "0" + starting_at_month;
@@ -1140,12 +1155,21 @@ function StageTeam () {
                                         if ((starting_at_date.toString()).length === 1) {
                                             starting_at_date_str = "0" + starting_at_date;
                                         }
+
+                                        var starting_at_year = new Date(starting_at).getFullYear();
+                                        var yearClass = "display-not";
+                                        if (starting_at_year !== new Date().getFullYear()) {
+                                            yearClass = "team-kampe-minut";
+                                        }
                                         return (
                                             <li key={item.id}>
                                                 <div className="team-match">
                                                     <div className="stage-indhold-down">
                                                         <Link to={gameURL} className="team-kampe-hold">
-                                                            <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                            <div className="time-con">
+                                                                <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                                <p className={yearClass}>{starting_at_year}</p>
+                                                            </div>
                                                             <div className="stage-kampe-hold-div">
                                                                 <div className="stage-kampe-team">
                                                                     <p className={scoreLocal}>{item.scores.localteam_score}</p>
@@ -1246,7 +1270,7 @@ function StageTeam () {
                                         var starting_at = item.time.starting_at.timestamp * 1000;
                                         var starting_at_date = new Date(starting_at).getDate();
                                         var starting_at_date_str = starting_at_date.toString();
-                                        var starting_at_month = new Date(starting_at).getMonth();
+                                        var starting_at_month = new Date(starting_at).getMonth() + 1;
                                         var starting_at_month_str = starting_at_month.toString();
                                         if ((starting_at_month.toString()).length === 1) {
                                             starting_at_month_str = "0" + starting_at_month;
@@ -1254,12 +1278,21 @@ function StageTeam () {
                                         if ((starting_at_date.toString()).length === 1) {
                                             starting_at_date_str = "0" + starting_at_date;
                                         }
+
+                                        var starting_at_year = new Date(starting_at).getFullYear();
+                                        var yearClass = "display-not";
+                                        if (starting_at_year !== new Date().getFullYear()) {
+                                            yearClass = "team-kampe-minut";
+                                        }
                                         return (
                                             <li key={item.id}>
                                                 <div className="team-match">
                                                     <div className="stage-indhold-down">
                                                         <Link to={gameURL} className="team-kampe-hold">
-                                                            <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                            <div className="time-con">
+                                                                <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                                <p className={yearClass}>{starting_at_year}</p>
+                                                            </div>
                                                             <div className="stage-kampe-hold-div">
                                                                 <div className="stage-kampe-team">
                                                                     <p className={scoreLocal}>{item.scores.localteam_score}</p>
@@ -1358,7 +1391,7 @@ function StageTeam () {
                                         var starting_at = item.time.starting_at.timestamp * 1000;
                                         var starting_at_date = new Date(starting_at).getDate();
                                         var starting_at_date_str = starting_at_date.toString();
-                                        var starting_at_month = new Date(starting_at).getMonth();
+                                        var starting_at_month = new Date(starting_at).getMonth() + 1;
                                         var starting_at_month_str = starting_at_month.toString();
                                         if ((starting_at_month.toString()).length === 1) {
                                             starting_at_month_str = "0" + starting_at_month;
@@ -1366,12 +1399,21 @@ function StageTeam () {
                                         if ((starting_at_date.toString()).length === 1) {
                                             starting_at_date_str = "0" + starting_at_date;
                                         }
+
+                                        var starting_at_year = new Date(starting_at).getFullYear();
+                                        var yearClass = "display-not";
+                                        if (starting_at_year !== new Date().getFullYear()) {
+                                            yearClass = "team-kampe-minut";
+                                        }
                                         return (
                                             <li key={item.id}>
                                                 <div className="team-match">
                                                     <div className="stage-indhold-down">
                                                         <Link to={gameURL} className="team-kampe-hold">
-                                                            <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                            <div className="time-con">
+                                                                <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                                <p className={yearClass}>{starting_at_year}</p>
+                                                            </div>
                                                             <div className="stage-kampe-hold-div">
                                                                 <div className="stage-kampe-team">
                                                                     <p className={scoreLocal}>{item.scores.localteam_score}</p>

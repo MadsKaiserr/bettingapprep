@@ -72,6 +72,14 @@ li {
   margin-top: -90px;
 }
 
+.kontakt-parent {
+  position: absolute;
+  left: 50%;
+  width: 1200px;
+  top: 0;
+  transform: rotate(90deg);
+}
+
 .pages-parent-dir {
   margin-top: -90px;
   transform: scaleX(-1);

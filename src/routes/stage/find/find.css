@@ -1,8 +1,11 @@
 .find-div {
-    background-color: var(--surface);
-    width: 100%;
-    padding: 150px 18%;
-    min-height: 650px;
+    background-color: #fff;
+    padding: 30px 50px;
+    border-top: 4px var(--primary) solid;
+    margin: 50px auto;
+    width: 70%;
+    box-shadow: 0px 0px 20px 0px rgb(0 0 0 / 5%);
+    min-height: 600px;
 }
 
 .find-table-row {
@@ -17,4 +20,14 @@
 
 .find-table-row:hover {
     background-color: var(--stageSurface);
+}
+
+.find-wrapper {
+    width: 100%;
+    height: 100%;
+    background-color: var(--stageSurface);
+    padding: 125px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

@@ -329,13 +329,14 @@
   background-color: var(--softBlack);
   border-radius: 3px;
   display: none;
-  right: -260px;
-  top: 50%;
+  right: -300px;
+  top: 0px;
   transition: 0.2s;
   font-family: CircularLight;
   font-weight: 100;
   color: rgba(255, 255, 255, 0.811);
   font-size: 13px;
+  z-index: 19;
   padding: 10px 20px;
 }
 

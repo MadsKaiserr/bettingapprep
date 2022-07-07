@@ -20,6 +20,7 @@ function StageGruppesession () {
     const [gameName, setGameName] = useState("Indlæser...");
     const [gamePlayers, setGamePlayers] = useState("Indlæser...");
     const [gameStart, setGameStart] = useState("Indlæser...");
+    const [kuponer, setKuponer] = useState("Indlæser...");
     const [synlighed, setSynlighed] = useState("");
 
     const queryString = window.location.search;
@@ -65,6 +66,22 @@ function StageGruppesession () {
                     }
                 }
             }
+
+            var startValue = parseInt(response.data.start_amount);
+            var gevinstVar = 0;
+            var antalKuponer = 0;
+            for (var i in response.data.players) {
+                var kapital = response.data.players[i].info.money;
+                gevinstVar = gevinstVar + (kapital - startValue);
+
+                var playerKuponer = response.data.players[i].odds.length;
+                antalKuponer = antalKuponer + playerKuponer;
+                var finalKuponer = antalKuponer + "";
+                if (response.data.players[i].player === localStorage.getItem("email")) {
+                    localStorage.setItem("notifikationer", response.data.players[i].info.notifikationer.length);
+                }
+            }
+            setKuponer(finalKuponer);
         }).catch(error => {
             console.log("Fejl ved indhentning af data" + error)
         })
@@ -165,8 +182,8 @@ function StageGruppesession () {
                             <p className="gruppeinvite-h1">{gameStart}</p>
                         </div>
                         <div className="gruppeinvite-info">
-                            <p className="gruppeinvite-p">ANTAL BETS</p>
-                            <p className="gruppeinvite-h1">?</p>
+                            <p className="gruppeinvite-p">ANTAL KUPONER</p>
+                            <p className="gruppeinvite-h1">{kuponer}</p>
                         </div><br />
                         <button className="gruppeinvite-btn" onClick={() => {tilmeld()}}>TILMELD</button>
                     </div>
@@ -189,8 +206,8 @@ function StageGruppesession () {
                             <p className="gruppeinvite-h1">{gameStart}</p>
                         </div>
                         <div className="gruppeinvite-info">
-                            <p className="gruppeinvite-p">SLUTTER</p>
-                            <p className="gruppeinvite-h1">{varighed}</p>
+                            <p className="gruppeinvite-p">ANTAL KUPONER</p>
+                            <p className="gruppeinvite-h1">{kuponer}</p>
                         </div><br />
                         <button className="gruppeinvite-btn" onClick={() => {tilmeld()}}>TILMELD</button>
                     </div>
@@ -213,8 +230,8 @@ function StageGruppesession () {
                             <p className="gruppeinvite-h1">{gameStart}</p>
                         </div>
                         <div className="gruppeinvite-info">
-                            <p className="gruppeinvite-p">ANTAL BETS</p>
-                            <p className="gruppeinvite-h1">?</p>
+                            <p className="gruppeinvite-p">ANTAL KUPONER</p>
+                            <p className="gruppeinvite-h1">{kuponer}</p>
                         </div><br />
                     </div>
                 </div>
@@ -236,8 +253,8 @@ function StageGruppesession () {
                             <p className="gruppeinvite-h1">{gameStart}</p>
                         </div>
                         <div className="gruppeinvite-info">
-                            <p className="gruppeinvite-p">ANTAL BETS</p>
-                            <p className="gruppeinvite-h1">?</p>
+                            <p className="gruppeinvite-p">ANTAL KUPONER</p>
+                            <p className="gruppeinvite-h1">{kuponer}</p>
                         </div><br />
                         <button className="gruppeinvite-btn" onClick={() => {tilmeld()}}>TILMELD</button>
                     </div>
@@ -271,12 +288,13 @@ function StageGruppesession () {
                         <div className="gruppespil-table">
                             <div className="gruppespil-table-top">
                                 <p className="gruppespil-table-title gruppetable-navn">NAVN</p>
-                                <p className="gruppespil-table-title gruppetable-number">VÆDDEMÅL</p>
+                                <p className="gruppespil-table-title gruppetable-number" id="table-anv">VÆDDEMÅL</p>
                                 <p className="gruppespil-table-title gruppetable-kapital">KAPITAL</p>
-                                <p className="gruppespil-table-title gruppetable-number">AKTIVE VÆDDEMÅL</p>
+                                <p className="gruppespil-table-title gruppetable-number" id="table-av">AKTIVE VÆDDEMÅL</p>
                             </div>
                             <ul>
                                 {tableArray.map((item, index) => {
+                                    console.log(item)
                                     var kapital = item.info.money;
                                     if ((kapital % 1) === 0) {
                                         kapital = kapital + ",00";
@@ -287,8 +305,17 @@ function StageGruppesession () {
                                         medlemsskab = "gruppespil-table-medlemsskab-primary";
                                     } else if (medlemsskab === "premium") {
                                         medlemsskab = "gruppespil-table-medlemsskab-gold";
+                                    } else if (medlemsskab === "administrator") {
+                                        medlemsskab = "gruppespil-table-medlemsskab-special";
                                     } else {
                                         medlemsskab = "gruppespil-table-medlemsskab-silver";
+                                    }
+
+                                    var aktive = 0;
+                                    for (var w in item.odds) {
+                                        if (item.odds[w].calculated === "false") {
+                                            aktive = aktive + 1;
+                                        }
                                     }
 
                                     return (
@@ -297,9 +324,9 @@ function StageGruppesession () {
                                                 <p className="gruppespil-table-place gruppetable-place">{index + 1}</p>
                                                 <div className={medlemsskab}></div>
                                                 <p className="gruppespil-table-h1 gruppetable-el-navn">{item.player}</p>
-                                                <p className="gruppespil-table-p gruppetable-number">{item.odds.length}</p>
+                                                <p className="gruppespil-table-p gruppetable-number" id="table-anv-data">{item.odds.length}</p>
                                                 <p className="gruppespil-table-p gruppetable-kapital">{kapital} kr.</p>
-                                                <p className="gruppespil-table-p gruppetable-number">?</p>
+                                                <p className="gruppespil-table-p gruppetable-number" id="table-av-data">{aktive}</p>
                                             </div>
                                         </li>
                                         );

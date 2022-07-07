@@ -33,6 +33,19 @@
   vertical-align: top;
 }
 
+.invite-copied {
+    position: absolute;
+    left: calc(50% - 30px);
+    padding: 5px 10px;
+    background-color: var(--secondary);
+    border-radius: 3px;
+    color: #fff;
+    font-family: CircularLight;
+    font-weight: 100;
+    top: -35px;
+    font-size: 13px;
+}
+
 .chat-element {
     display: flex;
     flex-direction: column;
@@ -169,6 +182,7 @@
 .gruppespil-invite {
     cursor: pointer;
     width: 500px !important;
+    position: relative;
 }
 
 .gruppespil-h1 {

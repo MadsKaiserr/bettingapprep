@@ -233,7 +233,9 @@ function StageAktiveSpil () {
                         {loading}
                         {items.map(item => {
                             for (var x in item.players) {
-                                if (item.players[x].player === localStorage.getItem("email")) {
+                                var slut_dato = new Date(item.varighed).getTime();
+                                var nowDate = new Date().getTime();
+                                if (item.players[x].player === localStorage.getItem("email") && slut_dato > nowDate) {
                                     const index = item.players.findIndex(obj => obj.player === localStorage.getItem("email"));
                                     const bank = item.players[index].info.money;
                                     const name = item.name;
@@ -243,7 +245,6 @@ function StageAktiveSpil () {
                                     if (localStorage.getItem("activeGame") === item.id) {
                                         activeClass = "spil-element-active";
                                     }
-                                    var slut_dato = new Date(item.varighed).getTime();
                                     var slut_day = new Date(slut_dato).getDate();
                                     var slut_month = new Date(slut_dato).getMonth();
                                     var slut_month_str = "";
@@ -261,6 +262,16 @@ function StageAktiveSpil () {
                                         slut_month_str = "Juni"
                                     } else if (slut_month + 1 === 7) {
                                         slut_month_str = "Juli"
+                                    } else if (slut_month + 1 === 8) {
+                                        slut_month_str = "August"
+                                    } else if (slut_month + 1 === 9) {
+                                        slut_month_str = "September"
+                                    } else if (slut_month + 1 === 10) {
+                                        slut_month_str = "Oktober"
+                                    } else if (slut_month + 1 === 11) {
+                                        slut_month_str = "November"
+                                    } else if (slut_month + 1 === 12) {
+                                        slut_month_str = "December"
                                     }
 
                                     var oprettelse_day = new Date(item.oprettelse).getDate();
@@ -280,6 +291,16 @@ function StageAktiveSpil () {
                                         oprettelse_month_str = "Juni"
                                     } else if (oprettelse_month + 1 === 7) {
                                         oprettelse_month_str = "Juli"
+                                    } else if (oprettelse_month + 1 === 8) {
+                                        oprettelse_month_str = "August"
+                                    } else if (oprettelse_month + 1 === 9) {
+                                        oprettelse_month_str = "September"
+                                    } else if (oprettelse_month + 1 === 10) {
+                                        oprettelse_month_str = "Oktober"
+                                    } else if (oprettelse_month + 1 === 11) {
+                                        oprettelse_month_str = "November"
+                                    } else if (oprettelse_month + 1 === 12) {
+                                        oprettelse_month_str = "December"
                                     }
 
                                     var dif_mil = slut_dato - item.oprettelse;
@@ -296,6 +317,7 @@ function StageAktiveSpil () {
                                                 <div className={activeClass}>
                                                     <div className="spil-avatar"></div>
                                                     <p className="spil-h1">{name}</p>
+                                                    <p className="spil-h2">Slutter om {Math.floor(dif_days)} dage</p>
                                                     <div className="spil-element-bottom">
                                                         <div className="input-range-con">
                                                             <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />
@@ -375,12 +397,21 @@ function StageAktiveSpil () {
                                     var dif_today_days = dif_today / (1000*3600*24);
 
                                     var days_gang = 100 / dif_days;
+
+                                    var dif_to = slut_dato - today;
+                                    var dif_to_days = dif_to / (1000*3600*24);
+                                    
+                                    var dif_to_str = "Spillet er afsluttet";
+                                    if (dif_to_days >= 0) {
+                                        dif_to_str = "Slutter om " + Math.floor(dif_to_days) + " dage";
+                                    }
                                     return (
                                         <li key={id}>
                                             <div className="spil-element-con" onClick={() => setActiveGame(id, index, name)}>
                                                 <div className={activeClass}>
                                                     <div className="spil-avatar"></div>
                                                     <p className="spil-h1">{name}</p>
+                                                    <p className="spil-h2">{dif_to_str}</p>
                                                     <div className="spil-element-bottom">
                                                         <div className="input-range-con">
                                                             <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />
@@ -465,6 +496,7 @@ function StageAktiveSpil () {
                                                 <div className={activeClass}>
                                                     <div className="spil-avatar"></div>
                                                     <p className="spil-h1">{name}</p>
+                                                    <p className="spil-h2">Slutter om {Math.floor(dif_today)} dage</p>
                                                     <div className="spil-element-bottom">
                                                         <div className="input-range-con">
                                                             <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />
@@ -486,7 +518,9 @@ function StageAktiveSpil () {
                     {loading}
                         {items.map(item => {
                             for (var x in item.players) {
-                                if (item.players[x].player === localStorage.getItem("email") && item.synlighed === "afsluttet") {
+                                var slut_dato = new Date(item.varighed).getTime();
+                                var nowDate = new Date().getTime();
+                                if (item.players[x].player === localStorage.getItem("email") && slut_dato < nowDate) {
                                     const index = item.players.findIndex(obj => obj.player === localStorage.getItem("email"));
                                     const bank = item.players[index].info.money;
                                     const name = item.name;
@@ -549,6 +583,7 @@ function StageAktiveSpil () {
                                                 <div className={activeClass}>
                                                     <div className="spil-avatar"></div>
                                                     <p className="spil-h1">{name}</p>
+                                                    <p className="spil-h2">Spillet er afsluttet</p>
                                                     <div className="spil-element-bottom">
                                                         <div className="input-range-con">
                                                             <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />

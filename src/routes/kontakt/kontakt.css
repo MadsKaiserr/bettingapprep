@@ -1,0 +1,57 @@
+.kontakt-container {
+    padding-left: 6.2%;
+    padding-top: 50px;
+    min-height: 600px;
+}
+
+.kontakt-h3 {
+    color: var(--softBlack);
+    font-size: 14px;
+    font-family: CircularLight;
+    font-weight: 100;
+    z-index: 10;
+    opacity: 0.8;
+    padding-top: 10px;
+    width: 450px;
+}
+
+.kontakt-where-h1 {
+    font-family: CircularBook;
+    font-weight: 100;
+    color: var(--softBlack);
+    text-transform: uppercase;
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+.kontakt-where-h2 {
+    font-family: CircularLight;
+    font-weight: 100;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: var(--softBlack);
+    opacity: 0.8;
+}
+
+.kontakt-h1 {
+    font-family: CircularMedium;
+    font-weight: 100;
+    color: var(--softBlack);
+    font-size: 54px;
+    z-index: 9;
+}
+
+.kontakt-where {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.kontakt-where-splitter {
+    width: 20px;
+    height: 1px;
+    background-color: var(--softBlack);
+    opacity: 0.6;
+}

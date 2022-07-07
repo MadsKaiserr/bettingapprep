@@ -15,17 +15,57 @@ function Priser () {
 
     
     const buyPremium = async e => {
-        const stripePromise = await loadStripe('pk_test_51L8ohSHmQPuzRZTtLiNLkrvy2P1EobTAfX90Gl56CIHdj3yHfQU8XpOtdJ8IGxDlP3qPt2CTpRA4H33KBAn7WZK000YexYChIT')
-        const stripe = await stripePromise;
-        const { error } = await stripe.redirectToCheckout({
-        lineItems: [{
-            price: 'price_1LGPKhHmQPuzRZTt6V11b9HO',
-            quantity: 1,
-        }],
-        mode: 'payment',
-        successUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=success',
-        cancelUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=cancel',
-        });
+        if (localStorage.getItem("auth")) {
+            const stripePromise = await loadStripe('pk_test_51L8ohSHmQPuzRZTtLiNLkrvy2P1EobTAfX90Gl56CIHdj3yHfQU8XpOtdJ8IGxDlP3qPt2CTpRA4H33KBAn7WZK000YexYChIT')
+            const stripe = await stripePromise;
+            const { error } = await stripe.redirectToCheckout({
+            lineItems: [{
+                price: 'price_1LGPKhHmQPuzRZTt6V11b9HO',
+                quantity: 1,
+            }],
+            mode: 'payment',
+            successUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=success',
+            cancelUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=cancel',
+            });
+        } else {
+            window.open("/signup", "_self");
+        }
+    };
+
+    const buyDyst = async e => {
+        if (localStorage.getItem("auth")) {
+            const stripePromise = await loadStripe('pk_test_51L8ohSHmQPuzRZTtLiNLkrvy2P1EobTAfX90Gl56CIHdj3yHfQU8XpOtdJ8IGxDlP3qPt2CTpRA4H33KBAn7WZK000YexYChIT')
+            const stripe = await stripePromise;
+            const { error } = await stripe.redirectToCheckout({
+            lineItems: [{
+                price: 'price_1LIsFZHmQPuzRZTtK1mcFRDs',
+                quantity: 1,
+            }],
+            mode: 'payment',
+            successUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=success',
+            cancelUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=cancel',
+            });
+        } else {
+            window.open("/signup", "_self");
+        }
+    };
+
+    const buyGruppespil = async e => {
+        if (localStorage.getItem("auth")) {
+            const stripePromise = await loadStripe('pk_test_51L8ohSHmQPuzRZTtLiNLkrvy2P1EobTAfX90Gl56CIHdj3yHfQU8XpOtdJ8IGxDlP3qPt2CTpRA4H33KBAn7WZK000YexYChIT')
+            const stripe = await stripePromise;
+            const { error } = await stripe.redirectToCheckout({
+            lineItems: [{
+                price: 'price_1LIsFuHmQPuzRZTt4G822jNh',
+                quantity: 1,
+            }],
+            mode: 'payment',
+            successUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=success',
+            cancelUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=cancel',
+            });
+        } else {
+            window.open("/signup", "_self");
+        }
     };
 
     return (
@@ -227,9 +267,7 @@ function Priser () {
                                         <p className="plan-element-perk-desc">Direkte adgang til valgfrit præmiespil</p>
                                     </div>
                                 </div>
-                                <Link to="/signup">
-                                    <button className="square-btn-outline plan-btn">Køb adgang</button>
-                                </Link>
+                                <button className="square-btn-outline plan-btn" onClick={buyDyst}>Køb adgang</button>
                             </div>
                             <div className="plan-element standard">
                                 <div className="plan-element-top">
@@ -246,9 +284,7 @@ function Priser () {
                                         <p className="plan-element-perk-desc">Opret dit helt eget gruppespil</p>
                                     </div>
                                 </div>
-                                <Link to="/signup">
-                                    <button className="square-btn-outline plan-btn">Køb adgang</button>
-                                </Link>
+                                <button className="square-btn-outline plan-btn" onClick={buyGruppespil}>Køb adgang</button>
                             </div>
                         </div>
                     </div>

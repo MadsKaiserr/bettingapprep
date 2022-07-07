@@ -42,6 +42,7 @@ function StageLeague () {
     const [tabelType, setTableType] = useState("");
     const [tabelO, setTabelO] = useState([]);
     const [senesteKampe, setSenesteKampe] = useState([]);
+    const [kommendeKampe, setKommendeKampe] = useState([]);
     const [mostgoals, setMostGoals] = useState([]);
     const [mostcards, setMostCards] = useState([]);
     const [tabelOUsed, setTabelOUsed] = useState(false);
@@ -125,7 +126,24 @@ function StageLeague () {
             .then(response => response.json())
             .then(function (response) {
                 console.log(response);
-                setSenesteKampe(response.data.reverse());
+                var timePar = (new Date().getTime()) / 1000;
+                var senesteArray = [];
+                var kommendeArray = [];
+                for (var x in response.data) {
+                    if (response.data[x].time.starting_at.timestamp < timePar) {
+                        senesteArray.push(response.data[x]);
+                    } else {
+                        kommendeArray.push(response.data[x]);
+                    }
+                }
+                senesteArray.sort((a, b) => {
+                    return b.time.starting_at.timestamp - a.time.starting_at.timestamp;
+                });
+                setSenesteKampe(senesteArray);
+                kommendeArray.sort((a, b) => {
+                    return a.time.starting_at.timestamp - b.time.starting_at.timestamp;
+                });
+                setKommendeKampe(kommendeArray);
             }) .catch(error => 
                 console.log('error', error
             ));
@@ -560,13 +578,88 @@ function StageLeague () {
                                 </div>
                             </div>
                         </div>
+                        <div className="team-kampe-section" id="seneste">
+                            <p className="team-kampe-h1">Kommende</p>
+                            <div className="stage-kampe" id="latest">
+                                <ul>
+                                    {kommendeKampe.slice(0,5).map((item) => {
+                                        var timeClass = "team-kampe-minut";
+                                        var liveView = "FT";
+                                        var scoreLocal = "stage-stilling-p";
+                                        var scoreVisitor = "stage-stilling-p";
+                                        var teamNameLocal = "stage-kampe-p";
+                                        var teamNameVisitor = "stage-kampe-p";
+                                        if (item.time.status === "LIVE") {
+                                            timeClass = "team-kampe-minut team-kampe-minut-active";
+                                            liveView = item.time.minute+" MIN";
+                                        } else if (item.time.status === "NS") {
+                                            scoreLocal = "stage-stilling-p-none";
+                                            scoreVisitor = "stage-stilling-p-none";
+                                            var calcTime = item.time.starting_at.time;
+                                            calcTime = calcTime.slice(0,-3);
+                                            liveView = calcTime;
+                                        } else if (item.time.status === "FT") {
+                                            if (item.winner_team_id === item.localteam_id) {
+                                                scoreLocal = "stage-stilling-p-fat";
+                                                teamNameLocal = "stage-kampe-p-fat";
+                                            } else if (item.winner_team_id === item.visitorteam_id) {
+                                                scoreVisitor = "stage-stilling-p-fat";
+                                                teamNameVisitor = "stage-kampe-p-fat";
+                                            }
+                                        }
+                                        const gameURL = "/stage/match?game=" + item.id;
+
+                                        var starting_at = item.time.starting_at.timestamp * 1000;
+                                        var starting_at_date = new Date(starting_at).getDate();
+                                        var starting_at_date_str = starting_at_date.toString();
+                                        var starting_at_month = new Date(starting_at).getMonth() + 1;
+                                        var starting_at_month_str = starting_at_month.toString();
+                                        if ((starting_at_month.toString()).length === 1) {
+                                            starting_at_month_str = "0" + starting_at_month;
+                                        }
+                                        if ((starting_at_date.toString()).length === 1) {
+                                            starting_at_date_str = "0" + starting_at_date;
+                                        }
+                                        return (
+                                            <li key={item.id}>
+                                                <div className="team-match">
+                                                    <div className="stage-indhold-down">
+                                                        <Link to={gameURL} className="team-kampe-hold">
+                                                            <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                            <div className="stage-kampe-hold-div">
+                                                                <div className="stage-kampe-team">
+                                                                    <p className={scoreLocal}>{item.scores.localteam_score}</p>
+                                                                    <img alt="." src={item.localTeam.data.logo_path} className="stage-img" />
+                                                                    <p className={teamNameLocal}>{item.localTeam.data.name}</p>
+                                                                </div>
+                                                                <div className="stage-kampe-team">
+                                                                    <p className={scoreVisitor}>{item.scores.visitorteam_score}</p>
+                                                                    <img alt="." src={item.visitorTeam.data.logo_path} className="stage-img" />
+                                                                    <p className={teamNameVisitor}>{item.visitorTeam.data.name}</p>
+                                                                </div>
+                                                            </div>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            );
+                                        }
+                                    )}
+                                </ul>
+                                <div className="stage-indhold-down">
+                                    <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
+                                        <p className="team-kampe-p">Se alle resultater.</p>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     </ul>
                     <ul className="match-odds-contain" id="kort">
                         <div className="team-kampe-section" id="seneste">
                             <p className="team-kampe-h1">Resultater</p>
                             <div className="stage-kampe" id="latest">
                                 <ul>
-                                    {senesteKampe.slice(0,15).map((item) => {
+                                    {senesteKampe.map((item) => {
                                         var timeClass = "team-kampe-minut";
                                         var liveView = "FT";
                                         var scoreLocal = "stage-stilling-p";
