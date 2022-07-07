@@ -1,3 +1,61 @@
+@media only screen and (max-width: 1095px) {
+  .nav-container-mid {
+    display: none !important;
+  }
+  .fsection-elements {
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  .hero-figures {
+    display: none !important;
+  }
+  .ny-window {
+    display: none !important;
+  }
+  .nyheder-kupon {
+    display: none !important;
+  }
+  .nav-btn-outline {
+    margin-left: 0px !important;
+  }
+  .fsection-element {
+    text-align: center !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .section-nyheder-kupon {
+    text-align: center !important;
+  }
+  .section-nyheder-table {
+    text-align: center !important;
+  }
+  .ny-kupon-a {
+    width: inherit !important;
+  }
+}
+
+@media only screen and (max-width: 540px) {
+  .nav-in {
+    display: none !important;
+  }
+  .nav-in-before {
+    display: none !important;
+  }
+  .nav-btn-default {
+    margin-left: 0px !important;
+  }
+  .hero-help {
+    margin-top: 100px !important;
+  }
+  .section-offer {
+    text-align: center !important;
+  }
+  .plan-container {
+    text-align: center !important;
+  }
+}
+
 .noti-icon {
   width: 18px;
   height: 18px;
