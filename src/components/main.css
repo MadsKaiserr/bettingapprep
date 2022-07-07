@@ -1,3 +1,9 @@
+@media only screen and (max-width: 1400px) {
+  .gruppespil-div {
+    width: 840px !important;
+  }
+}
+
 @media only screen and (max-width: 1095px) {
   .nav-container-mid {
     display: none !important;
@@ -33,6 +39,55 @@
   .ny-kupon-a {
     width: inherit !important;
   }
+  .gruppespil-div {
+    margin-top: -30px !important;
+    width: 70% !important;
+  }
+  .gruppetable-number2-el {
+    display: none !important;
+  }
+  .gruppetable-number22 {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .gruppetable-number2 {
+    display: none !important;
+  }
+  .gruppetable-number2-el2 {
+    display: none !important;
+  }
+  .pages-parent {
+    margin-top: -40px !important;
+  }
+}
+
+@media only screen and (max-width: 910px) {
+  #alleGK {
+    display: none !important;
+  }
+  .gruppetable-navn2-el {
+    width: 250px !important;
+  }
+  .gruppetable-navn2 {
+    width: 250px !important;
+  }
+}
+
+@media only screen and (max-width: 616px) {
+  .gruppetable-navn2-el {
+    width: 52% !important;
+  }
+  .gruppetable-navn2 {
+    width: 50% !important;
+  }
+  .gruppetable-kapital2 {
+    width: 70px !important;
+  }
+  .gruppetable-kapital2-el {
+    width: 70px !important;
+  }
 }
 
 @media only screen and (max-width: 540px) {
@@ -53,6 +108,9 @@
   }
   .plan-container {
     text-align: center !important;
+  }
+  .pages-parent {
+    margin-top: -10px !important;
   }
 }
 

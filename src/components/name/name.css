@@ -1,0 +1,29 @@
+.name-container {
+    background-color: var(--primary);
+    position: fixed;
+    right: 275px;
+    bottom: 0px;
+    padding: 5px 11px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+    z-index: 21;
+}
+
+.name-container:hover {
+    padding-bottom: 7px;
+}
+
+.name-p {
+    font-family: CircularBook;
+    color: #fff;
+    font-size: 14px;
+    opacity: 0.8;
+    font-weight: 100;
+    transition: 0.2s;
+}
+
+.name-container:hover .name-p {
+    opacity: 1;
+}

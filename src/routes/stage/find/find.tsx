@@ -130,7 +130,7 @@ function StageFind () {
                             <p className="gruppespil-table-title gruppetable-navn2" style={{marginLeft: "10px"}}>NAVN</p>
                             <p className="gruppespil-table-title gruppetable-number2">SYNLIGHED</p>
                             <p className="gruppespil-table-title gruppetable-kapital2">SPILLERE</p>
-                            <p className="gruppespil-table-title gruppetable-number2">ADMINISTRATOR</p>
+                            <p className="gruppespil-table-title gruppetable-number22">ADMINISTRATOR</p>
                         </div>
                         <ul id="alleG">
                             <div className="match-loader display" id="stage-loader1"></div>
