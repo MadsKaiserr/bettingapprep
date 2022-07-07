@@ -90,10 +90,10 @@
 }
 
 .main-btn-default {
-  padding: 12px 35px;
+  padding: clamp(5px, 2vw, 12px) clamp(25px, 4vw, 35px);
   color: #fff;
   font-weight: 400;
-  font-size: 15px;
+  font-size: clamp(8px, 2.5vw, 15px);
   border-radius: 50px;
   border: 0px;
   cursor: pointer;
@@ -122,10 +122,10 @@
 }
 
 .square-btn-outline {
-  padding: 12px 35px;
+  padding: clamp(8px, 2vw, 12px) clamp(20px, 1vw, 35px);
   color: var(--primary);
   font-weight: 400;
-  font-size: 15px;
+  font-size: clamp(10px, 2.5vw, 15px);
   border-radius: 5px;
   cursor: pointer;
   background-color: transparent;
@@ -139,11 +139,11 @@
 }
 
 .nav-btn-default {
-  padding: 12px 23px;
+  padding: clamp(10px, 2vw, 12px) clamp(20px, 1vw, 35px);
   color: var(--primary);
   font-weight: 100;
   font-family: CircularBook;
-  font-size: 15px;
+  font-size: clamp(12px, 2.5vw, 15px);
   border-radius: 3px;
   border: 0px;
   cursor: pointer;
@@ -190,10 +190,10 @@
 
 .nav-btn-outline {
   color: var(--primary);
-  font-size: 15px;
+  font-size: clamp(12px, 2.5vw, 15px);
   font-family: CircularBook;
   font-weight: 100;
-  padding: 12px 20px;
+  padding: clamp(10px, 2vw, 12px) clamp(20px, 1vw, 35px);
   margin-left: 50px;
   border-radius: 3px;
   cursor: pointer;

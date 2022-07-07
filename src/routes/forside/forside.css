@@ -15,7 +15,7 @@
 
 .hero-divider {
   height: 2px;
-  width: 70px;
+  width: clamp(40px, 5vw, 70px);
   background-color: #4a545e;
   margin: 15px auto;
   margin-bottom: 22px !important;
@@ -32,13 +32,13 @@
 
 .hero-info-block-h1 {
   color: #292929;
-  font-size: 44px;
+  font-size: clamp(25px, 5vw, 44px);
   font-family: CircularBook;
 }
 
 .hero-info-block-h2 {
   color: #566578;
-  font-size: 13px;
+  font-size: clamp(8px, 2vw, 13px);
   font-family: Open Sans;
   font-weight: 700;
   opacity: 0.85;
@@ -117,16 +117,16 @@
 }
 
 .ny-kupon-h1 {
-  font-size: 40px;
+  font-size: clamp(25px, 5vw, 40px);
   font-family: CircularBook;
   font-weight: 100;
   color: var(--softBlack);
   margin-top: 5px;
-  line-height: 50px;
+  line-height: clamp(35px, 5vw, 50px);
 }
 
 .ny-kupon-p {
-  font-size: 16px;
+  font-size: clamp(12px, 3vw, 16px);
   font-family: CircularLight;
   font-weight: 100;
   color: var(--softBlack);
@@ -134,7 +134,7 @@
 }
 
 .ny-kupon-a {
-  font-size: 16px;
+  font-size: clamp(12px, 3vw, 16px);
   font-family: CircularLight;
   font-weight: 100;
   margin-top: 5px;
@@ -196,7 +196,7 @@
   display: flex;
   flex-direction: column;
   text-align: left;
-  width: 500px;
+  width: clamp(250px, 30vw, 500px);
   border-radius: 3px;
   padding: 25px 40px;
   transition: 0.2s;
@@ -227,7 +227,7 @@
 }
 
 .fsection-h4 {
-  font-size: 25px;
+  font-size: clamp(17px, 3vw, 25px);
   color: var(--secondary);
   font-weight: 100;
   padding-bottom: 10px;
@@ -235,14 +235,14 @@
 }
 
 .fsection-img {
-  width: 40px;
-  height: 40px;
+  width: clamp(30px, 5vw, 40px);
+  height: clamp(30px, 5vw, 40px);
   margin-bottom: 15px;
   fill: var(--primary);
 }
 
 .fsection-h5 {
-  font-size: 15px;
+  font-size: clamp(12px, 2vw, 15px);
   color: var(--primary);
   font-weight: 100;
   padding-bottom: 15px;
@@ -250,7 +250,7 @@
 }
 
 .fsection-p {
-  font-size: 15px;
+  font-size: clamp(12px, 2vw, 15px);
   color: var(--softBlack);
   font-weight: 100;
   font-family: CircularLight;
@@ -262,7 +262,7 @@
 }
 
 .fsection-a {
-  font-size: 15px;
+  font-size: clamp(12px, 2vw, 15px);
   color: var(--primary);
   font-weight: 100;
   opacity: 0.8;
@@ -308,7 +308,7 @@
 .offer-p {
   font-family: CircularBook;
   font-weight: 100;
-  font-size: 16px;
+  font-size: clamp(13px, 2vw, 16px);
   color: var(--primary);
   padding-bottom: 3px;
   border-bottom: 1px transparent solid;
@@ -324,18 +324,21 @@
 }
 
 .plan-h1 {
-  font-size: 38px;
+  font-size: clamp(20px, 5vw, 38px);
+  padding: 0 3vw;
   font-family: CircularLight;
   font-weight: 100;
   color: #fff;
 }
 
 .plan-h2 {
-  font-size: 17px;
+  font-size: clamp(12px, 3vw, 17px);
   text-align: center;
   font-family: CircularLight;
   font-weight: 100;
   color: #fff;
+  padding: 0 3vw;
+  max-width: 100%;
   opacity: 0.7;
   margin-top: 5px;
 }
