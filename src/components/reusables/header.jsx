@@ -20,13 +20,25 @@ function Header () {
         }
     })
 
+    function sideMenu() {
+        document.getElementById("sidemenu").classList.add("display");
+    }
+
+    function closeMenu() {
+        document.getElementById("sidemenu").classList.remove("display");
+    }
+
     var auth = <div className="nav-container-right">
               {/* <div className="nav-forside-flag-container">
                  <img src={flag} alt="Danmarks flag" className="nav-flag" />
              </div> */}
     <p className="nav-btn-outline" onClick={() => showLogin()}>Log ind</p>
     <Link to="/signup">
-    <button className="nav-btn-default">Opret Profil<span className="nav-in">Det gratis</span></button></Link></div>;
+    <button className="nav-btn-default">Opret Profil<span className="nav-in">Det gratis</span></button></Link>
+    <svg xmlns="http://www.w3.org/2000/svg" className="nav-ham" onClick={() => {sideMenu()}} viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+    </div>;
 
     var isAuthenticated = false;
     if (localStorage.getItem("auth")) {
@@ -49,7 +61,22 @@ function Header () {
              </div> */}
             <p className="nav-btn-outline" onClick={() => showLogin()}>Log ind</p>
             <Link to="/signup">
-            <button className="nav-btn-default">Opret Profil<div className="nav-in-before"></div><span className="nav-in">Det gratis</span></button></Link></div>;;
+            <button className="nav-btn-default">Opret Profil<div className="nav-in-before"></div><span className="nav-in">Det gratis</span></button></Link>
+            <svg xmlns="http://www.w3.org/2000/svg" className="nav-ham" onClick={() => {sideMenu()}} viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+            <div className="sidemenu" id="sidemenu">
+                <svg xmlns="http://www.w3.org/2000/svg" className="ham-close" onClick={() => {closeMenu()}} viewBox="0 0 16 16">
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+                <div className="side-nav">
+                    <Link to="/gruppespil" className="side-nav-p" onClick={() => {closeMenu()}}>Gruppespil</Link>
+                    <Link to="/priser" className="side-nav-p" onClick={() => {closeMenu()}}>Priser</Link>
+                    <Link to="/blog" className="side-nav-p" onClick={() => {closeMenu()}}>Blog</Link>
+                    <Link to="/faq" className="side-nav-p" onClick={() => {closeMenu()}}>Spørgsmål og svar</Link>
+                </div>
+            </div>
+            </div>;
     }
 
     return (

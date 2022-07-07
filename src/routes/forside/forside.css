@@ -297,7 +297,7 @@
 
 .section-offer {
   background-color: #3d6eeb2d;
-  padding: 25px 0px;
+  padding: 25px 4vw;
   display: flex;
   justify-content: center;
   cursor: pointer;
@@ -431,7 +431,8 @@
 
 .section-price-small {
   width: 100%;
-  height: 625px;
+  min-height: 625px;
+  padding-bottom: 100px;
   background-color: var(--surface);
 }
 
@@ -553,7 +554,7 @@
 }
 
 .plan-element {
-  width: 400px;
+  width: clamp(237px, 35vw, 400px);
   vertical-align: top;
   background-color: #fff;
   box-shadow: 0px 3px 15px rgb(39, 40, 45, 0.09);
@@ -580,21 +581,21 @@
 }
 
 .plan-element-identifier {
-  font-size: 17px;
+  font-size: clamp(13px, 1.5vw, 17px);
   color: var(--secondary);
   font-family: CircularBook;
   text-align: center;
 }
 
 .plan-element-pris {
-  font-size: 48px;
+  font-size: clamp(35px, 4vw, 48px);
   color: var(--primary);
   font-family: CircularBlack;
   text-align: center;
 }
 
 .plan-element-binding {
-  font-size: 16px;
+  font-size: clamp(12px, 1.5vw, 16px);
   opacity: 0.7;
   text-align: center;
   color: var(--softBlack);
@@ -645,8 +646,8 @@
 }
 
 .plan-element-perk-icon {
-  width: 25px;
-  height: 25px;
+  width: clamp(15px, 2.5vw, 25px);
+  height: clamp(15px, 2.5vw, 25px);
   fill: var(--green);
   display: inline-block;
   vertical-align: top;
@@ -654,7 +655,7 @@
 
 .plan-element-perk-desc {
   display: inline-block;
-  font-size: 14px;
+  font-size: clamp(10px, 1.5vw, 14px);
   font-family: Montserrat;
   font-weight: 600;
   vertical-align: top;
@@ -696,6 +697,7 @@
 
 .plan-el-desc {
   width: 50%;
+  min-width: 253px;
   padding: 10px 20px;
   border-bottom: 1px solid rgb(60, 66, 87,0.15);
 }
@@ -730,15 +732,29 @@
 
 .plan-el-1 {
   width: 30%;
+  min-width: 154px;
   padding: 10px 20px;
   text-align: center;
   border: 1px solid rgb(60, 66, 87,0.15);
   border-top: 0px;
 }
 
+.plan-funktioner {
+  min-width: 564px;
+}
+
+.plan-define {
+  min-width: 564px;
+}
+
+.plan-func-content {
+  min-width: 564px;
+}
+
 .plan-el-2 {
   width: 30%;
   padding: 10px 20px;
+  min-width: 154px;
   text-align: center;
   border-bottom: 1px solid rgb(60, 66, 87,0.15);
 }

@@ -106,10 +106,10 @@
 }
 
 .square-btn-default {
-  padding: 12px 35px;
+  padding: clamp(5px, 1.5vw, 12px) clamp(25px, 4vw, 35px);
   color: #fff;
   font-weight: 400;
-  font-size: 15px;
+  font-size: clamp(8px, 1.5vw, 15px);
   border-radius: 5px;
   border: 0px;
   cursor: pointer;
@@ -122,10 +122,10 @@
 }
 
 .square-btn-outline {
-  padding: clamp(8px, 2vw, 12px) clamp(20px, 1vw, 35px);
+  padding: clamp(8px, 1.5vw, 12px) clamp(20px, 1vw, 35px);
   color: var(--primary);
   font-weight: 400;
-  font-size: clamp(10px, 2.5vw, 15px);
+  font-size: clamp(10px, 1.5vw, 15px);
   border-radius: 5px;
   cursor: pointer;
   background-color: transparent;

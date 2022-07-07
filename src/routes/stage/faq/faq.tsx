@@ -23,6 +23,7 @@ function StageFaq () {
         <>
             <div className="stage-main-container" id="faqside">
                 <h1 className="faq-h1">FAQ - Spørgsmål og svar</h1>
+                <div className="faq-fix">
                 <div className="faq-input-con">
                     <input type="text" className="faq-input" placeholder='Få svar på dine spørgsmål'/>
                     <button className="faq-input-btn">
@@ -68,6 +69,7 @@ function StageFaq () {
                             <p className="faq-a-p">Bemærk: Du kan kun invitere, hvis DU ejer gruppespillet.</p>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         </>
