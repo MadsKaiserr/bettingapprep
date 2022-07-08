@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import './styles/main.css';
 import './styles/utilities.css';
+import './styles/responsive.css';
+import './styles/transitions.css';
 
 import Start from './routes/start/start';
 import About from './routes/about/about';

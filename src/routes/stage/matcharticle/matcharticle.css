@@ -1,12 +1,3 @@
-@media only screen and (max-width: 1410px) {
-    .match-odds-container {
-        width: 100% !important;
-    }
-    .match-odds-cont {
-        width: 100% !important;
-    }
-  }
-
 .match-odds-contain {
     width: 100%;
     padding-top: 5px;

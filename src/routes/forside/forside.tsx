@@ -16,7 +16,7 @@ function Forside () {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-      }, [])
+    }, [])
 
     return (
         <>
@@ -55,7 +55,7 @@ function Forside () {
             <div className="forside-section">
                 <h2 className="fsection-h1">Liveodds fra Bet365 - Med virtuelle penge</h2>
                 <p className="fsection-h3">Placer væddemål på alverdens kampe med Liveodds direkte fra Bet365. <br />Odds så meget du vil i dine gruppespil - med virtuelle penge.</p>
-                <div className="fsection-elements">
+                <div className="fsection-elements" id="anim1">
                     <div className="fsection-element">
                         <img src={dollar} alt="" className="fsection-img" />
                         <p className="fsection-h4">Virtuelle penge</p>

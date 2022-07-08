@@ -27,3 +27,35 @@
 .name-container:hover .name-p {
     opacity: 1;
 }
+
+.navn-btn {
+    width: 100%;
+    display: block;
+    border-radius: 5px;
+    background-color: var(--stageSurface);
+    color: var(--softBlack);
+    font-size: 15px;
+    font-weight: 100;
+    font-family: CircularBook;
+    padding: 10px 15px;
+    border: 0px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin: 10px 0px;
+}
+
+.navn-btn:hover {
+    background-color: var(--blueStageSurface);
+}
+
+.navn-btn-active {
+    background-color: var(--primary) !important;
+    color: #fff !important;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 100;
+    font-family: CircularBook;
+    padding: 10px 15px;
+    border: 0px;
+}
