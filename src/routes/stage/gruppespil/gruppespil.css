@@ -70,7 +70,7 @@
 
 .chat-container {
     padding: 10px 0px;
-    width: 350px;
+    width: clamp(250px, 70vw, 350px);
 }
 
 .chat-input {
@@ -232,6 +232,25 @@
     background-color: var(--primaryAccent) !important;
 }
 
+.gruppespil3-btn {
+    padding: 4px 11px;
+    background-color: var(--primary);
+    border: 1px var(--primaryAccent);
+    color: #fff;
+    font-size: 12px;
+    font-family: Open Sans;
+    font-weight: 400;
+    border-radius: 3px;
+    vertical-align: top;
+    cursor: pointer;
+    margin-top: 2px;
+    margin-left: 10px;
+}
+
+.gruppespil3-btn:hover {
+    background-color: var(--primaryAccent) !important;
+}
+
   .gruppespil-info-info {
       margin-top: 15px;
   }
@@ -251,6 +270,8 @@
   .gruppespil-info-element-h1 {
     font-family: CircularBook;
     font-size: 22px;
+    max-width: 200px;
+    overflow: hidden;
     color: var(--secondary);
 }
 

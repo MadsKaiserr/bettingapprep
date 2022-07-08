@@ -40,7 +40,7 @@
     padding-right: 100px !important;
   }
   .noti-main {
-    padding: 125px 15% !important;
+    padding: 50px 15% !important;
   }
 }
 
@@ -55,6 +55,9 @@
 
 @media only screen and (max-width: 1020px) {
   .stage-kupon {
+    display: none !important;
+  }
+  .name-container {
     display: none !important;
   }
   .stage-main {
@@ -80,7 +83,7 @@
   }
 }
 
-@media only screen and (max-width: 870px) {
+@media only screen and (max-width: 943px) {
   .footer-sections {
     gap: 10vw !important;
   }
@@ -88,6 +91,15 @@
     display: none !important;
   }
   .match-odds-nav {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 870px) {
+  .footer-sections {
+    gap: 10vw !important;
+  }
+  .gruppetable-kapital {
     display: none !important;
   }
 }
@@ -128,7 +140,7 @@
     padding-right: 10px !important;
   }
   .noti-main {
-    padding: 125px 5% !important;
+    padding: 50px 5% !important;
   }
   .team-trup-section {
     flex-direction: column !important;
@@ -801,8 +813,8 @@
   font-weight: 100;
   font-size: 15px;
   opacity: 0.9;
+  padding: 0px 20px;
   color: var(--softBlack);
-  margin-left: calc(50% - 175px);
   font-family: CircularLight;
 }
 

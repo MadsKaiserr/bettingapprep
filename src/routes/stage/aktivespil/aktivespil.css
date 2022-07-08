@@ -211,7 +211,7 @@
 }
 
 .spil-element {
-  width: 300px;
+  width: clamp(150px, 60vw, 300px);
   background-color: var(--stageSurface);
   border-radius: 7px;
   padding: 20px;

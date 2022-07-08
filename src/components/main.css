@@ -10,6 +10,18 @@
   }
 }
 
+@media only screen and (max-width: 1250px) {
+  .favorit-container-match {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 1133px) {
+  .team-indhold-side {
+    flex-direction: column !important;
+  }
+}
+
 @media only screen and (max-width: 1095px) {
   .nav-container-mid {
     display: none !important;
@@ -92,6 +104,48 @@
   }
 }
 
+@media only screen and (max-width: 835px) {
+  .stage-indstillinger-sidebar {
+    display: none !important;
+  }
+  .stage-indstillinger-main {
+    padding: 0px !important;
+  }
+  .gruppespil-info-element {
+    padding-bottom: 10px !important;
+  }
+  .stage-main-article-container {
+    padding: 100px 5% !important;
+  }
+  .match-kupon {
+    opacity: 0;
+    margin-right: -2000px !important;
+  }
+  .match-kupon-ul {
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+  .close-kupon {
+    display: block !important;
+  }
+  .match-kupon-knap {
+    display: flex !important;
+  }
+}
+
+@media only screen and (max-width: 730px) {
+  .noti-section-success {
+    flex-direction: column !important;
+  }
+  .noti-section {
+    flex-direction: column !important;
+  }
+  .noti-section-error {
+    flex-direction: column !important;
+  }
+}
+
 @media only screen and (max-width: 700px) {
   .plans-con {
     flex-direction: column;
@@ -103,6 +157,36 @@
     width: clamp(237px, 45vw, 400px);
   }
   .plan-funktioner {
+    display: none !important;
+  }
+  .main-btn-outline {
+    margin-left: 0px !important;
+    display: block !important;
+    margin-top: 10px !important;
+    width: clamp(212px, 50vw, 350px) !important;
+  }
+  .main-btn-login {
+    width: clamp(212px, 50vw, 350px) !important;
+  }
+  .match-bet {
+    padding: 25px 20px !important;
+  }
+  .match-odds-offer {
+    flex-direction: column !important;
+  }
+  .match-odds-offer-element-3 {
+    width: 100% !important;
+  }
+  .match-odds-offer-element-2 {
+    width: 100% !important;
+  }
+}
+
+@media only screen and (max-width: 650px) {
+  #t1 {
+    display: none !important;
+  }
+  #t2 {
     display: none !important;
   }
 }
@@ -131,6 +215,15 @@
   }
 }
 
+@media only screen and (max-width: 550px) {
+  #t3 {
+    display: none !important;
+  }
+  .match-info {
+    padding: 30px 20px !important;
+  }
+}
+
 @media only screen and (max-width: 540px) {
   .hero-help {
     margin-top: 100px !important;
@@ -144,6 +237,27 @@
   .pages-parent {
     margin-top: -10px !important;
   }
+  .nav-flag-section {
+    display: none !important;
+  }
+  .nav-short-search {
+    display: none !important;
+  }
+  .nav-container-top-stage {
+    justify-content: space-between !important;
+  }
+  .nav-container-bottom {
+    display: none !important;
+  }
+  .stage-fix {
+    height: 0px !important;
+  }
+  .gruppespil-container {
+    padding-top: 0px !important;
+  }
+  .stage-main-article-container {
+    padding-top: 15px !important;
+  }
 }
 
 @media only screen and (max-width: 450px) {
@@ -152,6 +266,22 @@
   }
   .nav-btn-default {
     display: none !important;
+  }
+  .gruppespil3-btn {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 445px) {
+  .gruppespil-btn {
+    margin-left: 0px !important;
+    display: block !important;
+  }
+}
+
+@media only screen and (max-width: 430px) {
+  .gruppespil-section {
+    padding: 20px 7vw !important;
   }
 }
 

@@ -89,7 +89,7 @@ ReactDOM.render(
             <Route exact path="/stage/find-spil" element={[<StageHeader key="stageHeaderKey" />, <StageFind key="StageFindKey" />]} />
             <Route exact path="/stage/gruppespil" element={[<StageHeader key="stageHeaderKey" />, <StageGruppespil key="StageGruppespil" />]} />
             <Route exact path="/stage/gruppesession" element={[<StageHeader key="stageHeaderKey" />, <StageGruppesession key="StageGruppesession" />]} />
-            <Route exact path="/stage/indstillinger" element={[<StageHeader key="stageHeaderKey" />, <Headerfix key="headerFixKey" />, <StageIndstillinger key="StageIndstillinger" />]} />
+            <Route exact path="/stage/indstillinger" element={[<StageHeader key="stageHeaderKey" />, <Stagefix key="headerFixKey" />, <StageIndstillinger key="StageIndstillinger" />]} />
             <Route exact path="/stage/match" element={[<StageHeader key="stageHeaderKey" />, <StageMatcharticle key="StageMatcharticle" />]} />
             <Route exact path="/stage/team" element={[<StageHeader key="stageHeaderKey" />, <StageTeam key="StageTeam" />]} />
             <Route exact path="/stage/league" element={[<StageHeader key="stageHeaderKey" />, <StageLeague key="StageLeague" />]} />

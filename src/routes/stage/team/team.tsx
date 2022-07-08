@@ -398,12 +398,12 @@ function StageTeam () {
                                 <div className="tabel-top-right">
                                     <div className="tabel-ends">
                                         <p className="tabel-3 tabel-h1">KS</p>
-                                        <p className="tabel-3 tabel-h1">V</p>
-                                        <p className="tabel-3 tabel-h1">T</p>
+                                        <p id="t1" className="tabel-3 tabel-h1">V</p>
+                                        <p id="t2" className="tabel-3 tabel-h1">T</p>
                                         <p className="tabel-3 tabel-h1">D</p>
                                         <p className="tabel-3 tabel-h1">P</p>
                                     </div>
-                                    <div className="tabel-form">
+                                    <div className="tabel-form" id="t3">
                                         <p className="tabel-h1">FORM</p>
                                     </div>
                                 </div>
@@ -453,12 +453,12 @@ function StageTeam () {
                                                     <div className="tabel-top-right">
                                                         <div className="tabel-ends">
                                                             <p className="tabel-3 tabel-p">{fres.overall.games_played}</p>
-                                                            <p className="tabel-3 tabel-p">{fres.overall.won}</p>
-                                                            <p className="tabel-3 tabel-p">{fres.overall.lost}</p>
+                                                            <p id="t1" className="tabel-3 tabel-p">{fres.overall.won}</p>
+                                                            <p id="t2" className="tabel-3 tabel-p">{fres.overall.lost}</p>
                                                             <p className="tabel-3 tabel-p">{goalD}</p>
                                                             <p className="tabel-3 tabel-h1">{fres.points}</p>
                                                         </div>
-                                                        <div className="tabel-form">
+                                                        <div className="tabel-form" id="t3">
                                                             <div className={"form-indi " + formStyle1}></div>
                                                             <div className={"form-indi " + formStyle2}></div>
                                                             <div className={"form-indi " + formStyle3}></div>
@@ -496,12 +496,12 @@ function StageTeam () {
                                             <div className="tabel-top-right">
                                                 <div className="tabel-ends">
                                                     <p className="tabel-3 tabel-h1">KS</p>
-                                                    <p className="tabel-3 tabel-h1">V</p>
-                                                    <p className="tabel-3 tabel-h1">T</p>
+                                                    <p id="t1" className="tabel-3 tabel-h1">V</p>
+                                                    <p id="t2" className="tabel-3 tabel-h1">T</p>
                                                     <p className="tabel-4 tabel-h1">MF</p>
                                                     <p className="tabel-3 tabel-h1">P</p>
                                                 </div>
-                                                <div className="tabel-form">
+                                                <div className="tabel-form" id="t3">
                                                     <p className="tabel-h1">FORM</p>
                                                 </div>
                                             </div>
@@ -550,12 +550,12 @@ function StageTeam () {
                                                                 <div className="tabel-top-right">
                                                                     <div className="tabel-ends">
                                                                         <p className="tabel-3 tabel-p">{thirdRes.overall.games_played}</p>
-                                                                        <p className="tabel-3 tabel-p">{thirdRes.overall.won}</p>
-                                                                        <p className="tabel-3 tabel-p">{thirdRes.overall.lost}</p>
+                                                                        <p id="t1"  className="tabel-3 tabel-p">{thirdRes.overall.won}</p>
+                                                                        <p id="t2"  className="tabel-3 tabel-p">{thirdRes.overall.lost}</p>
                                                                         <p className="tabel-4 tabel-p">{goalD}</p>
                                                                         <p className="tabel-3 tabel-h1">{thirdRes.points}</p>
                                                                     </div>
-                                                                    <div className="tabel-form">
+                                                                    <div className="tabel-form" id="t3">
                                                                         <div className={"form-indi " + formStyle1}></div>
                                                                         <div className={"form-indi " + formStyle2}></div>
                                                                         <div className={"form-indi " + formStyle3}></div>
@@ -588,12 +588,12 @@ function StageTeam () {
                                 <div className="tabel-top-right">
                                     <div className="tabel-ends">
                                         <p className="tabel-3 tabel-h1">KS</p>
-                                        <p className="tabel-3 tabel-h1">V</p>
-                                        <p className="tabel-3 tabel-h1">T</p>
+                                        <p id="t1" className="tabel-3 tabel-h1">V</p>
+                                        <p id="t2" className="tabel-3 tabel-h1">T</p>
                                         <p className="tabel-3 tabel-h1">D</p>
                                         <p className="tabel-3 tabel-h1">P</p>
                                     </div>
-                                    <div className="tabel-form">
+                                    <div className="tabel-form" id="t3">
                                         <p className="tabel-h1">FORM</p>
                                     </div>
                                 </div>
@@ -648,7 +648,7 @@ function StageTeam () {
                                                             <p className="tabel-3 tabel-p">{goalD}</p>
                                                             <p className="tabel-3 tabel-h1">{fres.points}</p>
                                                         </div>
-                                                        <div className="tabel-form">
+                                                        <div className="tabel-form" id="t3">
                                                             <div className={"form-indi " + formStyle1}></div>
                                                             <div className={"form-indi " + formStyle2}></div>
                                                             <div className={"form-indi " + formStyle3}></div>

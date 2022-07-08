@@ -125,7 +125,7 @@ function StageGruppespil () {
         if (gameAdmin === localStorage.getItem("email")){
             return (
                 <Link to="">
-                    <button className="gruppespil2-btn">Indstillinger</button>
+                    <button className="gruppespil3-btn">Indstillinger</button>
                 </Link>
             );
         } else {

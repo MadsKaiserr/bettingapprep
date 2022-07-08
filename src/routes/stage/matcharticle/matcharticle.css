@@ -5,13 +5,6 @@
     .match-odds-cont {
         width: 100% !important;
     }
-    .match-odds-offer-element-3 {
-        width: 21.5vw !important;
-    }
-    
-    .match-odds-offer-element-2 {
-        width: 32.5vw !important;
-    }
   }
 
 .match-odds-contain {
@@ -64,7 +57,7 @@
 }
 
 .match-info-element {
-    padding: 15px 0px;
+    padding: clamp(8px, 2vw, 15px) 0px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -74,7 +67,7 @@
 }
 
 .match-info-element-2 {
-    padding: 15px 0px;
+    padding: clamp(8px, 2vw, 15px) 0px;
     background-color: var(--surface);
     display: flex;
     margin-left: -40px;
@@ -95,8 +88,8 @@
 
 .match-info-element-icon {
     fill: var(--secondary);
-    width: 25px;
-    height: 25px;
+    width: clamp(18px, 3.5vw, 25px);
+    height: clamp(18px, 3.5vw, 25px);
 }
 
 .match-info-p {
@@ -104,7 +97,7 @@
     font-weight: 100;
     color: var(--secondary);
     opacity: 0.8;
-    font-size: 14px;
+    font-size: clamp(11px, 2vw, 14px);
     margin-top: 5px;
 }
 
@@ -112,34 +105,34 @@
     font-family: CircularLight;
     font-weight: 100;
     color: var(--secondary);
-    font-size: 15px;
+    font-size: clamp(12px, 2vw, 15px);
 }
 
 .match-info-h2 {
     font-family: CircularLight;
     font-weight: 100;
     color: var(--secondary);
-    font-size: 15px;
+    font-size: clamp(12px, 2vw, 15px);
     text-align: right;
-    width: 250px;
+    width: clamp(100px, 30vw, 250px);
 }
 
 .match-info-h3 {
     font-family: CircularLight;
     font-weight: 100;
     color: var(--secondary);
-    font-size: 15px;
-    width: 250px;
+    font-size: clamp(12px, 2vw, 15px);
+    width: clamp(100px, 30vw, 250px);
     text-align: left;
 }
 
 .match-img {
-    width: 95px;
-    height: 95px;
-    padding: 15px;
+    width: clamp(60px, 10vw, 95px);
+    height: clamp(60px, 10vw, 95px);
+    padding: clamp(3px, 1.5vw, 15px);
     background-color: var(--stageSurface);
     border-radius: 50%;
-    border: 5px var(--surface) solid;
+    border: clamp(2px, 1vw, 5px) var(--surface) solid;
 }
 
 .match-odds-con {
@@ -152,6 +145,24 @@
     padding-bottom: 40px;
     padding-top: 15px;
     text-align: left;
+}
+
+.close-kupon {
+    width: 25px;
+    height: 25px;
+    display: none;
+    background-color: var(--stageSurface);
+    border-radius: 50%;
+    fill: var(--softBlack);
+    padding: 3px;
+    position: absolute;
+    left: 15px;
+    top: 10px;
+}
+
+.match-show {
+    opacity: 1 !important;
+    margin-right: 0px !important;
 }
 
 .match-kupon {
@@ -167,7 +178,7 @@
     border-top: 4px solid var(--primary);
     border-radius: 2px;
     bottom: 0px;
-    right: 100px;
+    right: 5vw;
 }
 
 .match-odds-container {
@@ -177,7 +188,7 @@
 
 .match-stilling-p {
     font-family: CircularMedium;
-    font-size: 40px;
+    font-size: clamp(20px, 3vw, 40px);
     font-weight: 100;
     padding: 0px 15px;
     color: var(--softBlack);
@@ -185,14 +196,14 @@
 
 .match-h1 {
     font-family: CircularMedium;
-    font-size: 25px;
+    font-size: clamp(15px, 3vw, 25px);
     font-weight: 100;
     color: var(--softBlack);
 }
 
 .match-p {
     font-family: CircularLight;
-    font-size: 13px;
+    font-size: clamp(10px, 1.5vw, 13px);
     font-weight: 100;
     opacity: 0.8;
     color: var(--softBlack);
@@ -200,7 +211,7 @@
 
 .match-stilling-p1 {
     font-family: CircularLight;
-    font-size: 14px;
+    font-size: clamp(11px, 1.5vw, 14px);
     font-weight: 100;
     opacity: 0.8;
     margin-top: 5px;
@@ -910,7 +921,7 @@
 
 .match-odds-offer-element-3 {
     display: flex;
-    width: 15vw;
+    width: 33%;
     justify-content: space-between;
     padding: 1.7vh 15px;
     background-color: var(--primary);
@@ -919,9 +930,32 @@
     cursor: pointer;
 }
 
+.kupon-receipt {
+    fill: #fff;
+    width: 25px;
+    height: 25px;
+}
+
+.match-kupon-knap {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    display: none;
+    height: 60px;
+    background-color: var(--primary);
+    border: 5px solid var(--surface);
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,.1);
+    border-radius: 50%;
+    z-index: 10;
+    width: 60px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
 .match-odds-offer-element-2 {
     display: flex;
-    width: 22.7vw;
+    width: 50%;
     cursor: pointer;
     justify-content: space-between;
     padding: 1.5vh 15px;
