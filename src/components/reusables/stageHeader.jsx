@@ -156,7 +156,7 @@ function StageHeader () {
                                 <Link to="#" className="nav-error-a">Find ud af hvorfor</Link>
                             </div> */}
                             <div className="nav-error">
-                                <p className="nav-info-p">Alpha - V. 1.0.1</p>
+                                <p className="nav-info-p">Alpha - V. 1.0.2</p>
                             </div>
                             <Link to="/stage/indstillinger" className="nav-link">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="bell-icon" viewBox="0 0 16 16">
