@@ -4,6 +4,9 @@ import axios from "axios";
 import { getUser } from "../../../services/authService";
 import { Link } from 'react-router-dom';
 import { getKupon, getString } from "../../../services/algo.js";
+import { DayPicker } from 'react-day-picker';
+import da from 'date-fns/locale/da';
+import 'react-day-picker/dist/style.css';
 
 import './forside.css';
  
@@ -11,7 +14,16 @@ function StageForside () {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-      }, [])
+    }, [])
+
+    const today = new Date();
+    const [selected, setSelected] = useState<Date | undefined>(today);
+    const [chosenDate, setChosenDate] = useState("I dag");
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().substring(0,10))
+
+    function showCal() {
+        document.getElementById("cal").classList.toggle("display");
+    }
 
     const user = getUser();
     const username = user !== 'undefined' && user ? user.username : '';
@@ -28,6 +40,8 @@ function StageForside () {
 
     const [favoritter, setFavoritter] = useState([]);
 
+    const [kuponType, setKuponType] = useState("Single");
+
     useEffect(() => {
         if (loadingText !== "Indlæser...") {
             document.getElementById("stage-main1").classList.add("opacity100");
@@ -37,7 +51,7 @@ function StageForside () {
             document.getElementById("stage-loader1").classList.remove("display");
             document.getElementById("stage-loader2").classList.remove("display");
         }
-      }, [loadingText])
+    }, [loadingText])
 
     const [notUsableBtn, setNotUsableBtn] = useState([]);
 
@@ -45,18 +59,63 @@ function StageForside () {
     const [odds, setOdds] = useState([]);
     const [returnOdds, setReturnOdds] = useState(1);
 
-    const [indsats, setIndsats] = useState(30);
+    useEffect(() => {
+        if (odds.length > 1) {
+            setKuponType("Kombination");
+            document.getElementById("kuponType").classList.add("display-flex");
+        } else {
+            setKuponType("Single");
+            document.getElementById("kuponType").classList.remove("display-flex");
+        }
+    }, [odds])
+
+    useEffect(() => {
+        if (kuponType === "Singler") {
+            document.getElementById("singler").classList.add("kupon-type-element-active");
+            document.getElementById("kombination").classList.remove("kupon-type-element-active");
+            document.getElementById("system").classList.remove("kupon-type-element-active");
+            
+            document.getElementById("singler-content").classList.add("display");
+            document.getElementById("kombination-content").classList.remove("display");
+
+            document.getElementById("singler-bottom").classList.add("display");
+            document.getElementById("kombination-bottom").classList.remove("display");
+        } else if (kuponType === "Kombination") {
+            document.getElementById("singler").classList.remove("kupon-type-element-active");
+            document.getElementById("kombination").classList.add("kupon-type-element-active");
+            document.getElementById("system").classList.remove("kupon-type-element-active");
+
+            document.getElementById("singler-content").classList.remove("display");
+            document.getElementById("kombination-content").classList.add("display");
+
+            document.getElementById("singler-bottom").classList.remove("display");
+            document.getElementById("kombination-bottom").classList.add("display");
+        } else if (kuponType === "System") {
+            document.getElementById("singler").classList.remove("kupon-type-element-active");
+            document.getElementById("kombination").classList.remove("kupon-type-element-active");
+            document.getElementById("system").classList.add("kupon-type-element-active");
+        }
+    }, [kuponType])
+
+    const [singleIndsats, setSingleIndsats] = useState(0);
+    const [singleUdbetaling, setSingleUdbetaling] = useState(0);
+
+    const [indsats, setIndsats] = useState(0);
     const [udbetaling, setUdbetaling] = useState(0);
     const [currentMoney, setCurrentMoney] = useState(0);
 
-    //Variabler
-    var currentDate = new Date().toISOString().slice(0, 10);
-    const [selectedDate, setSelectedDate] = useState(currentDate)
-    var dateParsed = new Date(currentDate);
-    var dateFormatted = dateParsed.toISOString().slice(0, 10);
-    var leagueQuery = "fixtures/between/"+currentDate+"/"+dateFormatted;
+    var leagueQuery = "fixtures/date/"+ new Date().getFullYear() + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate();
 
-    function setNewDate() {
+    useEffect(() => {
+        if (new Date(selected).getDate() === new Date().getDate() && new Date(selected).toLocaleString("da-DK", {month: 'long'}) === new Date().toLocaleString("da-DK", {month: 'long'}) && new Date(selected).getFullYear === new Date().getFullYear) {
+            setChosenDate("I dag");
+        } else if (new Date(selected).getDate() === new Date().getDate() + 1 && new Date(selected).toLocaleString("da-DK", {month: 'long'}) === new Date().toLocaleString("da-DK", {month: 'long'}) && new Date(selected).getFullYear === new Date().getFullYear) {
+            setChosenDate("I morgen")
+        } else if (new Date(selected).getDate() === new Date().getDate() - 1 && new Date(selected).toLocaleString("da-DK", {month: 'long'}) === new Date().toLocaleString("da-DK", {month: 'long'}) && new Date(selected).getFullYear === new Date().getFullYear) {
+            setChosenDate("I går")
+        } else {
+            setChosenDate(new Date(selected).getDate() + " " + new Date(selected).toLocaleString("da-DK", {month: 'long'}))
+        }
         document.getElementById("superliga").classList.add("display-not");
         document.getElementById("seriea").classList.add("display-not");
         document.getElementById("championsleague").classList.add("display-not");
@@ -76,14 +135,20 @@ function StageForside () {
         document.getElementById("restenafverden").classList.remove("display");
         document.getElementById("premierleague").classList.remove("display");
         document.getElementById("nogames").classList.remove("display-not");
-        var dateGet = (document.getElementById("datePicker") as HTMLInputElement).value;
-        var dateParsed = new Date(dateGet);
-        var dateFormatted = dateParsed.toISOString().slice(0, 10);
-        leagueQuery = "fixtures/between/"+dateGet+"/"+dateFormatted+"";
-        setSelectedDate(dateGet);
+        leagueQuery = "fixtures/date/" + new Date(selected).getFullYear() + "-" + (new Date(selected).getMonth() + 1) + "-" + new Date(selected).getDate();
+        
+        var tMonth = (new Date(selected).getMonth() + 1) + "";
+        if (tMonth.length === 1) {
+            tMonth = "0" + tMonth;
+        }
+        var tDate = new Date(selected).getDate() + "";
+        if (tDate.length === 1) {
+            tDate = "0" + tDate;
+        }
+        setSelectedDate(new Date(selected).getFullYear() + "-" + tMonth + "-" + tDate);
         setLoadingText("Indlæser...");
         apiCall();
-    }
+    }, [selected])
 
     window.addEventListener("scroll", function(){
         if (document.getElementById("kupon")) {
@@ -101,7 +166,6 @@ function StageForside () {
         }
         setFavoritter(favorit);
         setTimeout(function (){
-            (document.getElementById("datePicker") as HTMLInputElement).value = currentDate;
             apiCall();
             if (localStorage.getItem("activeGame")) {
                 gameCall();
@@ -147,7 +211,6 @@ function StageForside () {
 
     function place3wayBet(btnId, matchId, homeTeam, visitorTeam, probability, oddsResult, oddsDate) {
         if (!notUsableBtn.includes(btnId) && odds.length < 5) {
-            console.log()
             document.getElementById(btnId).classList.add("odd-off");
             setNotUsableBtn([...notUsableBtn, "3Way Result"+btnId]);
             sessionStorage.setItem("notUsableBtn", JSON.stringify([...notUsableBtn, "3Way Result"+btnId]))
@@ -184,9 +247,13 @@ function StageForside () {
         }
     }
 
-    function updateUdbetaling() {
-        var indsatsValue = (document.getElementById("indsatsInput") as HTMLInputElement).value;
-        setUdbetaling(returnOdds * parseInt(indsatsValue));
+    function updateUdbetaling(type, odds, indsats) {
+        if (type === "kombination") {
+            var indsatsValue = (document.getElementById("indsatsInput") as HTMLInputElement).value;
+            setUdbetaling(returnOdds * parseInt(indsatsValue));
+        } else {
+            setSingleUdbetaling(singleUdbetaling + (parseFloat(odds)*indsats));
+        }
     }
 
     function delBet(betId, matchId) {
@@ -330,7 +397,7 @@ function StageForside () {
         setOdds([]);
         sessionStorage.setItem("odds", "");
         setReturnOdds(1);
-        setIndsats(30);
+        setIndsats(0);
         setUdbetaling(0);
         setKuponBtn("kupon-btn odd-off");
 
@@ -347,6 +414,8 @@ function StageForside () {
     }
 
     function apiCall() {
+        console.log("API CALL");
+        console.log(leagueQuery)
         var t0 = new Date().getTime();
         if (sessionStorage.getItem(leagueQuery)) {
             var cache = sessionStorage.getItem(leagueQuery);
@@ -661,7 +730,6 @@ function StageForside () {
                     document.getElementById("restenafverden").classList.remove("display-not");
                     document.getElementById("nogames").classList.add("display-not");
                 }
-    
                     if ((leagueParse !== 0 && item.league_id === leagueParse && item.time.starting_at.date === dateParse && item.odds.data.length > 0) || (leagueParse === 0 && item.league_id !== 2 && item.league_id !== 271 && item.league_id !== 8 && item.league_id !== 564 && item.league_id !== 301 && item.league_id !== 82 && item.league_id !== 573 && item.time.starting_at.date === dateParse && item.odds.data.length > 0) && (item.odds.data[0].bookmaker.data[0].odds.data[0] && item.odds.data[0].bookmaker.data[0].odds.data[1] && item.odds.data[0].bookmaker.data[0].odds.data[2])) {
                         var betButton1;
                         var betButton2;
@@ -778,6 +846,17 @@ function StageForside () {
         }
     }
 
+    function setSingleIndsatser(indsats, id) {
+        var tempIndsats = 0;
+        var classArray = document.getElementsByClassName("single-kupon-input");
+        for(var i = 0; i < classArray.length; i++){
+            if ((classArray[i] as HTMLInputElement).value !== "" && (classArray[i] as HTMLInputElement).value !== null && (classArray[i] as HTMLInputElement).value !== undefined) {
+                tempIndsats = tempIndsats + parseInt((classArray[i] as HTMLInputElement).value);
+            }
+        }
+        setSingleIndsats(tempIndsats);
+    }
+
     function gameInfo() {
         if (localStorage.getItem("activeGame")) {
             return (
@@ -838,16 +917,40 @@ function StageForside () {
                     <div className="stage-section-indhold" id="stage-main1">
                     <div className="stage-kampe-top">
                         <p className="stage-kampe-h1">Dagens kampe</p>
-                        <div className="stage-kampe-top-calendar">
-                            <div className="stage-kampe-calendar">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="calendarIcon" viewBox="0 0 16 16">
-                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
-                            </svg>
-                                <input className="date-picker" type="date" id="datePicker" onChange={() => {setNewDate()}}/>
+                        <div className="stage-cal">
+                            <div className="stage-cal-val">
+                                <div className="cal-element" onClick={() => {setSelected(new Date(new Date(selected).getTime() - (3600 * 1000 * 24)))}}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="cal-sicon" viewBox="0 0 16 16">
+                                        <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                                    </svg>
+                                </div>
+                                <div className="cal-element" onClick={() => {setSelected(new Date(new Date(selected).getTime() + (3600 * 1000 * 24)))}}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="cal-sicon" viewBox="0 0 16 16">
+                                        <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div className="chosen-cal-con" onClick={() => {showCal()}}>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="cal-icon" viewBox="0 0 16 16">
+                                    <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
+                                    <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                </svg>
+                                <p className="stage-chosen-cal">{chosenDate}</p>
+                            </div>
+                            <div className="stage-daypicker" id="cal">
+                                <DayPicker
+                                    mode="single"
+                                    selected={selected}
+                                    onSelect={setSelected}
+                                    locale={da}
+                                    styles={{
+                                        caption: { color: 'var(--softBlack)' }
+                                    }}
+                                />
                             </div>
                         </div>
                     </div>
-                    <p className="nogames" id="nogames">Der kunne ikke findes nogen kampe d. {selectedDate}...</p>
+                    <p className="nogames" id="nogames">Der kunne ikke findes nogen kampe d. {new Date(selected).getDate()}/{new Date(selected).getMonth() + 1}/{new Date(selected).getFullYear()}...</p>
                     <div className="stage-kampe-section" id="superliga">
                         <div className="stage-kampe-head">
                             <p className="stage-league">Superliga</p>
@@ -1063,10 +1166,15 @@ function StageForside () {
             </div>
             <div className="stage-kupon" id="kupon">
                     <div className="kupon-top">
-                        <p className="kupon-header-p">Single</p>
+                        <p className="kupon-header-p">{kuponType}</p>
                         <p className="kupon-blue-p" onClick={() => emptyBets()}>Ryd alle</p>
                     </div>
-                    <ul className="stage-ul">
+                    <div className="kupon-type" id="kuponType">
+                        <div className="kupon-type-element" id="singler" onClick={() => {setKuponType("Singler")}}>Singler</div>
+                        <div className="kupon-type-element kupon-type-element-active" id="kombination" onClick={() => {setKuponType("Kombination")}}>Kombination</div>
+                        <div className="kupon-type-element" id="system" onClick={() => {setKuponType("System")}}>System</div>
+                    </div>
+                    <ul className="stage-ul display" id="kombination-content">
                         {odds.map(bet => {
                             return (
                                 <li key={bet.id}>
@@ -1089,10 +1197,34 @@ function StageForside () {
                             );
                         })}
                     </ul>
-                    <div className="kupon-bottom">
+                    <ul className="stage-ul" id="singler-content">
+                        {odds.map(bet => {
+                            return (
+                                <li key={bet.id}>
+                                    <div className="kupon-container">
+                                        <div className="kupon-divider-first"></div>
+                                        <p className="kupon-top-p">Dit væddemål</p>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" onClick={() => {delBet(bet.id, bet.match);}} viewBox="0 0 16 16">
+                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                        </svg>
+                                        <div className="kupon-divider"></div>
+                                        <div className="kupon-info">
+                                            <p className="kupon-h1">{bet.hometeam} - {bet.visitorteam}</p>
+                                            <p className="kupon-p">{getKupon(bet.odds_type,bet.hometeam,bet.visitorteam)}: <span className="weight600">{getString(bet.odds_type,bet.odds_result,bet.hometeam,bet.visitorteam)}</span></p>
+                                        </div>
+                                        <div className="kupon-odds">
+                                            <p className="kupon-h2">{bet.probability}</p>
+                                            <input type="number" className="single-kupon-input" autoComplete="off" id={"indsatsInput-" + bet.id} placeholder="Indsats" onChange={event => {setSingleIndsatser(parseInt(event.target.value), bet.id); updateUdbetaling("singler", bet.probability, parseInt(event.target.value))}}/>
+                                        </div>
+                                    </div>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                    <div className="kupon-bottom display" id="kombination-bottom">
                         <div className="kupon-bottom-info">
                             <div className="kupon-indsats">
-                                <input type="number" className="kupon-input" autoComplete="off" id="indsatsInput" placeholder="Indsats" onChange={event => {setIndsats(parseInt(event.target.value)); updateUdbetaling()}}/>
+                                <input type="number" className="kupon-input" autoComplete="off" id="indsatsInput" placeholder="Indsats" onChange={event => {setIndsats(parseInt(event.target.value)); updateUdbetaling("kombination", "", 0)}}/>
                             </div>
                             <div className="kupon-info-div">
                                 <p className="kupon-bottom-info-p">Total indsats</p>
@@ -1107,6 +1239,25 @@ function StageForside () {
                             <div className="kupon-confirm-div">
                                 <p className="kupon-confirm-p">Udbetaling:</p>
                                 <p className="kupon-confirm-h1">{udbetaling.toFixed(2)} kr.</p>
+                            </div>
+                            <button className={kuponBtn} id="placeBetBTN" onClick={() => {
+                                var placeBetBTN = document.getElementById("placeBetBTN");
+                                placeBetBTN.innerHTML = "<div class='loader'></div>";
+                                placeBet();
+                            }}>Placér bet</button>
+                        </div>
+                    </div>
+                    <div className="kupon-bottom" id="singler-bottom">
+                        <div className="kupon-bottom-info">
+                            <div className="kupon-info-div">
+                                <p className="kupon-bottom-info-p">Total indsats</p>
+                                <p className="kupon-bottom-info-p-right">{singleIndsats},00 kr.</p>
+                            </div>
+                        </div>
+                        <div className="kupon-confirm">
+                            <div className="kupon-confirm-div">
+                                <p className="kupon-confirm-p">Udbetaling:</p>
+                                <p className="kupon-confirm-h1">{singleUdbetaling.toFixed(2)} kr.</p>
                             </div>
                             <button className={kuponBtn} id="placeBetBTN" onClick={() => {
                                 var placeBetBTN = document.getElementById("placeBetBTN");

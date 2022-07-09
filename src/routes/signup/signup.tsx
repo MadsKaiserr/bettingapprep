@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from "axios";
-import { resetUserSession } from "../../services/authService";
+import { resetUserSession, setUserSession } from "../../services/authService";
 
 import './signup.css';
  
@@ -95,7 +95,27 @@ function Signup () {
                     resetUserSession();
                     setMessage("Din konto er nu oprettet");
                     document.getElementById("signupBTN").innerHTML = "Opret konto";
-                    window.open("/", "_self");
+                    
+
+                    const loginURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/login";
+                    const loginConfig = {
+                        headers: {
+                            "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
+                        }
+                    }
+            
+                    const loginBody = {
+                        email: email,
+                        password: kodeord
+                    }
+            
+                    axios.post(loginURL, loginBody, loginConfig).then(response => {
+                        console.log(response.data.user);
+                        setUserSession(response.data.user, response.data.token);
+                        window.open("/stage", "_self");
+                    }).catch(error => {
+                        console.log(error);
+                    })
                 }).catch(error => {
                     if (error.response.status === 401 || error.response.status === 403) {
                         setMessage(error.response.data.message);

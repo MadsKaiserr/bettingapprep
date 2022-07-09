@@ -15,6 +15,11 @@
   --stageSurface: #f2f4f8;
   --blueStageSurface: #dee9ff;
   --black: #1D2023;
+  --rdp-accent-color: #3d6deb !important;
+  --rdp-outline: 2px solid #3d6deb !important;
+  --rdp-accent-color-dark: #3d6deb !important;
+  --rdp-outline-selected: 0px !important;
+  --rdp-background-color-dark: var(--softBlack) !important;
 }
 
 .display {

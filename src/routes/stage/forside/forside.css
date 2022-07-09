@@ -175,13 +175,14 @@
   max-height: 500px;
   overflow-y: auto;
   overflow-x: hidden;
+  display: none;
+  width: 100%;
 }
 
 .stage-kampe-top-calendar {
-  display: inline-block;
-  float: right;
-  vertical-align: top;
   text-align: center;
+  display: flex;
+  align-items: center;
 }
 
 .kupon-header-p {
@@ -211,6 +212,7 @@
 .kupon-bottom {
   padding: 10px 15px;
   width: 100%;
+  display: none;
   border-top: 2px #87889775 solid;
 }
 
@@ -301,6 +303,20 @@
   margin: 0;
 }
 
+.single-kupon-input {
+  width: 100px;
+  text-align: right;
+  padding: 7px 10px;
+  border: 1px solid #878897b2;
+  border-radius: 2px;
+}
+
+.single-kupon-input::-webkit-outer-spin-button,
+.single-kupon-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .kupon-btn:hover {
   background-color: var(--primaryAccent) !important;
 }
@@ -335,13 +351,15 @@
   vertical-align: top;
   float: right;
   text-align: right;
+  padding-top: 15px;
+  padding-right: 15px;
 }
 
 .kupon-h2 {
   font-family: Open Sans;
   font-weight: 500;
   font-size: 14px;
-  padding: 15px 15px;
+  padding-bottom: 5px !important;
   color: var(--secondary);
 }
 
@@ -350,6 +368,7 @@
   position: relative;
   width: 100%;
   display: block;
+  padding-bottom: 10px
 }
 
 .kupon-divider {
@@ -389,7 +408,14 @@
 .calendarIcon {
   width: 20px;
   height: 20px;
-  margin-top: 5px;
+}
+
+.date-p {
+  margin-left: 10px;
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 14px;
+  margin-top: 1px;
 }
 
 .stage-kampe-calendar {
@@ -400,9 +426,88 @@
   text-align: left;
   border-radius: 3px;
   padding: 0px 10px;
+  display: flex;
+  align-items: center;
+  background-color: red;
   margin-right: 20px;
-  margin-top: 5px;
   background-color: transparent;
+}
+
+.stage-chosen-cal {
+  font-family: CircularBook;
+  font-weight: 100;
+  user-select: none;
+  font-size: 16px;
+  color: var(--softBlack);
+}
+
+.chosen-cal-con {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 20px;
+  cursor: pointer;
+  min-width: 150px;
+  height: 100%;
+  transition: 0.2s;
+  justify-content: flex-start;
+}
+
+.chosen-cal-con:hover {
+  background-color: var(--surface);
+}
+
+.stage-cal-val {
+  display: flex;
+  align-items: center;
+  user-select: none;
+  justify-content: center;
+}
+
+.cal-element {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 17.5px;
+  transition: 0.2s;
+  user-select: none;
+  cursor: pointer;
+}
+
+.cal-element:hover {
+  background-color: var(--surface);
+}
+
+.cal-sicon {
+  width: 15px;
+  user-select: none;
+  height: 15px;
+  fill: var(--softBlack);
+}
+
+.cal-icon {
+  width: 20px;
+  height: 20px;
+  fill: var(--softBlack);
+}
+
+.stage-cal {
+  position: relative;
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.stage-daypicker {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.08);
+  background-color: #fff;
+  border-radius: 3px;
+  z-index: 11;
 }
 
 .date-picker {
@@ -411,8 +516,7 @@
   border: 0px;
   position: absolute;
   left: 0;
-  top: 0;
-  padding: 5px;
+  top: 5px;
   transition: 0.2s;
 }
 
@@ -422,11 +526,13 @@
   font-weight: 400;
   font-size: 14px;
   margin-top: 1px;
+  color: transparent !important;
 }
 
 .date-picker::-webkit-inner-spin-button {
   display: none;
   -webkit-appearance: none;
+  color: transparent !important;
 }
 
 .date-picker::-webkit-calendar-picker-indicator {
@@ -434,6 +540,7 @@
   padding: 0px;
   width: 100%;
   cursor: pointer;
+  color: transparent !important;
   position: absolute;
   left: 0;
   top: 0;
@@ -822,11 +929,35 @@
   vertical-align: top;
 }
 
+.kupon-type {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  display: none;
+}
+
+.kupon-type-element {
+  background-color: #fff;
+  font-size: 13px;
+  font-weight: 100;
+  font-family: CircularLight;
+  text-align: center;
+  color: var(--softBlack);
+  width: 33.34%;
+  padding: 15px 0px;
+  cursor: pointer;
+}
+
+.kupon-type-element-active {
+  background-color: var(--stageSurface) !important;
+}
+
 .stage-kampe-h1 {
   font-family: CircularBook;
   font-weight: 100;
   font-size: 16px;
-  padding: 10px 0px;
+  padding: 15px 0px;
   display: inline-block;
   color: var(--secondary);
 }
@@ -900,6 +1031,9 @@
 .stage-kampe-top {
   width: 100%;
   padding-left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .stage-match {
