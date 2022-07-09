@@ -252,6 +252,7 @@ function StageForside () {
             var indsatsValue = (document.getElementById("indsatsInput") as HTMLInputElement).value;
             setUdbetaling(returnOdds * parseInt(indsatsValue));
         } else {
+            console.log(singleUdbetaling, (parseFloat(odds)*indsats));
             setSingleUdbetaling(singleUdbetaling + (parseFloat(odds)*indsats));
         }
     }
@@ -283,6 +284,11 @@ function StageForside () {
         setUdbetaling(udbetalingNew);
         if ((odds.length - 1) <= 0) {
             setKuponBtn("kupon-btn odd-off");
+            document.getElementById("kombination-content").classList.add("display");
+            document.getElementById("singler-content").classList.remove("display");
+
+            document.getElementById("kombination-bottom").classList.add("display");
+            document.getElementById("singler-bottom").classList.remove("display");
         }
     }
 
@@ -394,6 +400,13 @@ function StageForside () {
     }
 
     function emptyBets() {
+        document.getElementById("kombination-content").classList.add("display");
+        document.getElementById("singler-content").classList.remove("display");
+
+        document.getElementById("kombination-bottom").classList.add("display");
+        document.getElementById("singler-bottom").classList.remove("display");
+        setSingleIndsats(0);
+        setSingleUdbetaling(0);
         setOdds([]);
         sessionStorage.setItem("odds", "");
         setReturnOdds(1);
