@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+import { Link } from 'react-router-dom';
 
 import './gruppesession.css';
  
@@ -328,16 +329,21 @@ function Gruppesession() {
                                         }
                                     }
 
-                                    return (
-                                        <li key={item.player}>
-                                            <div className="gruppespil-table-row">
+                                    var showMe = "";
+                                        if (item.player === localStorage.getItem("email")) {
+                                            showMe = " gruppespil-row-active";
+                                        }
+    
+                                        return (
+                                            <li key={item.player}>
+                                                <Link to={"/stage/gruppespil/spiller?spiller="+item.player+"&game="+urlParams.get('game')} className={"gruppespil-table-row"+showMe}>
                                                 <p className="gruppespil-table-place gruppetable-place">{index + 1}</p>
                                                 <div className={medlemsskab}></div>
                                                 <p className="gruppespil-table-h1 gruppetable-el-navn">{item.player}</p>
                                                 <p className="gruppespil-table-p gruppetable-number" id="table-anv-data">{item.odds.length}</p>
                                                 <p className="gruppespil-table-p gruppetable-kapital">{kapital} kr.</p>
                                                 <p className="gruppespil-table-p gruppetable-number" id="table-av-data">{aktive}</p>
-                                            </div>
+                                            </Link>
                                         </li>
                                         );
                                     }

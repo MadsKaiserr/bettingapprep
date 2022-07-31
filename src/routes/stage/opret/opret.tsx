@@ -35,10 +35,10 @@ function StageOpret () {
 
     const [spilNavn, setSpilNavn] = useState("");
     const [spilVarighed, setVarighed] = useState("");
-    const [spilStart, setStart] = useState("Startbeløb");
-    const [spilMin, setMin] = useState("Min-beløb pr. kupon");
-    const [spilMax, setMax] = useState("Maks-beløb pr. kupon");
-    const [spilSynlighed, setSynlighed] = useState("offentlig");
+    const [spilStart, setStart] = useState(-1);
+    const [spilMin, setMin] = useState(-1);
+    const [spilMax, setMax] = useState(-1);
+    const [spilSynlighed, setSynlighed] = useState("");
 
     const signupURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/gruppesession";
     const user_email = localStorage.getItem("email");
@@ -67,7 +67,7 @@ function StageOpret () {
                 if (gCount >= 4) {
                     setNotiMessage("error", "For mange spil", "Du har allerede 5 aktive spil, og du kan derfor ikke oprette flere.");
                 } else {
-                    if (spilMax !== "Maks-beløb pr. kupon" && spilMin !== "Min-beløb pr. kupon" && spilNavn !== "" && spilVarighed !== "" && spilStart !== "Startbeløb") {
+                    if (spilMax > 0 && spilMin >= 0 && spilNavn !== "" && spilVarighed !== "" && spilStart >= 0) {
                         const gruppespilConfig = {
                             headers: {
                                 "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
@@ -80,14 +80,14 @@ function StageOpret () {
                         const gruppespilBody = {
                             name: spilNavn,
                             varighed: spilVarighed,
-                            start_amount: (spilStart.substring(12)).slice(0, -4),
-                            min_amount: spilMin.substring(12),
-                            max_amount: spilMax.substring(13),
+                            start_amount: spilStart,
+                            min_amount: spilMin,
+                            max_amount: spilMax,
                             bankerot_tilstand: "tilskuer",
                             bankerot_belob: "0",
                             admin: user_email,
                             synlighed: spilSynlighed,
-                            players: [{player: user_email, info: {money: parseInt((spilStart.substring(12)).slice(0, -4)), notifikationer: [], medlemsskab: medlemsskab}, odds: []}]
+                            players: [{player: user_email, info: {money: spilStart, notifikationer: [], medlemsskab: medlemsskab}, odds: []}]
                         }
                         console.log(gruppespilBody);
                 
@@ -98,15 +98,15 @@ function StageOpret () {
                             console.log(error);
                         })
                     } else {
-                        if (spilMax === "Maks-beløb pr. kupon") {
+                        if (spilMax !>= 0) {
                             setNotiMessage("error", "Manglende oplysning", "Du mangler at vælge maks-beløbet pr. kupon");
-                        } else if (spilMin === "Min-beløb pr. kupon") {
+                        } else if (spilMin !>= 0) {
                             setNotiMessage("error", "Manglende oplysning", "Du mangler at vælge min-beløbet pr. kupon");
                         } else if (spilNavn === "") {
                             setNotiMessage("error", "Manglende oplysning", "Du mangler at afgive spillets navn");
                         } else if (spilVarighed === "") {
                             setNotiMessage("error", "Manglende oplysning", "Du mangler at afgive spillets slutdato");
-                        } else if (spilStart === "Startbeløb") {
+                        } else if (spilStart !>= 0) {
                             setNotiMessage("error", "Manglende oplysning", "Du mangler at afgive spillets startbeløb");
                         }
                     }
@@ -116,11 +116,39 @@ function StageOpret () {
         })
     }
 
-    function getSection(type) {
+    function nextSection(type) {
+        if (type === "synlighed") {
+            if (spilNavn === "") {
+                setNotiMessage("error", "Manglende oplysning", "Du mangler at afgive spillets navn");
+            } else if (spilVarighed === "") {
+                setNotiMessage("error", "Manglende oplysning", "Du mangler at afgive spillets slutdato");
+            } else {
+                document.getElementById("basic").classList.remove("display");
+                document.getElementById("eco").classList.remove("display");
+                document.getElementById("synlighed").classList.add("display");
+                setNotiMessage("remove", "", "");
+            }
+        } else if (type === "eco") {
+            if (spilNavn === "") {
+                setNotiMessage("error", "Manglende oplysning", "Du mangler at afgive spillets navn");
+            } else if (spilVarighed === "") {
+                setNotiMessage("error", "Manglende oplysning", "Du mangler at afgive spillets slutdato");
+            } else if (spilSynlighed === "") {
+                setNotiMessage("error", "Manglende oplysning", "Du mangler at afgive spillets synlighed");
+            } else {
+                document.getElementById("basic").classList.remove("display");
+                document.getElementById("eco").classList.add("display");
+                document.getElementById("synlighed").classList.remove("display");
+                setNotiMessage("remove", "", "");
+            }
+        }
+    }
+
+    function prevSection(type) {
         if (type === "basic") {
             document.getElementById("basic").classList.add("display");
-            document.getElementById("synlighed").classList.remove("display");
             document.getElementById("eco").classList.remove("display");
+            document.getElementById("synlighed").classList.remove("display");
         } else if (type === "synlighed") {
             document.getElementById("basic").classList.remove("display");
             document.getElementById("eco").classList.remove("display");
@@ -165,7 +193,7 @@ function StageOpret () {
                     <p className="error-container-h1" id="errorConH">Ingen væddemål</p>
                     <p className="error-container-p" id="errorConP">Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.</p>
                 </div>
-            </div>
+                </div>
                 <div className="opret-section display" id="basic">
                     <h1 className="opret-title">Angiv gruppespillets navn og slutdato</h1>
                     <div className="opret-form">
@@ -186,7 +214,7 @@ function StageOpret () {
                             </div>
                         </div>
                         <div className="opret-nav">
-                            <div className="opret-next" onClick={() => getSection("synlighed")}>
+                            <div className="opret-next" onClick={() => nextSection("synlighed")}>
                                 <p className="opret-p2">Næste</p>
                                 <svg xmlns="http://www.w3.org/2000/svg" className='opret-icon-small-next' viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
@@ -198,7 +226,7 @@ function StageOpret () {
                 <div className="opret-section" id="synlighed">
                     <h1 className="opret-title">Angiv gruppespillets synlighed</h1>
                     <div className="opret-form">
-                        <div className="opret-button" onClick={() => {setSynlighed("offentlig"); getSection("eco");}}>
+                        <div className="opret-button" onClick={() => {setSynlighed("offentlig"); nextSection("eco");}}>
                             <div className="opret-button-main">
                                 <svg xmlns="http://www.w3.org/2000/svg" className='opret-icon' viewBox="0 0 16 16">
                                     <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
@@ -213,7 +241,7 @@ function StageOpret () {
                                 Dit gruppespil vil være offentligt for alle kan tilmelde sig. Tilmelding sker over "Gruppespil" siden.
                             </div>
                         </div>
-                        <div className="opret-button" onClick={() => {setSynlighed("privat"); getSection("eco");}}>
+                        <div className="opret-button" onClick={() => {setSynlighed("privat"); nextSection("eco");}}>
                             <div className="opret-button-main">
                                 <svg xmlns="http://www.w3.org/2000/svg" className='opret-icon' viewBox="0 0 16 16">
                                     <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/>
@@ -229,13 +257,13 @@ function StageOpret () {
                             </div>
                         </div>
                         <div className="opret-nav">
-                            <div className="opret-back" onClick={() => getSection("basic")}>
+                            <div className="opret-back" onClick={() => prevSection("basic")}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className='opret-icon-small' viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
                                 </svg>
                                 <p className="opret-p2">Forrige</p>
                             </div>
-                            <div className="opret-next" onClick={() => getSection("eco")}>
+                            <div className="opret-next" onClick={() => nextSection("eco")}>
                                 <p className="opret-p2">Næste</p>
                                 <svg xmlns="http://www.w3.org/2000/svg" className='opret-icon-small-next' viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
@@ -253,7 +281,7 @@ function StageOpret () {
                                     <svg xmlns="http://www.w3.org/2000/svg" className='opret-icon' viewBox="0 0 16 16">
                                         <path d="M8.277.084a.5.5 0 0 0-.554 0l-7.5 5A.5.5 0 0 0 .5 6h1.875v7H1.5a.5.5 0 0 0 0 1h13a.5.5 0 1 0 0-1h-.875V6H15.5a.5.5 0 0 0 .277-.916l-7.5-5zM12.375 6v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zM8 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2zM.5 15a.5.5 0 0 0 0 1h15a.5.5 0 1 0 0-1H.5z"/>
                                     </svg>
-                                    <p className="opret-p">{spilStart}</p>
+                                    <p className="opret-p">Startbeløb: {spilStart} kr.</p>
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" className='opret-right' viewBox="0 0 16 16" onMouseLeave={() => {document.getElementById("startTool").classList.remove("display")}} onMouseOver={() => {document.getElementById("startTool").classList.add("display")}}>
                                     <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
@@ -263,24 +291,25 @@ function StageOpret () {
                             </div>
                             </div>
                             <div className="button-dropdown display" id="startDropdown">
-                                <div className="button-dropdown-element" onClick={() => {setStart("Startbeløb: 100 kr."); removeDrop("start")}}>
+                                <div className="button-dropdown-element" onClick={() => {setStart(100); removeDrop("start")}}>
                                     <p className="button-dropdown-p">100,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setStart("Startbeløb: 500 kr."); removeDrop("start")}}>
+                                <div className="button-dropdown-element" onClick={() => {setStart(500); removeDrop("start")}}>
                                     <p className="button-dropdown-p">500,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setStart("Startbeløb: 1000 kr."); removeDrop("start")}}>
+                                <div className="button-dropdown-element" onClick={() => {setStart(1000); removeDrop("start")}}>
                                     <p className="button-dropdown-p">1000,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setStart("Startbeløb: 2000 kr."); removeDrop("start")}}>
+                                <div className="button-dropdown-element" onClick={() => {setStart(2000); removeDrop("start")}}>
                                     <p className="button-dropdown-p">2000,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setStart("Startbeløb: 5000 kr."); removeDrop("start")}}>
+                                <div className="button-dropdown-element" onClick={() => {setStart(5000); removeDrop("start")}}>
                                     <p className="button-dropdown-p">5000,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setStart("Startbeløb: 10000 kr."); removeDrop("start")}}>
+                                <div className="button-dropdown-element" onClick={() => {setStart(10000); removeDrop("start")}}>
                                     <p className="button-dropdown-p">10.000,-</p>
                                 </div>
+                                <input type="number" className="opret-money-input" onChange={event => setStart(parseInt(((event.target.value.replace(".", "")).replace(",", ""))))} placeholder="Andet beløb" />
                             </div>
                         </div>
                         <div className="opret-button-drop">
@@ -289,7 +318,7 @@ function StageOpret () {
                                     <svg xmlns="http://www.w3.org/2000/svg" className='opret-icon' viewBox="0 0 16 16">
                                         <path d="M7.27 1.047a1 1 0 0 1 1.46 0l6.345 6.77c.6.638.146 1.683-.73 1.683H11.5v1a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-1H1.654C.78 9.5.326 8.455.924 7.816L7.27 1.047zM4.5 13.5a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-1z"/>
                                     </svg>
-                                    <p className="opret-p">{spilMax}</p>
+                                    <p className="opret-p">Maks. beløb: {spilMax} kr.</p>
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" className='opret-right' viewBox="0 0 16 16" onMouseLeave={() => {document.getElementById("maksTool").classList.remove("display")}} onMouseOver={() => {document.getElementById("maksTool").classList.add("display")}}>
                                     <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
@@ -299,24 +328,25 @@ function StageOpret () {
                             </div>
                             </div>
                             <div className="button-dropdown" id="maksDropdown">
-                                <div className="button-dropdown-element" onClick={() => {setMax("Maks. beløb: 100 kr."); removeDrop("maks")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMax(100); removeDrop("maks")}}>
                                     <p className="button-dropdown-p">100,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setMax("Maks. beløb: 250 kr."); removeDrop("maks")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMax(250); removeDrop("maks")}}>
                                     <p className="button-dropdown-p">250,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setMax("Maks. beløb: 500 kr."); removeDrop("maks")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMax(500); removeDrop("maks")}}>
                                     <p className="button-dropdown-p">500,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setMax("Maks. beløb: 1000 kr."); removeDrop("maks")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMax(1000); removeDrop("maks")}}>
                                     <p className="button-dropdown-p">1000,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setMax("Maks. beløb: 2500 kr."); removeDrop("maks")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMax(2500); removeDrop("maks")}}>
                                     <p className="button-dropdown-p">2500,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setMax("Maks. beløb: 5000 kr."); removeDrop("maks")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMax(5000); removeDrop("maks")}}>
                                     <p className="button-dropdown-p">5000,-</p>
                                 </div>
+                                <input type="number" className="opret-money-input" onChange={event => setMax(parseInt(((event.target.value.replace(".", "")).replace(",", ""))))} placeholder="Andet beløb" />
                             </div>
                         </div>
                         <div className="opret-button-drop">
@@ -325,7 +355,7 @@ function StageOpret () {
                                     <svg xmlns="http://www.w3.org/2000/svg" className='opret-icon-90' viewBox="0 0 16 16">
                                         <path d="M7.27 1.047a1 1 0 0 1 1.46 0l6.345 6.77c.6.638.146 1.683-.73 1.683H11.5v1a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-1H1.654C.78 9.5.326 8.455.924 7.816L7.27 1.047zM4.5 13.5a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-1z"/>
                                     </svg>
-                                    <p className="opret-p">{spilMin}</p>
+                                    <p className="opret-p">Min. beløb: {spilMin} kr.</p>
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" className='opret-right' viewBox="0 0 16 16" onMouseLeave={() => {document.getElementById("minTool").classList.remove("display")}} onMouseOver={() => {document.getElementById("minTool").classList.add("display")}}>
                                     <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
@@ -335,29 +365,30 @@ function StageOpret () {
                             </div>
                             </div>
                             <div className="button-dropdown" id="minDropdown">
-                                <div className="button-dropdown-element" onClick={() => {setMin("Min. beløb: 50 kr."); removeDrop("min")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMin(50); removeDrop("min")}}>
                                     <p className="button-dropdown-p">50,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setMin("Min. beløb: 150 kr."); removeDrop("min")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMin(150); removeDrop("min")}}>
                                     <p className="button-dropdown-p">150,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setMin("Min. beløb: 300 kr."); removeDrop("min")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMin(300); removeDrop("min")}}>
                                     <p className="button-dropdown-p">300,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setMin("Min. beløb: 500 kr."); removeDrop("min")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMin(500); removeDrop("min")}}>
                                     <p className="button-dropdown-p">500,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setMin("Min. beløb: 1000 kr."); removeDrop("min")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMin(1000); removeDrop("min")}}>
                                     <p className="button-dropdown-p">1000,-</p>
                                 </div>
-                                <div className="button-dropdown-element" onClick={() => {setMin("Min. beløb: 2000 kr."); removeDrop("min")}}>
+                                <div className="button-dropdown-element" onClick={() => {setMin(2000); removeDrop("min")}}>
                                     <p className="button-dropdown-p">2000,-</p>
                                 </div>
+                                <input type="number" className="opret-money-input" onChange={event => setMin(parseInt(((event.target.value.replace(".", "")).replace(",", ""))))} placeholder="Andet beløb" />
                             </div>
                         </div>
                         <button className="square-btn-default" style={{marginTop: "20px"}} onClick={() => opretHandler()}>Opret gruppespil</button>
                         <div className="opret-nav">
-                            <div className="opret-back" onClick={() => getSection("synlighed")}>
+                            <div className="opret-back" onClick={() => prevSection("synlighed")}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className='opret-icon-small' viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
                                 </svg>

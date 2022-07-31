@@ -16,6 +16,7 @@ module.exports = {
         localStorage.setItem("auth", JSON.stringify(user));
         localStorage.setItem("email", user.email);
         localStorage.setItem("favoritter", "");
+        localStorage.removeItem("aktive-spil-suspend");
     },
 
     resetUserSession: function() {

@@ -47,8 +47,12 @@ function Name () {
                 document.getElementById("wrap1").classList.toggle("display-not");
                 setMangel("");
                 setFejl("");
+                var placeBetBTN = document.getElementById("submit1");
+                placeBetBTN.innerHTML = "Indsend";
             }).catch(error => {
                 console.log(error);
+                var placeBetBTN = document.getElementById("submit1");
+                placeBetBTN.innerHTML = "Indsend";
             })
         }
     }
@@ -104,7 +108,9 @@ function Name () {
                         <button className="navn-btn" id="a4" onClick={() => {choose("a4")}}>TipsKlubben</button>
                         <p className="exp-h2">Andet navn?</p>
                         <textarea value={fejl} onChange={event => setFejl(event.target.value)} className="exp-input"/>
-                        <button className="kupon-btn odd-off" id="submit1" onClick={() => indsend()}>Indsend</button>
+                        <button className="kupon-btn odd-off" id="submit1" onClick={() => {indsend();
+                            var placeBetBTN = document.getElementById("submit1");
+                            placeBetBTN.innerHTML = "<div class='loader'></div>";}}>Indsend</button>
                     </div>
                 </div>
             </div>

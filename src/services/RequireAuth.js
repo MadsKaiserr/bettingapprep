@@ -2,6 +2,7 @@ import { useLocation, Navigate, Outlet } from "react-router-dom";
 import { resetUserSession } from "./authService.js"
 import jwtDecode from "jwt-decode";
 import * as React from 'react';
+import Velkommen from '../components/velkommen/velkommen';
 
 const RequireAuth = () => {
     const location = useLocation();
@@ -13,7 +14,11 @@ const RequireAuth = () => {
         var todayMS = todayTime/1000;
         
         if (decodedToken.exp > todayMS) {
-            return <Outlet />
+            if (localStorage.getItem("velkommen") === "now") {
+                return [<Outlet />, <Velkommen />]
+            } else {
+                return <Outlet />
+            }
         } else {
             resetUserSession();
             return (

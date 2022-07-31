@@ -8,8 +8,9 @@ import '../../styles/utilities.css';
 
 import footerLogo from '../../assets/img/logo.png';
 
-import instagram from '../../assets/img/linked.png';
-import facebook from '../../assets/img/facebook.png';
+import spillemyndighed from '../../assets/img/spillemyndighed.png';
+import stopspillet from '../../assets/img/stopspillet.png';
+import tlogo from '../../assets/img/logo-primary.png';
  
 function Footer () {
 
@@ -67,6 +68,11 @@ function Footer () {
                         </div>
                         <p className="footer-h4">*Modtag information om nye præmiedyster, rabatkuponer, <br />vigtige kampe og vær den første til at prøve nye funktioner.</p>
                     </div>
+                </div>
+                <div className="footer-cert">
+                    <a href="https://www.spillemyndigheden.dk/" target="_blank"><img src={spillemyndighed} alt="" className="footer-certs" /></a>
+                    <img src={tlogo} alt="" className="footer-certs" />
+                    <a href="https://www.stopspillet.dk/" target="_blank"><img src={stopspillet} alt="" className="footer-certs" /></a>
                 </div>
                 <p className="footer-copyright">©2022 Alle rettigheder forbeholdes | Mads Kaiser | +45 23 96 58 58</p>
             </div>

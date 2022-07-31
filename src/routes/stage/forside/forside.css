@@ -30,6 +30,98 @@
   border-bottom: 2px var(--surface) solid !important;
 }
 
+.modal-test {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 21;
+}
+
+.modal-con {
+  width: 500px;
+  border-radius: 4px;
+  padding: 25px 30px;
+  background-color: #fff;
+}
+
+.modal-wrapper {
+  padding-top: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.con-modal-btn {
+  padding: 10px 20px;
+  background-color: var(--primary);
+  font-size: 13px;
+  color: #fff;
+  border-radius: 3px;
+  border: 0px;
+  font-family: CircularLight;
+  font-weight: 100;
+  width: 120px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.con-modal-btn:hover {
+  background-color: var(--primaryAccent) !important;
+}
+
+.con-modal-img-con {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.con-modal-h1 {
+  font-size: 17px;
+  font-family: CircularBook;
+  color: var(--softBlack);
+  font-weight: 100;
+  padding-bottom: 5px;
+}
+
+.con-modal-img {
+  width: 180px;
+  margin-bottom: 40px;
+}
+
+.con-modal-afbryd {
+  padding: 10px 20px;
+  background-color: transparent;
+  font-size: 13px;
+  width: 120px;
+  color: var(--softBlack);
+  border-radius: 3px;
+  border: 0px;
+  font-family: CircularLight;
+  font-weight: 100;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.con-modal-afbryd:hover {
+  background-color: var(--stageSurface) !important;
+}
+
+.con-modal-p {
+  font-size: 14px;
+  font-family: CircularLight;
+  color: var(--softBlack);
+  font-weight: 100;
+}
+
 .stage-topbar-element-active {
   border-bottom: 2px var(--primary) solid;
   display: inline-block;
@@ -90,7 +182,7 @@
   width: 21.3%;
   top: 210px;
   z-index: 7;
-  min-width: 260px;
+  min-width: 325px;
   min-height: 150px;
   max-width: 400px;
   vertical-align: top;
@@ -172,10 +264,22 @@
 }
 
 .stage-ul {
+  max-height: 40vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: none;
+  width: 100%;
+}
+
+.match-kupon-ul {
   max-height: 500px;
   overflow-y: auto;
   overflow-x: hidden;
   display: none;
+  width: 100%;
+}
+
+.kupon-parent {
   width: 100%;
 }
 
@@ -192,6 +296,7 @@
   font-size: 16px;
   padding: 10px 0px;
   color: var(--secondary);
+  text-transform: capitalize;
 }
 
 .bet-top {
@@ -347,17 +452,30 @@
 }
 
 .kupon-odds {
-  display: inline-block;
-  vertical-align: top;
-  float: right;
   text-align: right;
   padding-top: 15px;
   padding-right: 15px;
+  padding-bottom: 5px;
+}
+
+.kupon-content {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
 .kupon-h2 {
   font-family: Open Sans;
   font-weight: 500;
+  font-size: 14px;
+  padding-bottom: 5px !important;
+  color: var(--secondary);
+}
+
+.kupon-h2-span {
+  font-family: Open Sans;
+  font-weight: 300;
   font-size: 14px;
   padding-bottom: 5px !important;
   color: var(--secondary);
@@ -786,6 +904,7 @@
   width: 25px;
   margin: 0px 15px;
   margin-top: -3px !important;
+  fill: var(--softBlack);
 }
 
 .stage-teams-h1 {
@@ -944,7 +1063,7 @@
   font-family: CircularLight;
   text-align: center;
   color: var(--softBlack);
-  width: 33.34%;
+  width: 50%;
   padding: 15px 0px;
   cursor: pointer;
 }
@@ -1361,6 +1480,96 @@
   vertical-align: top;
 }
 
+.league-modal {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,.4);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.league-wrapper {
+  padding: 25px 30px;
+  min-width: 500px;
+  max-height: 600px;
+  background-color: #fff;
+  border-radius: 4px;
+  position: relative;
+}
+
+.league-modal-el-img {
+  height: 20px;
+  max-width: 30px;
+}
+
+.league-modal-table {
+  display: flex;
+  max-height: 450px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  overflow-y: auto;
+  flex-direction: column;
+  margin-top: 15px;
+}
+
+.leagues-top-right {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.league-modal-div {
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.league-modal-country-element {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: var(--stageSurface);
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.league-modal-element {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: transparent;
+  padding: 10px;
+}
+
+.league-modal-element-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.league-modal-h1 {
+  font-size: 27px;
+  color: var(--softBlack);
+  font-weight: 100;
+  font-family: CircularBook;
+}
+
+.league-modal-p {
+  font-size: 14px;
+  color: var(--softBlack);
+  font-weight: 100;
+  font-family: CircularBook;
+}
+
 .error-text {
   display: inline-block;
   vertical-align: top;
@@ -1402,6 +1611,20 @@
   font-weight: 400;
   color: black;
   display: inline-block;
+}
+
+.info-p-span-hover {
+  font-size: 16px;
+  font-family: Open Sans;
+  font-weight: 400;
+  color: black;
+  display: inline-block;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.info-p-span-hover:hover {
+  text-decoration: underline;
 }
 
 .stage-kampe-stilling-small {

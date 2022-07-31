@@ -32,6 +32,20 @@ module.exports = {
             return "Lige/Ulige mål";
         } else if (type === "Own Goal") {
             return "Selvmål";
+        } else if (type.slice(0,-3) === "Over/Under") {
+            return "Over/Under " + type.slice(10) + " mål";
+        } else if (type.slice(0,-4) === "Over/Under") {
+            return "Over/Under " + type.slice(10) + " mål";
+        } else if (type === "Exact Goals Number") {
+            return "Antal mål i kampen";
+        } else if (type.slice(0,-3) === "Goals Over/Under 1st Half") {
+            return "Over/Under " + type.slice(-3) + " mål - 1. Halvleg";
+        } else if (type.slice(0,-4) === "Goals Over/Under 1st Half") {
+            return "Over/Under " + type.slice(-4) + " mål - 1. Halvleg";
+        } else if (type.slice(0,-3) === "Over/Under 2nd Half") {
+            return "Over/Under " + type.slice(-3) + " mål - 2. Halvleg";
+        } else if (type.slice(0,-4) === "Over/Under 2nd Half") {
+            return "Over/Under " + type.slice(-4) + " mål - 2. Halvleg";
         }
     },
     getString: function(type,result,homeTeam,visitorTeam) {
@@ -92,6 +106,124 @@ module.exports = {
                 return "2. halvleg";
             } else if (result === "2") {
                 return "Uafgjort";
+            }
+        } else if (type.slice(0,-3) === "Over/Under") {
+            if (result === "0") {
+                return "Over";
+            } else if (result === "1") {
+                return "Under";
+            }
+        } else if (type.slice(0,-4) === "Over/Under") {
+            if (result === "0") {
+                return "Over";
+            } else if (result === "1") {
+                return "Under";
+            }
+        } else if (type === "Exact Goals Number") {
+            if (result === "0") {
+                return "0";
+            } else if (result === "1") {
+                return "1";
+            } else if (result === "2") {
+                return "2";
+            } else if (result === "3") {
+                return "3";
+            } else if (result === "4") {
+                return "4";
+            } else if (result === "5") {
+                return "5";
+            } else if (result === "6") {
+                return "6";
+            } else if (result === "7") {
+                return "7+";
+            }
+        } else if (type.slice(0,-3) === "Goals Over/Under 1st Half") {
+            if (result === "0") {
+                return "Over";
+            } else if (result === "1") {
+                return "Over";
+            } else if (result === "2") {
+                return "Over";
+            } else if (result === "3") {
+                return "Over";
+            } else if (result === "4") {
+                return "Over";
+            } else if (result === "5") {
+                return "Under";
+            } else if (result === "6") {
+                return "Under";
+            } else if (result === "7") {
+                return "Under";
+            } else if (result === "8") {
+                return "Under";
+            } else if (result === "9") {
+                return "Under";
+            }
+        } else if (type.slice(0,-4) === "Goals Over/Under 1st Half") {
+            if (result === "0") {
+                return "Over";
+            } else if (result === "1") {
+                return "Over";
+            } else if (result === "2") {
+                return "Over";
+            } else if (result === "3") {
+                return "Over";
+            } else if (result === "4") {
+                return "Over";
+            } else if (result === "5") {
+                return "Under";
+            } else if (result === "6") {
+                return "Under";
+            } else if (result === "7") {
+                return "Under";
+            } else if (result === "8") {
+                return "Under";
+            } else if (result === "9") {
+                return "Under";
+            }
+        } else if (type.slice(0,-3) === "Over/Under 2nd Half") {
+            if (result === "0") {
+                return "Over";
+            } else if (result === "1") {
+                return "Over";
+            } else if (result === "2") {
+                return "Over";
+            } else if (result === "3") {
+                return "Over";
+            } else if (result === "4") {
+                return "Over";
+            } else if (result === "5") {
+                return "Under";
+            } else if (result === "6") {
+                return "Under";
+            } else if (result === "7") {
+                return "Under";
+            } else if (result === "8") {
+                return "Under";
+            } else if (result === "9") {
+                return "Under";
+            }
+        } else if (type.slice(0,-4) === "Over/Under 2nd Half") {
+            if (result === "0") {
+                return "Over";
+            } else if (result === "1") {
+                return "Over";
+            } else if (result === "2") {
+                return "Over";
+            } else if (result === "3") {
+                return "Over";
+            } else if (result === "4") {
+                return "Over";
+            } else if (result === "5") {
+                return "Under";
+            } else if (result === "6") {
+                return "Under";
+            } else if (result === "7") {
+                return "Under";
+            } else if (result === "8") {
+                return "Under";
+            } else if (result === "9") {
+                return "Under";
             }
         }
     }

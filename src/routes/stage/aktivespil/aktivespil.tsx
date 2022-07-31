@@ -24,6 +24,7 @@ function StageAktiveSpil () {
     function setActiveGame(id, index, name) {
         localStorage.setItem("activeGame", id);
         localStorage.setItem("playerIndex", index);
+        localStorage.setItem("aktive-spil-suspend", "null");
         window.open("/stage/", "_self");
     }
 
@@ -59,8 +60,8 @@ function StageAktiveSpil () {
     const [modalh2, setModalH2] = useState("Det ser ud til, at du ikke har noget abonnement til at oprette gruppespil. Vil du gøre brug af en af dine adgangsbilletter istedet?");
 
     function showModal() {
-        setModalH1("Benyt adgangsbillet");
-        setModalH2("Det ser ud til, at du ikke har noget abonnement til at oprette gruppespil. Vil du gøre brug af en af dine adgangsbilletter istedet?");
+        setModalH1("Opgrader abonnement");
+        setModalH2('Opgrader dit abonnement for at få adgang til at oprette gruppespil, eller køb en adgangsbillet under "Priser".');
         document.getElementById("main-modal").classList.add("display-flex");
     }
 
@@ -203,9 +204,8 @@ function StageAktiveSpil () {
                 <div className="modal-box">
                     <p className="main-modal-h1">{modalh1}</p>
                     <p className="main-modal-h2">{modalh2}</p>
-                    <button className="modal-btn" onClick={() => {billetHandler()}}>Brug billet</button>
+                    <Link to="/priser"><button className="modal-btn">Se abonnementer</button></Link>
                     <button className="modal-btn-outline" onClick={() => {setModalH1("");setModalH2("");document.getElementById("main-modal").classList.remove("display-flex")}}>Fortryd</button>
-                    <br/><Link to="/priser" className="modal-p">Køb adgangsbillet</Link>
                 </div>
             </div>
             <div className="gruppespil-container">
@@ -241,9 +241,9 @@ function StageAktiveSpil () {
                                     const name = item.name;
                                     const id = item.id;
         
-                                    var activeClass = "spil-element";
+                                    var elTop = <></>;
                                     if (localStorage.getItem("activeGame") === item.id) {
-                                        activeClass = "spil-element-active";
+                                        elTop = <div className="spil-element-top">Aktiv</div>;
                                     }
                                     var slut_day = new Date(slut_dato).getDate();
                                     var slut_month = new Date(slut_dato).getMonth();
@@ -314,8 +314,8 @@ function StageAktiveSpil () {
                                     return (
                                         <li key={id}>
                                             <div className="spil-element-con" onClick={() => setActiveGame(id, index, name)}>
-                                                <div className={activeClass}>
-                                                    <div className="spil-avatar"></div>
+                                                {elTop}
+                                                <div className={"spil-element"}>
                                                     <p className="spil-h1">{name}</p>
                                                     <p className="spil-h2">Slutter om {Math.floor(dif_days)} dage</p>
                                                     <div className="spil-element-bottom">
@@ -346,9 +346,9 @@ function StageAktiveSpil () {
                                     const name = item.name;
                                     const id = item.id;
         
-                                    var activeClass = "spil-element";
+                                    var elTop = <></>;
                                     if (localStorage.getItem("activeGame") === item.id) {
-                                        activeClass = "spil-element-active";
+                                        elTop = <div className="spil-element-top">Aktiv</div>;
                                     }
                                     var slut_dato = new Date(item.varighed).getTime();
                                     var slut_day = new Date(slut_dato).getDate();
@@ -368,6 +368,16 @@ function StageAktiveSpil () {
                                         slut_month_str = "Juni"
                                     } else if (slut_month + 1 === 7) {
                                         slut_month_str = "Juli"
+                                    } else if (slut_month + 1 === 8) {
+                                        slut_month_str = "August"
+                                    } else if (slut_month + 1 === 9) {
+                                        slut_month_str = "September"
+                                    } else if (slut_month + 1 === 10) {
+                                        slut_month_str = "Oktober"
+                                    } else if (slut_month + 1 === 11) {
+                                        slut_month_str = "November"
+                                    } else if (slut_month + 1 === 12) {
+                                        slut_month_str = "December"
                                     }
 
                                     var oprettelse_day = new Date(item.oprettelse).getDate();
@@ -387,6 +397,16 @@ function StageAktiveSpil () {
                                         oprettelse_month_str = "Juni"
                                     } else if (oprettelse_month + 1 === 7) {
                                         oprettelse_month_str = "Juli"
+                                    } else if (oprettelse_month + 1 === 8) {
+                                        oprettelse_month_str = "August"
+                                    } else if (oprettelse_month + 1 === 9) {
+                                        oprettelse_month_str = "September"
+                                    } else if (oprettelse_month + 1 === 10) {
+                                        oprettelse_month_str = "Oktober"
+                                    } else if (oprettelse_month + 1 === 11) {
+                                        oprettelse_month_str = "November"
+                                    } else if (oprettelse_month + 1 === 12) {
+                                        oprettelse_month_str = "December"
                                     }
 
                                     var dif_mil = slut_dato - item.oprettelse;
@@ -408,10 +428,10 @@ function StageAktiveSpil () {
                                     return (
                                         <li key={id}>
                                             <div className="spil-element-con" onClick={() => setActiveGame(id, index, name)}>
-                                                <div className={activeClass}>
-                                                    <div className="spil-avatar"></div>
+                                                {elTop}
+                                                <div className={"spil-element"}>
                                                     <p className="spil-h1">{name}</p>
-                                                    <p className="spil-h2">{dif_to_str}</p>
+                                                    <p className="spil-h2">Slutter om {Math.floor(dif_days)} dage</p>
                                                     <div className="spil-element-bottom">
                                                         <div className="input-range-con">
                                                             <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />
@@ -439,9 +459,9 @@ function StageAktiveSpil () {
                                     const name = item.name;
                                     const id = item.id;
         
-                                    var activeClass = "spil-element";
+                                    var elTop = <></>;
                                     if (localStorage.getItem("activeGame") === item.id) {
-                                        activeClass = "spil-element-active";
+                                        elTop = <div className="spil-element-top">Aktiv</div>;
                                     }
                                     var slut_dato = new Date(item.varighed).getTime();
                                     var slut_day = new Date(slut_dato).getDate();
@@ -461,6 +481,16 @@ function StageAktiveSpil () {
                                         slut_month_str = "Juni"
                                     } else if (slut_month + 1 === 7) {
                                         slut_month_str = "Juli"
+                                    } else if (slut_month + 1 === 8) {
+                                        slut_month_str = "August"
+                                    } else if (slut_month + 1 === 9) {
+                                        slut_month_str = "September"
+                                    } else if (slut_month + 1 === 10) {
+                                        slut_month_str = "Oktober"
+                                    } else if (slut_month + 1 === 11) {
+                                        slut_month_str = "November"
+                                    } else if (slut_month + 1 === 12) {
+                                        slut_month_str = "December"
                                     }
 
                                     var oprettelse_day = new Date(item.oprettelse).getDate();
@@ -480,6 +510,16 @@ function StageAktiveSpil () {
                                         oprettelse_month_str = "Juni"
                                     } else if (oprettelse_month + 1 === 7) {
                                         oprettelse_month_str = "Juli"
+                                    } else if (oprettelse_month + 1 === 8) {
+                                        oprettelse_month_str = "August"
+                                    } else if (oprettelse_month + 1 === 9) {
+                                        oprettelse_month_str = "September"
+                                    } else if (oprettelse_month + 1 === 10) {
+                                        oprettelse_month_str = "Oktober"
+                                    } else if (oprettelse_month + 1 === 11) {
+                                        oprettelse_month_str = "November"
+                                    } else if (oprettelse_month + 1 === 12) {
+                                        oprettelse_month_str = "December"
                                     }
 
                                     var dif_mil = slut_dato - item.oprettelse;
@@ -493,10 +533,10 @@ function StageAktiveSpil () {
                                     return (
                                         <li key={id}>
                                             <div className="spil-element-con" onClick={() => setActiveGame(id, index, name)}>
-                                                <div className={activeClass}>
-                                                    <div className="spil-avatar"></div>
+                                                {elTop}
+                                                <div className={"spil-element"}>
                                                     <p className="spil-h1">{name}</p>
-                                                    <p className="spil-h2">Slutter om {Math.floor(dif_today)} dage</p>
+                                                    <p className="spil-h2">Slutter om {Math.floor(dif_days)} dage</p>
                                                     <div className="spil-element-bottom">
                                                         <div className="input-range-con">
                                                             <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />
@@ -526,9 +566,9 @@ function StageAktiveSpil () {
                                     const name = item.name;
                                     const id = item.id;
         
-                                    var activeClass = "spil-element";
+                                    var elTop = <></>;
                                     if (localStorage.getItem("activeGame") === item.id) {
-                                        activeClass = "spil-element-active";
+                                        elTop = <div className="spil-element-top">Aktiv</div>;
                                     }
                                     var slut_dato = new Date(item.varighed).getTime();
                                     var slut_day = new Date(slut_dato).getDate();
@@ -548,6 +588,16 @@ function StageAktiveSpil () {
                                         slut_month_str = "Juni"
                                     } else if (slut_month + 1 === 7) {
                                         slut_month_str = "Juli"
+                                    } else if (slut_month + 1 === 8) {
+                                        slut_month_str = "August"
+                                    } else if (slut_month + 1 === 9) {
+                                        slut_month_str = "September"
+                                    } else if (slut_month + 1 === 10) {
+                                        slut_month_str = "Oktober"
+                                    } else if (slut_month + 1 === 11) {
+                                        slut_month_str = "November"
+                                    } else if (slut_month + 1 === 12) {
+                                        slut_month_str = "December"
                                     }
 
                                     var oprettelse_day = new Date(item.oprettelse).getDate();
@@ -567,6 +617,16 @@ function StageAktiveSpil () {
                                         oprettelse_month_str = "Juni"
                                     } else if (oprettelse_month + 1 === 7) {
                                         oprettelse_month_str = "Juli"
+                                    } else if (oprettelse_month + 1 === 8) {
+                                        oprettelse_month_str = "August"
+                                    } else if (oprettelse_month + 1 === 9) {
+                                        oprettelse_month_str = "September"
+                                    } else if (oprettelse_month + 1 === 10) {
+                                        oprettelse_month_str = "Oktober"
+                                    } else if (oprettelse_month + 1 === 11) {
+                                        oprettelse_month_str = "November"
+                                    } else if (oprettelse_month + 1 === 12) {
+                                        oprettelse_month_str = "December"
                                     }
 
                                     var dif_mil = slut_dato - item.oprettelse;
@@ -580,10 +640,10 @@ function StageAktiveSpil () {
                                     return (
                                         <li key={id}>
                                             <div className="spil-element-con" onClick={() => setActiveGame(id, index, name)}>
-                                                <div className={activeClass}>
-                                                    <div className="spil-avatar"></div>
+                                                {elTop}
+                                                <div className={"spil-element"}>
                                                     <p className="spil-h1">{name}</p>
-                                                    <p className="spil-h2">Spillet er afsluttet</p>
+                                                    <p className="spil-h2">Slutter om {Math.floor(dif_days)} dage</p>
                                                     <div className="spil-element-bottom">
                                                         <div className="input-range-con">
                                                             <input type="range" className="spil-input" value={dif_today_days*days_gang} maxLength={dif_days*days_gang} minLength={0} />

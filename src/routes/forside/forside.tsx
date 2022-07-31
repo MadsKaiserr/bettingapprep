@@ -11,6 +11,8 @@ import dollar from '../../assets/img/dollar.png';
 
 import CtaSections from '../../components/ctaSections/ctaSections';
 import Spiloffer from '../../components/spiloffer/spiloffer';
+
+import Trustpilot from '../../assets/img/trustpilot.png';
  
 function Forside () {
 
@@ -48,8 +50,14 @@ function Forside () {
                     </div>
                 </div>
                 <div className="hero-help">
-                    <div className="help-top"></div>
-                    <div className="help-container"></div>
+                    <div className="help-container">
+                        <div className="help-top">
+                            <img src={Trustpilot} alt="" className="tp-img" />
+                            <p className="tp-p">Trustpilot</p>
+                        </div>
+                        <p className="tp-h1">Vi underholder over 40.000 brugere</p>
+                        <p className="tp-h2">Se alle anmeldelser</p>
+                    </div>
                 </div>
             </div>
             <div className="forside-section">
@@ -96,37 +104,43 @@ function Forside () {
                         <p className="kupon-header-p">Single</p>
                         <p className="kupon-blue-p">Ryd alle</p>
                     </div>
-                    <div className="kupon-container">
-                        <div className="kupon-divider-first"></div>
-                        <p className="kupon-top-p">Dit væddemål</p>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" viewBox="0 0 16 16">
-                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                        <div className="kupon-divider"></div>
-                        <div className="kupon-info">
-                            <p className="kupon-h1">Liverpool - Tottenham</p>
-                            <p className="kupon-p">Kampresultat: <span className="weight600">Liverpool</span></p>
+                    <div className="stage-ul display">
+                        <div className="kupon-container">
+                            <div className="kupon-divider-first"></div>
+                            <p className="kupon-top-p">Dit væddemål</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" viewBox="0 0 16 16">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                            <div className="kupon-divider"></div>
+                            <div className="kupon-content">
+                                <div className="kupon-info">
+                                    <p className="kupon-h1">Liverpool - Tottenham</p>
+                                    <p className="kupon-p">Kampresultat: <span className="weight600">Liverpool</span></p>
+                                </div>
+                                <div className="kupon-odds">
+                                    <p className="kupon-h2">1.40</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="kupon-odds">
-                            <p className="kupon-h2">1.40</p>
+                        <div className="kupon-container">
+                            <div className="kupon-divider-first"></div>
+                            <p className="kupon-top-p">Dit væddemål</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" viewBox="0 0 16 16">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                            <div className="kupon-divider"></div>
+                            <div className="kupon-content">
+                                <div className="kupon-info">
+                                    <p className="kupon-h1">Real Madrid - Barcelona</p>
+                                    <p className="kupon-p">Clean Sheet: <span className="weight600">Barcelona</span></p>
+                                </div>
+                                <div className="kupon-odds">
+                                    <p className="kupon-h2">4.33</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div className="kupon-container">
-                        <div className="kupon-divider-first"></div>
-                        <p className="kupon-top-p">Dit væddemål</p>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" viewBox="0 0 16 16">
-                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                        <div className="kupon-divider"></div>
-                        <div className="kupon-info">
-                            <p className="kupon-h1">Real Madrid - Barcelona</p>
-                            <p className="kupon-p">Clean Sheet: <span className="weight600">Barcelona</span></p>
-                        </div>
-                        <div className="kupon-odds">
-                            <p className="kupon-h2">4.33</p>
-                        </div>
-                    </div>
-                    <div className="kupon-bottom">
+                    <div className="kupon-bottom display">
                         <div className="kupon-bottom-info">
                             <div className="kupon-info-div">
                                 <p className="kupon-bottom-info-p">Total indsats</p>

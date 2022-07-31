@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getUser, resetUserSession } from "../../services/authService";
 import { Link, Navigate } from 'react-router-dom';
 import jwtDecode from "jwt-decode";
@@ -12,6 +12,13 @@ import flag from '../../assets/img/danmark.png';
 import england from '../../assets/img/england.png';
  
 function StageHeader () {
+
+    useEffect(() => {
+        if (localStorage.getItem("aktive-spil-suspend") === "true") {
+            document.getElementById("main-error").classList.add("display-flex");
+            document.getElementById("main-error-p").innerHTML = "Dit aktive spil er suspenderet.";
+        }
+    }, [])
 
     const searchClient = algoliasearch(
         'OY1FZUYYG8',
@@ -127,9 +134,12 @@ function StageHeader () {
                             </div>
                         </div>
                         <div className="nav-search">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="nav-short-search" onClick={() => {showSearch()}} viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                            </svg>
+                            <div className="search-sc" onClick={() => {showSearch()}}>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="nav-short-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                </svg>
+                                <p className="search-sc-p">Søg</p>
+                            </div>
                             <InstantSearch searchClient={searchClient} indexName="dev_bettingapp">
                                 <div className="nav-hits" id="nav-hits">
                                     <div className="search-el display-not" id="mb-search">
@@ -148,13 +158,13 @@ function StageHeader () {
                     </Link>
                     <div className="nav-container-stage-right">
                         <div className="nav-profile">
-                            {/* <div className="nav-error">
+                            <div className="nav-error" id="main-error">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="nav-error-img" viewBox="0 0 16 16" id="errorIcon">
                                     <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                                 </svg>
-                                <p className="nav-error-p">Din konto er suspenderet.</p>
+                                <p className="nav-error-p" id="main-error-p">Din konto er suspenderet.</p>
                                 <Link to="#" className="nav-error-a">Find ud af hvorfor</Link>
-                            </div> */}
+                            </div>
                             <div className="nav-error">
                                 <p className="nav-info-p">Alpha - V. 1.0.2</p>
                             </div>
@@ -204,7 +214,7 @@ function StageHeader () {
                                     <Link to="/stage" className="side-nav-p" onClick={() => {closeMenu()}}>Udforsk</Link>
                                     <Link to="/stage/gruppespil" className="side-nav-p" onClick={() => {closeMenu()}}>Gruppespil</Link>
                                     <Link to="/stage/faq" className="side-nav-p" onClick={() => {closeMenu()}}>Spørgsmål og svar</Link>
-                                    {/* <Link to="/blog" className="side-nav-p" onClick={() => {closeMenu()}}>Blog</Link> */}
+                                    <Link to="/priser" className="side-nav-p" onClick={() => {closeMenu()}}>Abonnement</Link>
                                     <Link to="/stage/notifikationer" className="side-nav-p" onClick={() => {closeMenu()}}>Notifikationer</Link>
                                     <Link to="/stage/indstillinger" className="side-nav-p" onClick={() => {closeMenu()}}>Indstillinger</Link>
                                     <p className="side-nav-p" onClick={() => logout()}>Log ud</p>
@@ -224,7 +234,7 @@ function StageHeader () {
                         <Link to="/stage/faq" className="nav-p-stage">FAQ</Link>
                     </div>
                     <div className="nav-link-container">
-                        <Link to="/blog" className="nav-p-stage">Blog</Link>
+                        <Link to="/priser" className="nav-p-stage">Abonnement</Link>
                     </div>
                 </div>
             </div>

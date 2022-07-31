@@ -37,6 +37,7 @@ import StageAktiveSpil from './routes/stage/aktivespil/aktivespil';
 import StageOpret from './routes/stage/opret/opret';
 import StageFind from './routes/stage/find/find';
 import StageGruppespil from './routes/stage/gruppespil/gruppespil';
+import StageSpiller from './routes/stage/gruppespil/spiller/spiller';
 import StageGruppesession from './routes/stage/gruppesession/gruppesession';
 import StageIndstillinger from './routes/stage/indstillinger/indstillinger';
 import StageMatcharticle from './routes/stage/matcharticle/matcharticle';
@@ -90,6 +91,7 @@ ReactDOM.render(
             <Route exact path="/stage/opret-spil" element={[<StageHeader key="stageHeaderKey" />, <StageOpret key="StageOpretKey" />]} />
             <Route exact path="/stage/find-spil" element={[<StageHeader key="stageHeaderKey" />, <StageFind key="StageFindKey" />]} />
             <Route exact path="/stage/gruppespil" element={[<StageHeader key="stageHeaderKey" />, <StageGruppespil key="StageGruppespil" />]} />
+            <Route exact path="/stage/gruppespil/spiller" element={[<StageHeader key="stageHeaderKey" />, <StageSpiller key="StageSpiller" />]} />
             <Route exact path="/stage/gruppesession" element={[<StageHeader key="stageHeaderKey" />, <StageGruppesession key="StageGruppesession" />]} />
             <Route exact path="/stage/indstillinger" element={[<StageHeader key="stageHeaderKey" />, <Stagefix key="headerFixKey" />, <StageIndstillinger key="StageIndstillinger" />]} />
             <Route exact path="/stage/match" element={[<StageHeader key="stageHeaderKey" />, <StageMatcharticle key="StageMatcharticle" />]} />

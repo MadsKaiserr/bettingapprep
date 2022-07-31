@@ -145,11 +145,11 @@ li {
 }
 
 .main-component-h1 {
-  color: var(--black);
+  color: var(--secondary);
   font-size: clamp(38px, 7vw, 64px);
   line-height: clamp(38px, 7vw, 64px);
   font-family: CircularBold;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .main-component-h1-h2 {

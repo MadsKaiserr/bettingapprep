@@ -135,7 +135,7 @@ function StageFind () {
                         <ul id="alleG">
                             <div className="match-loader display" id="stage-loader1"></div>
                             {items.map((item) => {
-                                const gruppespilURL = "/gruppesession?game=" + item.id;
+                                const gruppespilURL = "/stage/gruppesession?game=" + item.id;
                                 var synlighed = item.synlighed;
                                 var dystClass = ""
                                 var dystSpan = ""
@@ -164,7 +164,7 @@ function StageFind () {
                         <ul className="display-not" id="privateG">
                             {items.map((item) => {
                                 if (item.synlighed === "privat") {
-                                    const gruppespilURL = "/gruppesession?game=" + item.id;
+                                    const gruppespilURL = "/stage/gruppesession?game=" + item.id;
                                     var synlighed = item.synlighed;
                                     var dystClass = ""
                                     var dystSpan = ""
@@ -194,7 +194,7 @@ function StageFind () {
                         <ul className="display-not" id="offentligeG">
                             {items.map((item) => {
                                 if (item.synlighed === "offentlig") {
-                                    const gruppespilURL = "/gruppesession?game=" + item.id;
+                                    const gruppespilURL = "/stage/gruppesession?game=" + item.id;
                                     var synlighed = item.synlighed;
                                     var dystClass = ""
                                     var dystSpan = ""
@@ -224,7 +224,7 @@ function StageFind () {
                         <ul className="display-not" id="dysterG">
                             {items.map((item) => {
                                 if (item.synlighed === "dyst") {
-                                    const gruppespilURL = "/gruppesession?game=" + item.id;
+                                    const gruppespilURL = "/stage/gruppesession?game=" + item.id;
                                     var synlighed = item.synlighed;
                                     var dystClass = ""
                                     var dystSpan = ""

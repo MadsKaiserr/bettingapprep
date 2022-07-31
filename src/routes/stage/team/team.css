@@ -160,6 +160,7 @@
     vertical-align: top;
     overflow: hidden;
     width: 100%;
+    cursor: pointer;
 }
 
 #h2h-icon {

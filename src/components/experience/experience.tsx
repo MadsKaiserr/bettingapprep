@@ -22,7 +22,7 @@ function Experience () {
 
     useEffect(() => {
         if (mangel !== "" || fejl !== "") {
-            document.getElementById("submit").classList.remove("odd-off");
+            document.getElementById("submitExp").classList.remove("odd-off");
         }
     }), [mangel, fejl]
 
@@ -49,8 +49,12 @@ function Experience () {
                 document.getElementById("wrap").classList.toggle("display-not");
                 setMangel("");
                 setFejl("");
+                var placeBetBTN = document.getElementById("submitExp");
+                placeBetBTN.innerHTML = "Indsend";
             }).catch(error => {
                 console.log(error);
+                var placeBetBTN = document.getElementById("submitExp");
+                placeBetBTN.innerHTML = "Indsend";
             })
         }
     }
@@ -76,7 +80,9 @@ function Experience () {
                         <textarea value={mangel} onChange={event => setMangel(event.target.value)} className="exp-input" required/>
                         <p className="exp-h2">Har du fundet fejl?</p>
                         <textarea value={fejl} onChange={event => setFejl(event.target.value)} className="exp-input" required/>
-                        <button className="kupon-btn odd-off" id="submit" onClick={() => indsend()}>Indsend</button>
+                        <button className="kupon-btn odd-off" id="submitExp" onClick={() => {indsend();
+                            var placeBetBTN = document.getElementById("submitExp");
+                            placeBetBTN.innerHTML = "<div class='loader'></div>";}}>Indsend</button>
                     </div>
                 </div>
             </div>

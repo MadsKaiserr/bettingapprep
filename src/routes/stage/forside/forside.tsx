@@ -7,6 +7,7 @@ import { getKupon, getString } from "../../../services/algo.js";
 import { DayPicker } from 'react-day-picker';
 import da from 'date-fns/locale/da';
 import 'react-day-picker/dist/style.css';
+import Congrats from '../../../assets/img/congrats.svg';
 
 import './forside.css';
  
@@ -15,6 +16,9 @@ function StageForside () {
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
+
+    const [currentLeagues, setCurrentLeagues] = useState([]);
+    const [ligaLoad, setLigaLoad] = useState(false);
 
     const today = new Date();
     const [selected, setSelected] = useState<Date | undefined>(today);
@@ -60,11 +64,17 @@ function StageForside () {
     const [returnOdds, setReturnOdds] = useState(1);
 
     useEffect(() => {
-        if (odds.length > 1) {
-            setKuponType("Kombination");
-            document.getElementById("kuponType").classList.add("display-flex");
+        if (odds.length > 0) {
+            document.getElementById("kombination-content").classList.add("display");
+            if (odds.length > 1) {
+                setKuponType("Kombination");
+                document.getElementById("kuponType").classList.add("display-flex");
+            } else {
+                setKuponType("Single");
+                document.getElementById("kuponType").classList.remove("display-flex");
+            }
         } else {
-            setKuponType("Single");
+            document.getElementById("kombination-content").classList.remove("display");
             document.getElementById("kuponType").classList.remove("display-flex");
         }
     }, [odds])
@@ -73,7 +83,7 @@ function StageForside () {
         if (kuponType === "Singler") {
             document.getElementById("singler").classList.add("kupon-type-element-active");
             document.getElementById("kombination").classList.remove("kupon-type-element-active");
-            document.getElementById("system").classList.remove("kupon-type-element-active");
+            // document.getElementById("system").classList.remove("kupon-type-element-active");
             
             document.getElementById("singler-content").classList.add("display");
             document.getElementById("kombination-content").classList.remove("display");
@@ -83,17 +93,13 @@ function StageForside () {
         } else if (kuponType === "Kombination") {
             document.getElementById("singler").classList.remove("kupon-type-element-active");
             document.getElementById("kombination").classList.add("kupon-type-element-active");
-            document.getElementById("system").classList.remove("kupon-type-element-active");
+            // document.getElementById("system").classList.remove("kupon-type-element-active");
 
             document.getElementById("singler-content").classList.remove("display");
             document.getElementById("kombination-content").classList.add("display");
 
             document.getElementById("singler-bottom").classList.remove("display");
             document.getElementById("kombination-bottom").classList.add("display");
-        } else if (kuponType === "System") {
-            document.getElementById("singler").classList.remove("kupon-type-element-active");
-            document.getElementById("kombination").classList.remove("kupon-type-element-active");
-            document.getElementById("system").classList.add("kupon-type-element-active");
         }
     }, [kuponType])
 
@@ -247,13 +253,19 @@ function StageForside () {
         }
     }
 
-    function updateUdbetaling(type, odds, indsats) {
+    function updateUdbetaling(type, oddsSend, indsats) {
         if (type === "kombination") {
             var indsatsValue = (document.getElementById("indsatsInput") as HTMLInputElement).value;
             setUdbetaling(returnOdds * parseInt(indsatsValue));
         } else {
-            console.log(singleUdbetaling, (parseFloat(odds)*indsats));
-            setSingleUdbetaling(singleUdbetaling + (parseFloat(odds)*indsats));
+            var totalUdbetaling = 0;
+            for (var q in odds) {
+                var dc = document.getElementById("singleindsats"+odds[q].match+"-"+odds[q].odds_result);
+                if ((dc as HTMLInputElement).value !== "" && (dc as HTMLInputElement).value !== null && (dc as HTMLInputElement).value !== undefined) {
+                    totalUdbetaling = totalUdbetaling + (parseFloat((dc as HTMLInputElement).value) * parseFloat(odds[q].probability));
+                }
+            }
+            setSingleUdbetaling(totalUdbetaling);
         }
     }
 
@@ -262,7 +274,7 @@ function StageForside () {
         var udbetalingNew = 0;
         for (var y in odds) {
             if (odds[y].id === betId) {
-                const betIdIndex = matchId+"-"+odds[y].odds_result;
+                const betIdIndex = "3Way Result"+matchId+"-"+odds[y].odds_result;
 
                 var index = notUsableBtn.indexOf(betIdIndex);
                 notUsableBtn.splice(index, 1);
@@ -284,7 +296,7 @@ function StageForside () {
         setUdbetaling(udbetalingNew);
         if ((odds.length - 1) <= 0) {
             setKuponBtn("kupon-btn odd-off");
-            document.getElementById("kombination-content").classList.add("display");
+            document.getElementById("kombination-content").classList.remove("display");
             document.getElementById("singler-content").classList.remove("display");
 
             document.getElementById("kombination-bottom").classList.add("display");
@@ -292,18 +304,130 @@ function StageForside () {
         }
     }
 
-    function placeBet() {
-        var nowDate = new Date().getTime();
+    function placeBet(type) {
+        if (type === "kombination") {
+            var nowDate = new Date().getTime();
+            var varighedDate = new Date(slutdato).getTime();
+            var placeBetBTN = document.getElementById("placeBetBTN");
+            if (!(odds.length > 0) || !(localStorage.getItem("activeGame")) || indsats <= 0) {
+                if (!(odds.length > 0)) {
+                    setNotiMessage("error", "Ingen væddemål", "Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.");
+                    placeBetBTN.innerHTML = "Placér bet";
+                } else if (!(localStorage.getItem("activeGame"))) {
+                    setNotiMessage("error", "Intet aktivt gruppespil", "For at placere et væddemål, skal du være tilmeldt et gruppespil, og sætte det som aktivt.");
+                    placeBetBTN.innerHTML = "Placér bet";
+                } else if (indsats <= 0) {
+                    setNotiMessage("error", "Positivt beløb", "Din indsats på dit væddemål skal være positiv.");
+                    placeBetBTN.innerHTML = "Placér bet";
+                }
+            } else if (nowDate > varighedDate) {
+                setNotiMessage("error", "Gruppespil slut", "Gruppespillet er desværre allerede færdiggjort.");
+                placeBetBTN.innerHTML = "Placér bet";
+            } else {
+                if (currentMoney < indsats || indsats < parseInt(selectedGame["min_amount"].slice(0, -4)) || indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                    if (currentMoney < indsats) {
+                        setNotiMessage("error", "Ikke nok penge", "Du har ikke nok penge, til at placere denne kupon. Prøv med et lavere beløb.");
+                        placeBetBTN.innerHTML = "Placér bet";
+                    } else if (indsats < parseInt(selectedGame["min_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Minimumsbeløb", "Dette gruppespil spiller med et minimumsbeløb på " + selectedGame["min_amount"]);
+                        placeBetBTN.innerHTML = "Placér bet";
+                    } else if (indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Maksimumsbeløb", "Dette gruppespil spiller med et maksimumsbeløb på " + selectedGame["max_amount"]);
+                        placeBetBTN.innerHTML = "Placér bet";
+                    }
+                } else {
+                    const placeBetUrl = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/bet";
+                const userEmail = localStorage.getItem("email");
+        
+                const betConfig = {
+                    headers: {
+                        "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
+                    }
+                }
+    
+                const localGame = localStorage.getItem("activeGame");
+                const localIndex = parseInt(localStorage.getItem("playerIndex"));
+    
+                var last_date = 0;
+                var gammel = false;
+                var currentDate = new Date().getTime();
+                for (var p in odds) {
+                    const bet_dato = parseInt(odds[p].odds_date);
+                    if (bet_dato*1000 < currentDate) {
+                        setNotiMessage("error", "Gammel væddemål", "Et væddemål du prøver at oddse på er allerede startet.");
+                        placeBetBTN.innerHTML = "Placér bet";
+                        gammel = true;
+                    } else {
+                        if (bet_dato > last_date) {
+                            last_date = bet_dato;
+                        }
+                    }
+                }
+    
+                if (gammel !== true) {
+                    const betBody = {
+                        "betId": localGame,
+                        "updateValue": {
+                            "bets": [],
+                            "player": userEmail,
+                            "indsats": indsats,
+                            "fullProb": returnOdds,
+                            "last_date": last_date,
+                            "type": "kombination"
+                        },
+                        "index": localIndex
+                    }
+            
+                    for (var m in odds) {
+                        const match = odds[m].match;
+                        const result = odds[m].odds_result;
+                        const probability = odds[m].probability;
+                        const type = odds[m].odds_type;
+                        const visitorteamString = odds[m].visitorteam;
+                        const hometeamString = odds[m].hometeam;
+                        const bet_date = odds[m].odds_date;
+            
+                        betBody.updateValue.bets[m] = {
+                            "game" : match,
+                            "betType": type,
+                            "result": result,
+                            "probability": probability,
+                            "hometeam": hometeamString,
+                            "visitorteam": visitorteamString,
+                            "bet_date": bet_date,
+                            "indsats": 0
+                        }
+                    }
+            
+                    axios.patch(placeBetUrl, betBody, betConfig).then(response => {
+                        document.getElementById("bet-modal").classList.add("display-not");
+                        document.getElementById("singler-modal").classList.add("display-not")
+                        document.getElementById("placed-modal").classList.remove("display-not");
+                        console.log("Bet oprettet:", betBody, response)
+                        setCurrentMoney(currentMoney - indsats);
+                    }).catch(error => {
+                        console.log(error);
+                        setNotiMessage("error", "Fejl ved oprettelse af væddemål", error);
+                    })
+                    emptyBets();
+                    setNotiMessage("success", "Væddemål placeret", "Dit væddemål er nu placeret. Gå til 'Mine gruppespil' for at se dine væddemål.");
+                    var placeBetBTN2 = document.getElementById("placeBetBTN");
+                    placeBetBTN2.innerHTML = "Placér bet";
+                }
+                }
+            }
+        } else {
+            var nowDate = new Date().getTime();
         var varighedDate = new Date(slutdato).getTime();
         var placeBetBTN = document.getElementById("placeBetBTN");
-        if (!(odds.length > 0) || !(localStorage.getItem("activeGame")) || indsats <= 0) {
+        if (!(odds.length > 0) || !(localStorage.getItem("activeGame")) || singleIndsats <= 0) {
             if (!(odds.length > 0)) {
                 setNotiMessage("error", "Ingen væddemål", "Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.");
                 placeBetBTN.innerHTML = "Placér bet";
             } else if (!(localStorage.getItem("activeGame"))) {
                 setNotiMessage("error", "Intet aktivt gruppespil", "For at placere et væddemål, skal du være tilmeldt et gruppespil, og sætte det som aktivt.");
                 placeBetBTN.innerHTML = "Placér bet";
-            } else if (indsats <= 0) {
+            } else if (singleIndsats <= 0) {
                 setNotiMessage("error", "Positivt beløb", "Din indsats på dit væddemål skal være positiv.");
                 placeBetBTN.innerHTML = "Placér bet";
             }
@@ -311,14 +435,14 @@ function StageForside () {
             setNotiMessage("error", "Gruppespil slut", "Gruppespillet er desværre allerede færdiggjort.");
             placeBetBTN.innerHTML = "Placér bet";
         } else {
-            if (currentMoney < indsats || indsats < parseInt(selectedGame["min_amount"].slice(0, -4)) || indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
-                if (currentMoney < indsats) {
+            if (currentMoney < singleIndsats || singleIndsats < parseInt(selectedGame["min_amount"].slice(0, -4)) || singleIndsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                if (currentMoney < singleIndsats) {
                     setNotiMessage("error", "Ikke nok penge", "Du har ikke nok penge, til at placere denne kupon. Prøv med et lavere beløb.");
                     placeBetBTN.innerHTML = "Placér bet";
-                } else if (indsats < parseInt(selectedGame["min_amount"].slice(0, -4))) {
+                } else if (singleIndsats < parseInt(selectedGame["min_amount"].slice(0, -4))) {
                     setNotiMessage("error", "Minimumsbeløb", "Dette gruppespil spiller med et minimumsbeløb på " + selectedGame["min_amount"]);
                     placeBetBTN.innerHTML = "Placér bet";
-                } else if (indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                } else if (singleIndsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
                     setNotiMessage("error", "Maksimumsbeløb", "Dette gruppespil spiller med et maksimumsbeløb på " + selectedGame["max_amount"]);
                     placeBetBTN.innerHTML = "Placér bet";
                 }
@@ -341,7 +465,8 @@ function StageForside () {
             for (var p in odds) {
                 const bet_dato = parseInt(odds[p].odds_date);
                 if (bet_dato*1000 < currentDate) {
-                    console.log("GAMMELT VÆDDEMÅL")
+                    setNotiMessage("error", "Aktiv kamp", "En kamp du prøver at oddse på, er allerede sat igang.");
+                    placeBetBTN.innerHTML = "Placér bet";
                     gammel = true;
                 } else {
                     if (bet_dato > last_date) {
@@ -356,9 +481,10 @@ function StageForside () {
                     "updateValue": {
                         "bets": [],
                         "player": userEmail,
-                        "indsats": indsats,
-                        "fullProb": returnOdds,
-                        "last_date": last_date
+                        "last_date": last_date,
+                        "type": "singler",
+                        "indsats": 0,
+                        "fullProb": 0
                     },
                     "index": localIndex
                 }
@@ -371,7 +497,11 @@ function StageForside () {
                     const visitorteamString = odds[m].visitorteam;
                     const hometeamString = odds[m].hometeam;
                     const bet_date = odds[m].odds_date;
-        
+
+                    var single_indsats = parseFloat((document.getElementById("singleindsats"+match+"-"+result) as HTMLInputElement).value);
+                    if (single_indsats === NaN) {
+                        single_indsats = 0;
+                    }
                     betBody.updateValue.bets[m] = {
                         "game" : match,
                         "betType": type,
@@ -379,11 +509,15 @@ function StageForside () {
                         "probability": probability,
                         "hometeam": hometeamString,
                         "visitorteam": visitorteamString,
-                        "bet_date": bet_date
+                        "bet_date": bet_date,
+                        "indsats": single_indsats
                     }
                 }
         
                 axios.patch(placeBetUrl, betBody, betConfig).then(response => {
+                    document.getElementById("bet-modal").classList.add("display-not")
+                    document.getElementById("singler-modal").classList.add("display-not")
+                    document.getElementById("placed-modal").classList.remove("display-not");
                     console.log("Bet oprettet:", betBody, response)
                     setCurrentMoney(currentMoney - indsats);
                 }).catch(error => {
@@ -397,10 +531,11 @@ function StageForside () {
             }
             }
         }
+        }
     }
 
     function emptyBets() {
-        document.getElementById("kombination-content").classList.add("display");
+        document.getElementById("kombination-content").classList.remove("display");
         document.getElementById("singler-content").classList.remove("display");
 
         document.getElementById("kombination-bottom").classList.add("display");
@@ -428,7 +563,6 @@ function StageForside () {
 
     function apiCall() {
         console.log("API CALL");
-        console.log(leagueQuery)
         var t0 = new Date().getTime();
         if (sessionStorage.getItem(leagueQuery)) {
             var cache = sessionStorage.getItem(leagueQuery);
@@ -464,8 +598,84 @@ function StageForside () {
         }
     }
 
-    function multiFetch(l,checkArray, calcUdbetaling, odd_ids, k, kupon) {
-        var activeGame = localStorage.getItem("activeGame");
+    function multiFetch(l,checkArray, calcUdbetaling, odd_ids, k, kupon, type) {
+        if (type === "kombination") {
+            var activeGame = localStorage.getItem("activeGame");
+            const requestConfig = {
+                headers: {
+                    "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
+                }
+            }
+            fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/multi/"+odd_ids+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=odds&bookmakers=2&tz=Europe/Copenhagen")
+            .then(response => response.json())
+            .then(function (result) {
+                var doneGames = 0;
+                for (var o in result.data) {
+                    if (result.data[o].time.status === "FT") {
+                        doneGames = doneGames + 1;
+                    }
+                }
+                var winning = 0;
+                var winsArray = [];
+                if (doneGames === result.data.length) {
+                    for (var u in result.data) {
+                        for (var t in checkArray) {
+                            if (checkArray[t].game === result.data[u].id) {
+                                if (result.data[u].odds.data[result.data[u].odds.data.findIndex(obj => obj.name === checkArray[t].type)].bookmaker.data[0].odds.data[parseInt(checkArray[t].result)].winning === true) {
+                                    winning = winning + 1;
+                                    winsArray.push(checkArray[t]);
+                                }
+                            }
+                        }
+                    }
+                    if (winning === parseInt(checkArray.length)) {
+                        const betCalcURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/updatewin";
+    
+                        const winBody = {
+                            game: activeGame,
+                            playerIndex: parseInt(k),
+                            udbetaling: Number(Number(parseFloat(calcUdbetaling)).toFixed(2)),
+                            odds: parseInt(l),
+                            kupon: kupon,
+                            wins: winsArray
+                        }
+                        axios.patch(betCalcURL, winBody, requestConfig).then(responseTem => {
+                            console.log("Vundet - Beregnet", responseTem, winBody);
+                        }).catch(error => {
+                            if (error.response.status === 401 || error.response.status === 403) {
+                                setNotiMessage("error","Fejl i opdatering af udbetaling" , error.response.data.message);
+                            } else {
+                                setNotiMessage("error","Serverfejl" , "Serveren slog fejl. Dette skyldes ofte for meget trafik på hjemmesiden. Kontakt os for mere information.");
+                            }
+                        })
+                    } else {
+                        const betCalcURL2 = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/updatelose";
+    
+                        const loseBody = {
+                            game: activeGame,
+                            playerIndex: parseInt(k),
+                            odds: parseInt(l),
+                            kupon: kupon,
+                            wins: winsArray
+                        }
+                
+                        axios.patch(betCalcURL2, loseBody, requestConfig).then(responseItem => {
+                            console.log("Tabt - Beregnet", responseItem, loseBody);
+                        }).catch(error => {
+                            if (error.response.status === 401 || error.response.status === 403) {
+                                setNotiMessage("error","Fejl i opdatering af calc" , error.response.data.message);
+                            } else {
+                                setNotiMessage("error","Serverfejl" , "Serveren slog fejl. Dette skyldes ofte for meget trafik på hjemmesiden. Kontakt os for mere information.");
+                            }
+                        })
+                    }
+                } else {
+                    console.log("IKKE ALLE SPIL ER FÆRDIGE");
+                }
+                })
+                .catch(error => console.log('error', error));
+        } else {
+            var activeGame = localStorage.getItem("activeGame");
         const requestConfig = {
             headers: {
                 "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
@@ -493,19 +703,27 @@ function StageForside () {
                         }
                     }
                 }
-                if (winning === parseInt(checkArray.length)) {
+                if (winning > 0) {
+                    var doneUdbetaling = 0;
+                    for (var y in winsArray) {
+                        for (var u in kupon.bets) {
+                            if (kupon.bets[u].game === winsArray[y].game && kupon.bets[u].result === winsArray[y].result) {
+                                doneUdbetaling = kupon.bets[u].indsats * parseFloat(kupon.bets[u].probability);
+                            }
+                        }
+                    }
                     const betCalcURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/updatewin";
 
                     const winBody = {
                         game: activeGame,
                         playerIndex: parseInt(k),
-                        udbetaling: Number(Number(parseFloat(calcUdbetaling)).toFixed(2)),
+                        udbetaling: doneUdbetaling,
                         odds: parseInt(l),
                         kupon: kupon,
                         wins: winsArray
                     }
                     axios.patch(betCalcURL, winBody, requestConfig).then(responseTem => {
-                        console.log("Vundet - Beregnet", responseTem, winBody);
+                        console.log("Vundet single - Beregnet", responseTem, winBody);
                     }).catch(error => {
                         if (error.response.status === 401 || error.response.status === 403) {
                             setNotiMessage("error","Fejl i opdatering af udbetaling" , error.response.data.message);
@@ -539,6 +757,18 @@ function StageForside () {
             }
             })
             .catch(error => console.log('error', error));
+        }
+    }
+
+    function getTopN(arr, n) {
+        var clone = arr.slice(0);
+        // sort descending
+        clone.sort(function(x, y) {
+            if (x.info.money === y.info.money) return 0;
+            else if (parseInt(x.info.money) < parseInt(y.info.money)) return 1;
+            else return -1;
+        });
+        return clone.slice(0, n);
     }
 
     function gameCall() {
@@ -552,64 +782,60 @@ function StageForside () {
         }
 
         axios.get(URL, requestConfigen).then(response => {
-            setActiveGameName(response.data.name);
-            setSelectedGame(response.data);
-            setSlutdato(response.data.varighed);
-            console.log("Test", response);
-
-            for (var k in response.data.players) {
-                if (response.data.players[k].player === localStorage.getItem("email")) {
-                    localStorage.setItem("notifikationer", response.data.players[k].info.notifikationer.length);
-                }
-                for (var l in response.data.players[k].odds) {
-                    var calcUdbetaling = parseFloat(response.data.players[k].odds[l].fullProb) * parseFloat(response.data.players[k].odds[l].indsats);
-                    const newDate = new Date().getTime();
-                    if (response.data.players[k].odds[l].calculated === "false" && response.data.players[k].odds[l].last_date <  parseInt((newDate.toString()).slice(0, -3))) {
-                        var odd_ids = "";
-                        var checkArray = [];
-                        for (var y in response.data.players[k].odds[l].bets) {
-                            var oddId = response.data.players[k].odds[l].bets[y].game;
-                            var resultId = response.data.players[k].odds[l].bets[y].result;
-                            var type = response.data.players[k].odds[l].bets[y].betType;
-                            checkArray.push({
-                                "game": oddId,
-                                "result": resultId,
-                                "type": type
-                            })
-                            if (odd_ids === "") {
-                                odd_ids = oddId;
-                            } else {
-                                odd_ids = odd_ids + "," + oddId;
+            if (response.data.admin !== undefined && response.data.admin !== null) {
+                setActiveGameName(response.data.name);
+                setSelectedGame(response.data);
+                setSlutdato(response.data.varighed);
+    
+                for (var k in response.data.players) {
+                    if (response.data.players[k].player === localStorage.getItem("email")) {
+                        localStorage.setItem("notifikationer", response.data.players[k].info.notifikationer.length);
+                    }
+                    for (var l in response.data.players[k].odds) {
+                        var calcUdbetaling = parseFloat(response.data.players[k].odds[l].fullProb) * parseFloat(response.data.players[k].odds[l].indsats);
+                        const newDate = new Date().getTime();
+                        if (response.data.players[k].odds[l].calculated === "false" && response.data.players[k].odds[l].last_date <  parseInt((newDate.toString()).slice(0, -3))) {
+                            var odd_ids = "";
+                            var checkArray = [];
+                            for (var y in response.data.players[k].odds[l].bets) {
+                                var oddId = response.data.players[k].odds[l].bets[y].game;
+                                var resultId = response.data.players[k].odds[l].bets[y].result;
+                                var type = response.data.players[k].odds[l].bets[y].betType;
+                                var bettype = response.data.players[k].odds[l].type;
+                                checkArray.push({
+                                    "game": oddId,
+                                    "result": resultId,
+                                    "type": type
+                                })
+                                if (odd_ids === "") {
+                                    odd_ids = oddId;
+                                } else {
+                                    odd_ids = odd_ids + "," + oddId;
+                                }
                             }
+                            var kupon = response.data.players[k].odds[l];
+                            multiFetch(l,checkArray,calcUdbetaling,odd_ids,k,kupon,bettype);
+                        } else {
                         }
-                        var kupon = response.data.players[k].odds[l];
-                        multiFetch(l,checkArray,calcUdbetaling,odd_ids,k,kupon);
-                    } else {
-                        console.log("Ikke started, eller allerede beregnet: ", response.data.players[k].odds[l].bets[0].hometeam);
                     }
                 }
-            }
-
-            function getTopN(arr, n) {
-                var clone = arr.slice(0);
-                // sort descending
-                clone.sort(function(x, y) {
-                    if (x.info.money === y.info.money) return 0;
-                    else if (parseInt(x.info.money) < parseInt(y.info.money)) return 1;
-                    else return -1;
+    
+                var n = response.data.players.length;
+                setPositionCount(n);
+                var topScorers = getTopN(response.data.players, n);
+                topScorers.forEach(function(gameItem, index) {
+                    if (gameItem.player === localStorage.getItem("email")) {
+                        setCurrentMoney(response.data.players[index].info.money)
+                        setPosition(index + 1);
+                    }
                 });
-                return clone.slice(0, n);
-            }
-
-            var n = response.data.players.length;
-            setPositionCount(n);
-            var topScorers = getTopN(response.data.players, n);
-            topScorers.forEach(function(gameItem, index) {
-                if (gameItem.player === localStorage.getItem("email")) {
-                    setCurrentMoney(response.data.players[index].info.money)
-                    setPosition(index + 1);
+            } else {
+                if (localStorage.getItem("activeGame")) {
+                    document.getElementById("main-error").classList.add("display-flex");
+                    document.getElementById("main-error-p").innerHTML = "Dit aktive spil er suspenderet.";
+                    localStorage.setItem("aktive-spil-suspend", "true");
                 }
-            });
+            }
         }).catch(error => {
             console.log("Fejl ved indhentning af data" + error)
         })
@@ -870,6 +1096,27 @@ function StageForside () {
         setSingleIndsats(tempIndsats);
     }
 
+    function showLigaer() {
+        if (ligaLoad === false) {
+            fetch("https://soccer.sportmonks.com/api/v2.0/leagues?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=country&bookmakers=2&tz=Europe/Copenhagen")
+            .then(response => response.json())
+            .then(function (result) {
+                console.log("Leagues", result);
+                setCurrentLeagues(result.data);
+                document.getElementById("stage-loader3").classList.remove("display");
+            })
+            .catch(error => console.log('error', error));
+            setLigaLoad(true);
+        }
+        document.getElementsByTagName("body")[0].style.overflow = "hidden";
+        document.getElementById("leagueModal").classList.remove("display-not");
+    }
+
+    function remLigaer() {
+        document.getElementsByTagName("body")[0].style.overflow = "auto";
+        document.getElementById("leagueModal").classList.add("display-not");
+    }
+
     function gameInfo() {
         if (localStorage.getItem("activeGame")) {
             return (
@@ -877,7 +1124,7 @@ function StageForside () {
                     <p className="info-h1">Velkommen, {username}</p>
                     <p className="info-p">Valgte spil: <span className="info-p-span">{activeGameName}</span></p><br />
                     <p className="info-p">Placering: <span className="info-p-span">{position}</span> af <span className="info-p-span">{positionCount}</span></p><br />
-                    <p className="info-p">Tilgængelige ligaer: <span className="info-p-span">Superliga</span>, <span className="info-p-span">Scottish Premiership</span></p><br />
+                    <p className="info-p">Tilgængelige ligaer: <span className="info-p-span-hover" onClick={() => {showLigaer()}}>Se tilgængelige ligaer</span></p><br />
                     <p className="info-p">Slutdato: <span className="info-p-span">{slutdato}</span></p>
                 </div>
             );
@@ -910,8 +1157,413 @@ function StageForside () {
         document.getElementById("errorConP").innerHTML = message;
     }
 
+    function showSearch() {
+        document.getElementById("mb-search").classList.remove("display-not")
+        document.getElementById("nav-hits").classList.add("display");
+        document.getElementById("hits-close").classList.add("display");
+    }
+
+    function getFavorit() {
+        if (favoritter.length > 0) {
+            return favoritter.map((item) => {
+                var linkURL = "/stage/team?team=" + item.id;
+                return (
+                    <li key={item.name + item.image} className="display" style={{width: "100%"}}>
+                        <div className="stage-team">
+                            <Link to={linkURL} className="stage-kampe-team2">
+                                <div className="stage-kampe-teams-div">
+                                    <img src={item.image} className="stage-teams-img" />
+                                    <div className="stage-teams-element">
+                                        <p className="stage-teams-h1">{item.name}</p>
+                                        <p className="stage-teams-h2">{item.liga}</p>
+                                    </div>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="team-icon" viewBox="0 0 16 16">
+                                    <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                            </Link>
+                        </div>
+                    </li>
+                    );
+                }
+            )
+        } else {
+            return (
+                <div className="stage-team" style={{backgroundColor: "var(--surface)"}} onClick={() => {showSearch()}}>
+                    <div className="stage-kampe-team2">
+                        <div className="stage-kampe-teams-div">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="stage-teams-img" style={{opacity: "0.2"}} viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+                            </svg>
+                            <div className="stage-teams-element">
+                                <p className="stage-teams-h2">Klik for at tilføje dit første hold som favorit</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    }
+
+    function showModal(type, modalType) {
+        if (type === "bet") {
+            if (modalType === "kombination") {
+                var nowDate = new Date().getTime();
+            var varighedDate = new Date(slutdato).getTime();
+            if (!(odds.length > 0) || !(localStorage.getItem("activeGame")) || indsats <= 0) {
+                if (!(odds.length > 0)) {
+                    setNotiMessage("error", "Ingen væddemål", "Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.");
+                } else if (!(localStorage.getItem("activeGame"))) {
+                    setNotiMessage("error", "Intet aktivt gruppespil", "For at placere et væddemål, skal du være tilmeldt et gruppespil, og sætte det som aktivt.");
+                } else if (indsats <= 0) {
+                    setNotiMessage("error", "Positivt beløb", "Din indsats på dit væddemål skal være positiv.");
+                }
+            } else if (nowDate > varighedDate) {
+                setNotiMessage("error", "Gruppespil slut", "Gruppespillet er desværre allerede færdiggjort.");
+            } else {
+                if (currentMoney < indsats || indsats < parseInt(selectedGame["min_amount"].slice(0, -4)) || indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                    if (currentMoney < indsats) {
+                        setNotiMessage("error", "Ikke nok penge", "Du har ikke nok penge, til at placere denne kupon. Prøv med et lavere beløb.");
+                    } else if (indsats < parseInt(selectedGame["min_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Minimumsbeløb", "Dette gruppespil spiller med et minimumsbeløb på " + selectedGame["min_amount"]);
+                    } else if (indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Maksimumsbeløb", "Dette gruppespil spiller med et maksimumsbeløb på " + selectedGame["max_amount"]);
+                    }
+                } else {
+
+                var last_date = 0;
+                var gammel = false;
+                var currentDate = new Date().getTime();
+                for (var p in odds) {
+                    const bet_dato = parseInt(odds[p].odds_date);
+                    if (bet_dato*1000 < currentDate) {
+                        setNotiMessage("error", "Gammel væddemål", "Et væddemål du prøver at oddse på er allerede startet.");
+                        gammel = true;
+                    } else {
+                        if (bet_dato > last_date) {
+                            last_date = bet_dato;
+                        }
+                    }
+                }
+
+                if (gammel !== true) {
+                    document.getElementById("bet-modal").classList.remove("display-not")
+                        document.getElementById("errorCon").classList.remove("display")
+                }
+                }
+            }
+            } else {
+                var nowDate = new Date().getTime();
+            var varighedDate = new Date(slutdato).getTime();
+            if (!(odds.length > 0) || !(localStorage.getItem("activeGame")) || singleIndsats <= 0) {
+                if (!(odds.length > 0)) {
+                    setNotiMessage("error", "Ingen væddemål", "Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.");
+                } else if (!(localStorage.getItem("activeGame"))) {
+                    setNotiMessage("error", "Intet aktivt gruppespil", "For at placere et væddemål, skal du være tilmeldt et gruppespil, og sætte det som aktivt.");
+                } else if (singleIndsats <= 0) {
+                    setNotiMessage("error", "Positivt beløb", "Din indsats på dit væddemål skal være positiv.");
+                }
+            } else if (nowDate > varighedDate) {
+                setNotiMessage("error", "Gruppespil slut", "Gruppespillet er desværre allerede færdiggjort.");
+            } else {
+                if (currentMoney < singleIndsats || singleIndsats < parseInt(selectedGame["min_amount"].slice(0, -4)) || singleIndsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                    if (currentMoney < singleIndsats) {
+                        setNotiMessage("error", "Ikke nok penge", "Du har ikke nok penge, til at placere denne kupon. Prøv med et lavere beløb.");
+                    } else if (singleIndsats < parseInt(selectedGame["min_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Minimumsbeløb", "Dette gruppespil spiller med et minimumsbeløb på " + selectedGame["min_amount"]);
+                    } else if (singleIndsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Maksimumsbeløb", "Dette gruppespil spiller med et maksimumsbeløb på " + selectedGame["max_amount"]);
+                    }
+                } else {
+    
+                var last_date = 0;
+                var gammel = false;
+                var currentDate = new Date().getTime();
+                for (var p in odds) {
+                    const bet_dato = parseInt(odds[p].odds_date);
+                    if (bet_dato*1000 < currentDate) {
+                        setNotiMessage("error", "Aktiv kamp", "En kamp du prøver at oddse på, er allerede sat igang.");
+                        gammel = true;
+                    } else {
+                        if (bet_dato > last_date) {
+                            last_date = bet_dato;
+                        }
+                    }
+                }
+    
+                if (gammel !== true) {
+                    document.getElementById("singler-modal").classList.remove("display-not")
+                        document.getElementById("errorCon").classList.remove("display")
+                }
+                }
+            }
+            }
+        }
+    }
+
+    function getCurrentLeagues() {
+        return (
+            <div className="league-modal display-not" id="leagueModal">
+                <div className="league-wrapper">
+                    <div className="leagues-top-right">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="exp-icon" viewBox="0 0 16 16" onClick={() => remLigaer()}>
+                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                        </svg>
+                    </div>
+                    <p className="league-modal-h1">Tilgængelige ligaer</p>
+                    <div className="match-loader display" id="stage-loader3"></div>
+                    <ul className="league-modal-table">
+                        <li className="league-modal-country-element">
+                            <div className="league-modal-element-left">
+                                <div className="league-modal-div">
+                                    <img src="https://cdn.sportmonks.com/images/countries/png/short/dk.png" alt="" className="league-modal-el-img" />
+                                </div>
+                                <p className="league-modal-p">Danmark</p>
+                            </div>
+                            <p className="league-modal-p">#320</p>
+                        </li>
+                        {currentLeagues.map(item => {
+                            if (item.country.data.name === "Denmark") {
+                                return (
+                                    <li className="league-modal-element">
+                                        <div className="league-modal-element-left">
+                                            <div className="league-modal-div">
+                                                <img src={item.logo_path} alt="" className="league-modal-el-img" />
+                                            </div>
+                                            <p className="league-modal-p">{item.name}</p>
+                                        </div>
+                                        <p className="league-modal-p">#{item.id}</p>
+                                    </li>
+                                );
+                            } else {
+                                return;
+                            }
+                        })}
+                        <li className="league-modal-country-element">
+                            <div className="league-modal-element-left">
+                                <div className="league-modal-div">
+                                    <img src="https://cdn.sportmonks.com/images/countries/png/short/eu.png" alt="" className="league-modal-el-img" />
+                                </div>
+                                <p className="league-modal-p">International</p>
+                            </div>
+                            <p className="league-modal-p">#41</p>
+                        </li>
+                        {currentLeagues.map(item => {
+                            if (item.country.data.name === "Europe") {
+                                return (
+                                    <li className="league-modal-element">
+                                        <div className="league-modal-element-left">
+                                            <div className="league-modal-div">
+                                                <img src={item.logo_path} alt="" className="league-modal-el-img" />
+                                            </div>
+                                            <p className="league-modal-p">{item.name}</p>
+                                        </div>
+                                        <p className="league-modal-p">#{item.id}</p>
+                                    </li>
+                                );
+                            } else {
+                                return;
+                            }
+                        })}
+                        <li className="league-modal-country-element">
+                            <div className="league-modal-element-left">
+                                <div className="league-modal-div">
+                                    <img src="https://cdn.sportmonks.com/images/countries/png/short/gb.png" alt="" className="league-modal-el-img" />
+                                </div>
+                                <p className="league-modal-p">England</p>
+                            </div>
+                            <p className="league-modal-p">#462</p>
+                        </li>
+                        {currentLeagues.map(item => {
+                            if (item.country.data.name === "England") {
+                                return (
+                                    <li className="league-modal-element">
+                                        <div className="league-modal-element-left">
+                                            <div className="league-modal-div">
+                                                <img src={item.logo_path} alt="" className="league-modal-el-img" />
+                                            </div>
+                                            <p className="league-modal-p">{item.name}</p>
+                                        </div>
+                                        <p className="league-modal-p">#{item.id}</p>
+                                    </li>
+                                );
+                            } else {
+                                return;
+                            }
+                        })}
+                        <li className="league-modal-country-element">
+                            <div className="league-modal-element-left">
+                                <div className="league-modal-div">
+                                    <img src="https://cdn.sportmonks.com/images/countries/png/short/de.png" alt="" className="league-modal-el-img" />
+                                </div>
+                                <p className="league-modal-p">Tyskland</p>
+                            </div>
+                            <p className="league-modal-p">#11</p>
+                        </li>
+                        {currentLeagues.map(item => {
+                            if (item.country.data.name === "Germany") {
+                                return (
+                                    <li className="league-modal-element">
+                                        <div className="league-modal-element-left">
+                                            <div className="league-modal-div">
+                                                <img src={item.logo_path} alt="" className="league-modal-el-img" />
+                                            </div>
+                                            <p className="league-modal-p">{item.name}</p>
+                                        </div>
+                                        <p className="league-modal-p">#{item.id}</p>
+                                    </li>
+                                );
+                            } else {
+                                return;
+                            }
+                        })}
+                        <li className="league-modal-country-element">
+                            <div className="league-modal-element-left">
+                                <div className="league-modal-div">
+                                    <img src="https://cdn.sportmonks.com/images/countries/png/short/fr.png" alt="" className="league-modal-el-img" />
+                                </div>
+                                <p className="league-modal-p">Frankrig</p>
+                            </div>
+                            <p className="league-modal-p">#17</p>
+                        </li>
+                        {currentLeagues.map(item => {
+                            if (item.country.data.name === "France") {
+                                return (
+                                    <li className="league-modal-element">
+                                        <div className="league-modal-element-left">
+                                            <div className="league-modal-div">
+                                                <img src={item.logo_path} alt="" className="league-modal-el-img" />
+                                            </div>
+                                            <p className="league-modal-p">{item.name}</p>
+                                        </div>
+                                        <p className="league-modal-p">#{item.id}</p>
+                                    </li>
+                                );
+                            } else {
+                                return;
+                            }
+                        })}
+                        <li className="league-modal-country-element">
+                            <div className="league-modal-element-left">
+                                <div className="league-modal-div">
+                                    <img src="https://cdn.sportmonks.com/images/countries/png/short/it.png" alt="" className="league-modal-el-img" />
+                                </div>
+                                <p className="league-modal-p">Italien</p>
+                            </div>
+                            <p className="league-modal-p">#251</p>
+                        </li>
+                        {currentLeagues.map(item => {
+                            if (item.country.data.name === "Italy") {
+                                return (
+                                    <li className="league-modal-element">
+                                        <div className="league-modal-element-left">
+                                            <div className="league-modal-div">
+                                                <img src={item.logo_path} alt="" className="league-modal-el-img" />
+                                            </div>
+                                            <p className="league-modal-p">{item.name}</p>
+                                        </div>
+                                        <p className="league-modal-p">#{item.id}</p>
+                                    </li>
+                                );
+                            } else {
+                                return;
+                            }
+                        })}
+                        <li className="league-modal-country-element">
+                            <div className="league-modal-element-left">
+                                <div className="league-modal-div">
+                                    <img src="https://cdn.sportmonks.com/images/countries/png/short/es.png" alt="" className="league-modal-el-img" />
+                                </div>
+                                <p className="league-modal-p">Spanien</p>
+                            </div>
+                            <p className="league-modal-p">#32</p>
+                        </li>
+                        {currentLeagues.map(item => {
+                            if (item.country.data.name === "Spain") {
+                                return (
+                                    <li className="league-modal-element">
+                                        <div className="league-modal-element-left">
+                                            <div className="league-modal-div">
+                                                <img src={item.logo_path} alt="" className="league-modal-el-img" />
+                                            </div>
+                                            <p className="league-modal-p">{item.name}</p>
+                                        </div>
+                                        <p className="league-modal-p">#{item.id}</p>
+                                    </li>
+                                );
+                            } else {
+                                return;
+                            }
+                        })}
+                        <li className="league-modal-country-element">
+                            <div className="league-modal-element-left">
+                                <div className="league-modal-div">
+                                    <img src="https://cdn.sportmonks.com/images/countries/png/short/eu.png" alt="" className="league-modal-el-img" />
+                                </div>
+                                <p className="league-modal-p">Resten af verden</p>
+                            </div>
+                            <p className="league-modal-p">#</p>
+                        </li>
+                        {currentLeagues.map(item => {
+                            if (item.country.data.name !== "Germany" && item.country.data.name !== "England" && item.country.data.name !== "Denmark" && item.country.data.name !== "Spain" && item.country.data.name !== "Europe" && item.country.data.name !== "Italy" && item.country.data.name !== "France") {
+                                return (
+                                    <li className="league-modal-element">
+                                        <div className="league-modal-element-left">
+                                            <div className="league-modal-div">
+                                                <img src={item.logo_path} alt="" className="league-modal-el-img" />
+                                            </div>
+                                            <p className="league-modal-p">{item.name}</p>
+                                        </div>
+                                        <p className="league-modal-p">#{item.id}</p>
+                                    </li>
+                                );
+                            } else {
+                                return;
+                            }
+                        })}
+                    </ul>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
+        {getCurrentLeagues()}
+        <div className="modal-test display-not" id="bet-modal">
+            <div className="modal-con">
+                <p className="con-modal-p">Er du sikker på, at du vil placere din kupon, med en indsats på {indsats},00 kr? Dette beløb er ikke refunderbart.</p>
+                <div className="modal-wrapper">
+                    <button className="con-modal-btn" id="placeBetBTN1" onClick={() => {var placeBetBTN = document.getElementById("placeBetBTN");
+                        placeBetBTN.innerHTML = "<div class='loader'></div>";
+                        placeBet("kombination");}}>Placér kupon</button>
+                    <button className="con-modal-afbryd" onClick={() => {document.getElementById("bet-modal").classList.add("display-not")}}>Afbryd</button>
+                </div>
+            </div>
+        </div>
+        <div className="modal-test display-not" id="singler-modal">
+            <div className="modal-con">
+                <p className="con-modal-p">Er du sikker på, at du vil placere din kupon, med en indsats på {singleIndsats},00 kr? Dette beløb er ikke refunderbart.</p>
+                <div className="modal-wrapper">
+                    <button className="con-modal-btn" id="placeBetBTN1" onClick={() => {var placeBetBTN1 = document.getElementById("placeBetBTN1");
+                        placeBetBTN1.innerHTML = "<div class='loader'></div>";
+                        placeBet("singler");}}>Placér kupon</button>
+                    <button className="con-modal-afbryd" onClick={() => {document.getElementById("singler-modal").classList.add("display-not")}}>Afbryd</button>
+                </div>
+            </div>
+        </div>
+        <div className="modal-test display-not" id="placed-modal" style={{textAlign: "center"}}>
+            <div className="modal-con">
+                <div className="con-modal-img-con">
+                    <img src={Congrats} alt="" className="con-modal-img" />
+                </div>
+                <p className="con-modal-h1">Din kupon er placeret!</p>
+                <p className="con-modal-p">Tag et kig under dit aktive gruppespil, for at se din kupon.</p>
+                <div className="modal-wrapper">
+                    <button className="con-modal-btn" onClick={() => {document.getElementById("placed-modal").classList.add("display-not")}}>Modtaget</button>
+                </div>
+            </div>
+        </div>
         <div className="stage-main-container">
             <div className={messageType} id="errorCon">
                 <svg xmlns="http://www.w3.org/2000/svg" className="triangle" viewBox="0 0 16 16" id="errorIcon">
@@ -1061,28 +1713,7 @@ function StageForside () {
                                 <p className="stage-kampe-h1">Favoritter</p>
                             </div>
                             <ul>
-                                {favoritter.map((item) => {
-                                    var linkURL = "/stage/team?team=" + item.id;
-                                    return (
-                                        <li key={item.name + item.image} className="display" style={{width: "100%"}}>
-                                            <div className="stage-team">
-                                                <Link to={linkURL} className="stage-kampe-team2">
-                                                    <div className="stage-kampe-teams-div">
-                                                        <img src={item.image} className="stage-teams-img" />
-                                                        <div className="stage-teams-element">
-                                                            <p className="stage-teams-h1">{item.name}</p>
-                                                            <p className="stage-teams-h2">{item.liga}</p>
-                                                        </div>
-                                                    </div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="team-icon" viewBox="0 0 16 16">
-                                                        <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-                                                    </svg>
-                                                </Link>
-                                            </div>
-                                        </li>
-                                        );
-                                    }
-                                )}
+                                {getFavorit()}
                             </ul>
                         </div>
                         <div className="stage-section-indhold" id="stage-main3">
@@ -1178,26 +1809,27 @@ function StageForside () {
                 </div>
             </div>
             <div className="stage-kupon" id="kupon">
-                    <div className="kupon-top">
-                        <p className="kupon-header-p">{kuponType}</p>
-                        <p className="kupon-blue-p" onClick={() => emptyBets()}>Ryd alle</p>
-                    </div>
-                    <div className="kupon-type" id="kuponType">
-                        <div className="kupon-type-element" id="singler" onClick={() => {setKuponType("Singler")}}>Singler</div>
-                        <div className="kupon-type-element kupon-type-element-active" id="kombination" onClick={() => {setKuponType("Kombination")}}>Kombination</div>
-                        <div className="kupon-type-element" id="system" onClick={() => {setKuponType("System")}}>System</div>
-                    </div>
-                    <ul className="stage-ul display" id="kombination-content">
-                        {odds.map(bet => {
-                            return (
-                                <li key={bet.id}>
-                                    <div className="kupon-container">
-                                        <div className="kupon-divider-first"></div>
-                                        <p className="kupon-top-p">Dit væddemål</p>
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" onClick={() => {delBet(bet.id, bet.match);}} viewBox="0 0 16 16">
-                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                                        </svg>
-                                        <div className="kupon-divider"></div>
+                <div className="kupon-top">
+                    <p className="kupon-header-p">{kuponType}</p>
+                    <p className="kupon-blue-p" onClick={() => emptyBets()}>Ryd alle</p>
+                </div>
+                <div className="kupon-type" id="kuponType">
+                    <div className="kupon-type-element" id="singler" onClick={() => {setKuponType("Singler")}}>Singler</div>
+                    <div className="kupon-type-element kupon-type-element-active" id="kombination" onClick={() => {setKuponType("Kombination")}}>Kombination</div>
+                    {/* <div className="kupon-type-element" id="system" onClick={() => {setKuponType("System")}}>System</div> */}
+                </div>
+                <ul className="stage-ul" id="kombination-content">
+                    {odds.map(bet => {
+                        return (
+                            <li key={bet.id}>
+                                <div className="kupon-container">
+                                    <div className="kupon-divider-first"></div>
+                                    <p className="kupon-top-p">Dit væddemål</p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" onClick={() => {delBet(bet.id, bet.match);}} viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                    </svg>
+                                    <div className="kupon-divider"></div>
+                                    <div className="kupon-content">
                                         <div className="kupon-info">
                                             <p className="kupon-h1">{bet.hometeam} - {bet.visitorteam}</p>
                                             <p className="kupon-p">{getKupon(bet.odds_type,bet.hometeam,bet.visitorteam)}: <span className="weight600">{getString(bet.odds_type,bet.odds_result,bet.hometeam,bet.visitorteam)}</span></p>
@@ -1206,80 +1838,72 @@ function StageForside () {
                                             <p className="kupon-h2">{bet.probability}</p>
                                         </div>
                                     </div>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                    <ul className="stage-ul" id="singler-content">
-                        {odds.map(bet => {
-                            return (
-                                <li key={bet.id}>
-                                    <div className="kupon-container">
-                                        <div className="kupon-divider-first"></div>
-                                        <p className="kupon-top-p">Dit væddemål</p>
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" onClick={() => {delBet(bet.id, bet.match);}} viewBox="0 0 16 16">
-                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                                        </svg>
-                                        <div className="kupon-divider"></div>
+                                </div>
+                            </li>
+                        );
+                    })}
+                </ul>
+                <ul className="stage-ul" id="singler-content">
+                    {odds.map(bet => {
+                        return (
+                            <li key={bet.id}>
+                                <div className="kupon-container">
+                                    <div className="kupon-divider-first"></div>
+                                    <p className="kupon-top-p">Dit væddemål</p>
+                                    <div className="kupon-divider"></div>
+                                    <div className="kupon-content">
                                         <div className="kupon-info">
                                             <p className="kupon-h1">{bet.hometeam} - {bet.visitorteam}</p>
                                             <p className="kupon-p">{getKupon(bet.odds_type,bet.hometeam,bet.visitorteam)}: <span className="weight600">{getString(bet.odds_type,bet.odds_result,bet.hometeam,bet.visitorteam)}</span></p>
                                         </div>
                                         <div className="kupon-odds">
                                             <p className="kupon-h2">{bet.probability}</p>
-                                            <input type="number" className="single-kupon-input" autoComplete="off" id={"indsatsInput-" + bet.id} placeholder="Indsats" onChange={event => {setSingleIndsatser(parseInt(event.target.value), bet.id); updateUdbetaling("singler", bet.probability, parseInt(event.target.value))}}/>
+                                            <input type="number" className="single-kupon-input" autoComplete="off" id={"singleindsats"+bet.match+"-"+bet.odds_result} placeholder="Indsats" onChange={event => {setSingleIndsatser(parseInt(event.target.value), bet.id); updateUdbetaling("singler", bet.probability, parseInt(event.target.value))}}/>
                                         </div>
                                     </div>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                    <div className="kupon-bottom display" id="kombination-bottom">
-                        <div className="kupon-bottom-info">
-                            <div className="kupon-indsats">
-                                <input type="number" className="kupon-input" autoComplete="off" id="indsatsInput" placeholder="Indsats" onChange={event => {setIndsats(parseInt(event.target.value)); updateUdbetaling("kombination", "", 0)}}/>
-                            </div>
-                            <div className="kupon-info-div">
-                                <p className="kupon-bottom-info-p">Total indsats</p>
-                                <p className="kupon-bottom-info-p-right">{indsats},00 kr.</p>
-                            </div>
-                            <div className="kupon-info-div">
-                                <p className="kupon-bottom-info-p">Total odds</p>
-                                <p className="kupon-bottom-info-p-right">{returnOdds.toFixed(2)}</p>
-                            </div>
+                                </div>
+                            </li>
+                        );
+                    })}
+                </ul>
+                <div className="kupon-bottom display" id="kombination-bottom">
+                    <div className="kupon-bottom-info">
+                        <div className="kupon-indsats">
+                            <input type="number" className="kupon-input" autoComplete="off" id="indsatsInput" placeholder="Indsats" onChange={event => {setIndsats(parseInt(event.target.value)); updateUdbetaling("kombination", "", 0)}}/>
                         </div>
-                        <div className="kupon-confirm">
-                            <div className="kupon-confirm-div">
-                                <p className="kupon-confirm-p">Udbetaling:</p>
-                                <p className="kupon-confirm-h1">{udbetaling.toFixed(2)} kr.</p>
-                            </div>
-                            <button className={kuponBtn} id="placeBetBTN" onClick={() => {
-                                var placeBetBTN = document.getElementById("placeBetBTN");
-                                placeBetBTN.innerHTML = "<div class='loader'></div>";
-                                placeBet();
-                            }}>Placér bet</button>
+                        <div className="kupon-info-div">
+                            <p className="kupon-bottom-info-p">Total indsats</p>
+                            <p className="kupon-bottom-info-p-right">{indsats},00 kr.</p>
+                        </div>
+                        <div className="kupon-info-div">
+                            <p className="kupon-bottom-info-p">Total odds</p>
+                            <p className="kupon-bottom-info-p-right">{returnOdds.toFixed(2)}</p>
                         </div>
                     </div>
-                    <div className="kupon-bottom" id="singler-bottom">
-                        <div className="kupon-bottom-info">
-                            <div className="kupon-info-div">
-                                <p className="kupon-bottom-info-p">Total indsats</p>
-                                <p className="kupon-bottom-info-p-right">{singleIndsats},00 kr.</p>
-                            </div>
+                    <div className="kupon-confirm">
+                        <div className="kupon-confirm-div">
+                            <p className="kupon-confirm-p">Udbetaling:</p>
+                            <p className="kupon-confirm-h1">{udbetaling.toFixed(2)} kr.</p>
                         </div>
-                        <div className="kupon-confirm">
-                            <div className="kupon-confirm-div">
-                                <p className="kupon-confirm-p">Udbetaling:</p>
-                                <p className="kupon-confirm-h1">{singleUdbetaling.toFixed(2)} kr.</p>
-                            </div>
-                            <button className={kuponBtn} id="placeBetBTN" onClick={() => {
-                                var placeBetBTN = document.getElementById("placeBetBTN");
-                                placeBetBTN.innerHTML = "<div class='loader'></div>";
-                                placeBet();
-                            }}>Placér bet</button>
-                        </div>
+                        <button className={kuponBtn} id="placeBetBTN" onClick={() => {showModal("bet", "kombination")}}>Placér bet</button>
                     </div>
                 </div>
+                <div className="kupon-bottom" id="singler-bottom">
+                    <div className="kupon-bottom-info">
+                        <div className="kupon-info-div">
+                            <p className="kupon-bottom-info-p">Total indsats</p>
+                            <p className="kupon-bottom-info-p-right">{singleIndsats},00 kr.</p>
+                        </div>
+                    </div>
+                    <div className="kupon-confirm">
+                        <div className="kupon-confirm-div">
+                            <p className="kupon-confirm-p">Udbetaling:</p>
+                            <p className="kupon-confirm-h1">{singleUdbetaling.toFixed(2)} kr.</p>
+                        </div>
+                        <button className={kuponBtn} id="placeBetBTN" onClick={() => {showModal("bet", "singler")}}>Placér bet</button>
+                    </div>
+                </div>
+            </div>
         </div>
         </>
     )

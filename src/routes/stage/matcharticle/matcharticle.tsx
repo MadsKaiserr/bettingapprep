@@ -6,6 +6,7 @@ import { getKupon, getString } from "../../../services/algo.js";
 
 import lineupPitch from '../../../assets/img/lineup-pitchF.png';
 import goal from '../../../assets/img/football.png';
+import Congrats from '../../../assets/img/congrats.svg';
 
 import "./matcharticle.css";
  
@@ -14,6 +15,16 @@ function StageMatcharticle () {
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
+
+    const [goals, setGoals] = useState("4");
+    const [goalsOdds, setGoalsOdds] = useState("3.20");
+    const [goalOddArray, setGoalOddArray] = useState([]);
+
+    useEffect(() => {
+        if (goalOddArray.length > 0) {
+            setGoalsOdds(goalOddArray[goals].value);
+        }
+    }, [goals, goalOddArray])
 
     const [favorit, setFavorit] = useState(false);
     const [favorit2, setFavorit2] = useState(false);
@@ -47,7 +58,7 @@ function StageMatcharticle () {
     const [turnering, setTurnering] = useState("...");
     
     const [odds, setOdds] = useState([]);
-    const [indsats, setIndsats] = useState(30);
+    const [indsats, setIndsats] = useState(0);
     const [udbetaling, setUdbetaling] = useState(0);
     const [currentMoney, setCurrentMoney] = useState(0);
     const [kuponBtn, setKuponBtn] = useState("kupon-btn odd-off");
@@ -148,6 +159,51 @@ function StageMatcharticle () {
     const [stageId, setStageId] = useState(0);
 
     const [statText, setStatText] = useState("Statistikker bliver opgivet som kampen spilles...");
+
+    const [singleIndsats, setSingleIndsats] = useState(0);
+    const [singleUdbetaling, setSingleUdbetaling] = useState(0);
+
+    const [kuponType, setKuponType] = useState("Single");
+
+    useEffect(() => {
+        if (odds.length > 0) {
+            document.getElementById("kombination-content").classList.add("display");
+            if (odds.length > 1) {
+                setKuponType("Kombination");
+                document.getElementById("kuponType").classList.add("display-flex");
+            } else {
+                setKuponType("Single");
+                document.getElementById("kuponType").classList.remove("display-flex");
+            }
+        } else {
+            document.getElementById("kombination-content").classList.remove("display");
+            document.getElementById("kuponType").classList.remove("display-flex");
+        }
+    }, [odds])
+
+    useEffect(() => {
+        if (kuponType === "Singler") {
+            document.getElementById("singler").classList.add("kupon-type-element-active");
+            document.getElementById("kombination").classList.remove("kupon-type-element-active");
+            // document.getElementById("system").classList.remove("kupon-type-element-active");
+            
+            document.getElementById("singler-content").classList.add("display");
+            document.getElementById("kombination-content").classList.remove("display");
+
+            document.getElementById("singler-bottom").classList.add("display");
+            document.getElementById("kombination-bottom").classList.remove("display");
+        } else if (kuponType === "Kombination") {
+            document.getElementById("singler").classList.remove("kupon-type-element-active");
+            document.getElementById("kombination").classList.add("kupon-type-element-active");
+            // document.getElementById("system").classList.remove("kupon-type-element-active");
+
+            document.getElementById("singler-content").classList.remove("display");
+            document.getElementById("kombination-content").classList.add("display");
+
+            document.getElementById("singler-bottom").classList.remove("display");
+            document.getElementById("kombination-bottom").classList.add("display");
+        }
+    }, [kuponType])
 
     function getGame() {
         fetch("https://soccer.sportmonks.com/api/v2.0/fixtures/"+matchID+"?api_token="+"kvgDywRFDSqPhS9iYQynEci42JvyVtqLpCXBJlBHrH5v8Br8RtrEayi94Ybf"+"&include=odds,goals,referee,league.country,stats,substitutions,bench,lineup,lineup.player,localTeam,league,visitorTeam,localCoach,visitorCoach,venue,events,group,round&bookmakers=2&tz=Europe/Copenhagen")
@@ -355,7 +411,7 @@ function StageMatcharticle () {
             setItems(result.data);
             checkExpired(result.data.time.starting_at.timestamp);
 
-            const wants = ["3Way Result", "Team To Score First", "Double Chance", "Highest Scoring Half", "Both Teams To Score", "Time Of First Corner", "Corner Match Bet", "A Red Card in the Match", "First Match Corner", "Both Teams To Receive 2+ Cards", "Last Match Corner", "Both Teams To Receive A Card", "Clean Sheet - Home", "Clean Sheet - Away", "2-Way Corners", "First Card Received", "Time Of First Card", "3Way Result 1st Half", "Team To Score Last", "3Way Result 2nd Half", "Double Chance - 1st Half", "Double Chance - 2nd Half", "Odd/Even", "Own Goal"];
+            const wants = ["3Way Result", "Over/Under", "Exact Goals Number", "Goals Over/Under 1st Half", "Over/Under 2nd Half", "Team To Score First", "Double Chance", "Highest Scoring Half", "Both Teams To Score", "Time Of First Corner", "Corner Match Bet", "A Red Card in the Match", "First Match Corner", "Both Teams To Receive 2+ Cards", "Last Match Corner", "Both Teams To Receive A Card", "Clean Sheet - Home", "Clean Sheet - Away", "2-Way Corners", "First Card Received", "Time Of First Card", "3Way Result 1st Half", "Team To Score Last", "3Way Result 2nd Half", "Double Chance - 1st Half", "Double Chance - 2nd Half", "Odd/Even", "Own Goal", "Time Of First Corner"];
             const availOddsReplica = [];
             for (var r in wants) {
                 for (var m in result.data.odds.data) {
@@ -363,23 +419,88 @@ function StageMatcharticle () {
                         var n0 = result.data.odds.data[m].bookmaker.data[0].odds.data[0].value;
                         var n1 = result.data.odds.data[m].bookmaker.data[0].odds.data[1].value;
                         if (result.data.odds.data[m].bookmaker.data[0].odds.data[2] !== undefined) {
-                            var n2 = result.data.odds.data[m].bookmaker.data[0].odds.data[2].value;
-                            const dataBody = {
-                                "type": result.data.odds.data[m].name,
-                                "type_length": 3,
-                                "first": n0,
-                                "second": n1,
-                                "third": n2
+                            if (result.data.odds.data[m].name === "Over/Under" || result.data.odds.data[m].name === "Goals Over/Under 1st Half" || result.data.odds.data[m].name === "Over/Under 2nd Half") {
+                                var overArray = [];
+                                for (var t in result.data.odds.data[m].bookmaker.data[0].odds.data) {
+                                    if (result.data.odds.data[m].bookmaker.data[0].odds.data[t].label === "Over") {
+                                        overArray.push(result.data.odds.data[m].bookmaker.data[0].odds.data[t]);
+                                    }
+                                }
+                                for (var o in overArray) {
+                                    var yourIndex = result.data.odds.data[m].bookmaker.data[0].odds.data.findIndex(obj => obj.total === overArray[o].total && obj.label === "Under");
+                                    if (yourIndex >= 0) {
+                                        const dataBody = {
+                                            "type": result.data.odds.data[m].name + "" + overArray[o].total,
+                                            "type_length": 2,
+                                            "first": overArray[o].value,
+                                            "second": result.data.odds.data[m].bookmaker.data[0].odds.data[yourIndex].value,
+                                            "total": overArray[o].total,
+                                            "result0": o,
+                                            "result1": yourIndex.toString()
+                                        }
+                                        availOddsReplica.push(dataBody);
+                                    } else {
+                                        console.log("NO FIND");
+                                    }
+                                }
+                            } else if (result.data.odds.data[m].name === "Exact Goals Number") {
+                                const dataBody = {
+                                    "type": "Exact Goals Number",
+                                    "extended": result.data.odds.data[m].bookmaker.data[0].odds.data,
+                                    "type_length": 7
+                                }
+                                setGoalOddArray(result.data.odds.data[m].bookmaker.data[0].odds.data);
+                                availOddsReplica.push(dataBody);
+                            } else {
+                                var n2 = result.data.odds.data[m].bookmaker.data[0].odds.data[2].value;
+                                const dataBody = {
+                                    "type": result.data.odds.data[m].name,
+                                    "type_length": 3,
+                                    "first": n0,
+                                    "second": n1,
+                                    "third": n2,
+                                    "result0": "0",
+                                    "result1": "1",
+                                    "result2": "2"
+                                }
+                                availOddsReplica.push(dataBody);
                             }
-                            availOddsReplica.push(dataBody);
                         } else {
-                            const dataBody = {
-                                "type": result.data.odds.data[m].name,
-                                "type_length": 2,
-                                "first": n0,
-                                "second": n1
+                            if (result.data.odds.data[m].name === "Over/Under" || result.data.odds.data[m].name === "Goals Over/Under 1st Half" || result.data.odds.data[m].name === "Over/Under 2nd Half") {
+                                var overArray = [];
+                                for (var t in result.data.odds.data[m].bookmaker.data[0].odds.data) {
+                                    if (result.data.odds.data[m].bookmaker.data[0].odds.data[t].label === "Over") {
+                                        overArray.push(result.data.odds.data[m].bookmaker.data[0].odds.data[t]);
+                                    }
+                                }
+                                for (var o in overArray) {
+                                    var yourIndex = result.data.odds.data[m].bookmaker.data[0].odds.data.findIndex(obj => obj.total === overArray[0].total && obj.label === "Under");
+                                    if (yourIndex >= 0) {
+                                        const dataBody = {
+                                            "type": result.data.odds.data[m].name + "" + overArray[o].total,
+                                            "type_length": 2,
+                                            "first": overArray[o].value,
+                                            "second": result.data.odds.data[m].bookmaker.data[0].odds.data[yourIndex].value,
+                                            "total": overArray[o].total,
+                                            "result0": o,
+                                            "result1": yourIndex.toString()
+                                        }
+                                        availOddsReplica.push(dataBody);
+                                    } else {
+                                        console.log("NO FIND");
+                                    }
+                                }
+                            } else {
+                                const dataBody = {
+                                    "type": result.data.odds.data[m].name,
+                                    "type_length": 2,
+                                    "first": n0,
+                                    "second": n1,
+                                    "result0": "0",
+                                    "result1": "1"
+                                }
+                                availOddsReplica.push(dataBody);
                             }
-                            availOddsReplica.push(dataBody);
                         }
                     }
                 }
@@ -393,19 +514,22 @@ function StageMatcharticle () {
             const availMinutter2 = [];
             console.log(availOddsReplica);
             for (var y in availOddsReplica) {
-                if (availOddsReplica[y].type === "3Way Result" || availOddsReplica[y].type === "Double Chance" || availOddsReplica[y].type === "Both Teams To Score" || availOddsReplica[y].type === "Highest Scoring Half" || availOddsReplica[y].type === "Team To Score First" || availOddsReplica[y].type === "Corner Match Bet") {
+                if (availOddsReplica[y].type === "3Way Result" || availOddsReplica[y].type === "Exact Goals Number" || availOddsReplica[y].type === "Double Chance" || availOddsReplica[y].type === "Team To Score First" || availOddsReplica[y].type === "Over/Under2.5" || availOddsReplica[y].type === "Over/Under2.25" || availOddsReplica[y].type === "Over/Under2.75") {
                     availPopular2.push(availOddsReplica[y]);
+                }
+                if (availOddsReplica[y].type === "3Way Result 1st Half" || availOddsReplica[y].type === "Goals Over/Under 1st Half0.5" || availOddsReplica[y].type === "Goals Over/Under 1st Half1.5" || availOddsReplica[y].type === "Goals Over/Under 1st Half2.5" || availOddsReplica[y].type === "Goals Over/Under 1st Half3.5" || availOddsReplica[y].type === "Over/Under 2nd Half0.5" || availOddsReplica[y].type === "Over/Under 2nd Half1.5" || availOddsReplica[y].type === "Over/Under 2nd Half2.5" || availOddsReplica[y].type === "Over/Under 2nd Half3.5" || availOddsReplica[y].type === "Highest Scoring Half" || availOddsReplica[y].type === "3Way Result 2nd Half" || availOddsReplica[y].type === "Double Chance - 1st Half" || availOddsReplica[y].type === "Double Chance - 2nd Half") {
+                    availMinutter2.push(availOddsReplica[y]);
                 }
                 if (availOddsReplica[y].type === "First Card Received" || availOddsReplica[y].type === "A Red Card in the Match" || availOddsReplica[y].type === "Both Teams To Receive 2+ Cards" || availOddsReplica[y].type === "Both Teams To Receive A Card") {
                     availKort2.push(availOddsReplica[y]);
                 }
-                if (availOddsReplica[y].type === "First Match Corner" || availOddsReplica[y].type === "Last Match Corner") {
+                if (availOddsReplica[y].type === "First Match Corner" || availOddsReplica[y].type === "Last Match Corner" || availOddsReplica[y].type === "Corner Match Bet") {
                     availCorner2.push(availOddsReplica[y]);
                 }
-                if (availOddsReplica[y].type === "Clean Sheet - Home" || availOddsReplica[y].type === "Clean Sheet - Away" || availOddsReplica[y].type === "3Way Result 1st Half" || availOddsReplica[y].type === "3Way Result 2nd Half" || availOddsReplica[y].type === "Double Chance - 1st Half" || availOddsReplica[y].type === "Double Chance - 2nd Half") {
+                if (availOddsReplica[y].type === "Clean Sheet - Home" || availOddsReplica[y].type === "Clean Sheet - Away") {
                     availSpecials2.push(availOddsReplica[y]);
                 }
-                if (availOddsReplica[y].type === "Team To Score Last" || availOddsReplica[y].type === "Own Goal" || availOddsReplica[y].type === "Odd/Even") {
+                if (availOddsReplica[y].type === "Team To Score Last" || availOddsReplica[y].type === "Both Teams To Score" || availOddsReplica[y].type === "Highest Scoring Half" || availOddsReplica[y].type === "Own Goal" || availOddsReplica[y].type === "Odd/Even") {
                     availGoal2.push(availOddsReplica[y]);
                 }
             }
@@ -481,9 +605,31 @@ function StageMatcharticle () {
             .catch(error => console.log('error', error));
     }
 
-    function updateUdbetaling() {
-        var indsatsValue = (document.getElementById("indsatsInput") as HTMLInputElement).value;
-        setUdbetaling(returnOdds * parseInt(indsatsValue));
+    function updateUdbetaling(type, oddsSend, indsats) {
+        if (type === "kombination") {
+            var indsatsValue = (document.getElementById("indsatsInput") as HTMLInputElement).value;
+            setUdbetaling(returnOdds * parseInt(indsatsValue));
+        } else {
+            var totalUdbetaling = 0;
+            for (var q in odds) {
+                var dc = document.getElementById("singleindsats"+odds[q].match+"-"+odds[q].odds_result);
+                if ((dc as HTMLInputElement).value !== "" && (dc as HTMLInputElement).value !== null && (dc as HTMLInputElement).value !== undefined) {
+                    totalUdbetaling = totalUdbetaling + (parseFloat((dc as HTMLInputElement).value) * parseFloat(odds[q].probability));
+                }
+            }
+            setSingleUdbetaling(totalUdbetaling);
+        }
+    }
+
+    function setSingleIndsatser(indsats, id) {
+        var tempIndsats = 0;
+        var classArray = document.getElementsByClassName("single-kupon-input");
+        for(var i = 0; i < classArray.length; i++){
+            if ((classArray[i] as HTMLInputElement).value !== "" && (classArray[i] as HTMLInputElement).value !== null && (classArray[i] as HTMLInputElement).value !== undefined) {
+                tempIndsats = tempIndsats + parseInt((classArray[i] as HTMLInputElement).value);
+            }
+        }
+        setSingleIndsats(tempIndsats);
     }
 
     function delBet(betId, matchId) {
@@ -519,6 +665,11 @@ function StageMatcharticle () {
         setUdbetaling(udbetalingNew);
         if ((odds.length - 1) <= 0) {
             setKuponBtn("kupon-btn odd-off");
+            document.getElementById("kombination-content").classList.remove("display");
+            document.getElementById("singler-content").classList.remove("display");
+
+            document.getElementById("kombination-bottom").classList.add("display");
+            document.getElementById("singler-bottom").classList.remove("display");
         }
     }
 
@@ -567,26 +718,130 @@ function StageMatcharticle () {
         document.getElementById("errorConP").innerHTML = message;
     }
 
-    function placeBet() {
-        console.log(odds);
-        var nowDate = new Date().getTime();
-        var nowMiliDate = nowDate/1000;
+    function placeBet(type) {
+        if (type === "kombination") {
+            var nowDate = new Date().getTime();
+            var varighedDate = new Date(slutdato).getTime();
+            var placeBetBTN = document.getElementById("placeBetBTN");
+            if (!(odds.length > 0) || !(localStorage.getItem("activeGame")) || indsats <= 0) {
+                if (!(odds.length > 0)) {
+                    setNotiMessage("error", "Ingen væddemål", "Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.");
+                    placeBetBTN.innerHTML = "Placér bet";
+                } else if (!(localStorage.getItem("activeGame"))) {
+                    setNotiMessage("error", "Intet aktivt gruppespil", "For at placere et væddemål, skal du være tilmeldt et gruppespil, og sætte det som aktivt.");
+                    placeBetBTN.innerHTML = "Placér bet";
+                } else if (indsats <= 0) {
+                    setNotiMessage("error", "Positivt beløb", "Din indsats på dit væddemål skal være positiv.");
+                    placeBetBTN.innerHTML = "Placér bet";
+                }
+            } else if (nowDate > varighedDate) {
+                setNotiMessage("error", "Gruppespil slut", "Gruppespillet er desværre allerede færdiggjort.");
+                placeBetBTN.innerHTML = "Placér bet";
+            } else {
+                if (currentMoney < indsats || indsats < parseInt(selectedGame["min_amount"].slice(0, -4)) || indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                    if (currentMoney < indsats) {
+                        setNotiMessage("error", "Ikke nok penge", "Du har ikke nok penge, til at placere denne kupon. Prøv med et lavere beløb.");
+                        placeBetBTN.innerHTML = "Placér bet";
+                    } else if (indsats < parseInt(selectedGame["min_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Minimumsbeløb", "Dette gruppespil spiller med et minimumsbeløb på " + selectedGame["min_amount"]);
+                        placeBetBTN.innerHTML = "Placér bet";
+                    } else if (indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Maksimumsbeløb", "Dette gruppespil spiller med et maksimumsbeløb på " + selectedGame["max_amount"]);
+                        placeBetBTN.innerHTML = "Placér bet";
+                    }
+                } else {
+                    const placeBetUrl = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/bet";
+                const userEmail = localStorage.getItem("email");
+        
+                const betConfig = {
+                    headers: {
+                        "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
+                    }
+                }
+    
+                const localGame = localStorage.getItem("activeGame");
+                const localIndex = parseInt(localStorage.getItem("playerIndex"));
+    
+                var last_date = 0;
+                var gammel = false;
+                var currentDate = new Date().getTime();
+                for (var p in odds) {
+                    const bet_dato = parseInt(odds[p].odds_date);
+                    if (bet_dato*1000 < currentDate) {
+                        setNotiMessage("error", "Gammel væddemål", "Et væddemål du prøver at oddse på er allerede startet.");
+                        placeBetBTN.innerHTML = "Placér bet";
+                        gammel = true;
+                    } else {
+                        if (bet_dato > last_date) {
+                            last_date = bet_dato;
+                        }
+                    }
+                }
+    
+                if (gammel !== true) {
+                    const betBody = {
+                        "betId": localGame,
+                        "updateValue": {
+                            "bets": [],
+                            "player": userEmail,
+                            "indsats": indsats,
+                            "fullProb": returnOdds,
+                            "last_date": last_date,
+                            "type": "kombination"
+                        },
+                        "index": localIndex
+                    }
+            
+                    for (var m in odds) {
+                        const match = odds[m].match;
+                        const result = odds[m].odds_result;
+                        const probability = odds[m].probability;
+                        const type = odds[m].odds_type;
+                        const visitorteamString = odds[m].visitorteam;
+                        const hometeamString = odds[m].hometeam;
+                        const bet_date = odds[m].odds_date;
+            
+                        betBody.updateValue.bets[m] = {
+                            "game" : match,
+                            "betType": type,
+                            "result": result,
+                            "probability": probability,
+                            "hometeam": hometeamString,
+                            "visitorteam": visitorteamString,
+                            "bet_date": bet_date,
+                            "indsats": 0
+                        }
+                    }
+            
+                    axios.patch(placeBetUrl, betBody, betConfig).then(response => {
+                        document.getElementById("bet-modal").classList.add("display-not");
+                        document.getElementById("singler-modal").classList.add("display-not")
+                        document.getElementById("placed-modal").classList.remove("display-not");
+                        console.log("Bet oprettet:", betBody, response)
+                        setCurrentMoney(currentMoney - indsats);
+                    }).catch(error => {
+                        console.log(error);
+                        setNotiMessage("error", "Fejl ved oprettelse af væddemål", error);
+                    })
+                    emptyBets();
+                    setNotiMessage("success", "Væddemål placeret", "Dit væddemål er nu placeret. Gå til 'Mine gruppespil' for at se dine væddemål.");
+                    var placeBetBTN2 = document.getElementById("placeBetBTN");
+                    placeBetBTN2.innerHTML = "Placér bet";
+                }
+                }
+            }
+        } else {
+            var nowDate = new Date().getTime();
         var varighedDate = new Date(slutdato).getTime();
         var placeBetBTN = document.getElementById("placeBetBTN");
-        for (var t in odds) {
-            if (odds[t].odds_date < nowMiliDate) {
-                setNotiMessage("error", "Væddemål igang", "Et væddemål du forsøger at oddse på, er allerede gået igang, eller er slut. (" + odds[t].hometeam + " - " + odds[t].visitorteam + ")");
-                placeBetBTN.innerHTML = "Placér bet";
-            }
-        }
-        if (!(odds.length > 0) || !(localStorage.getItem("activeGame")) || indsats <= 0) {
+        if (!(odds.length > 0) || !(localStorage.getItem("activeGame")) || singleIndsats <= 0) {
             if (!(odds.length > 0)) {
                 setNotiMessage("error", "Ingen væddemål", "Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.");
                 placeBetBTN.innerHTML = "Placér bet";
             } else if (!(localStorage.getItem("activeGame"))) {
                 setNotiMessage("error", "Intet aktivt gruppespil", "For at placere et væddemål, skal du være tilmeldt et gruppespil, og sætte det som aktivt.");
                 placeBetBTN.innerHTML = "Placér bet";
-            } else if (indsats <= 0) {
+            } else if (singleIndsats <= 0) {
                 setNotiMessage("error", "Positivt beløb", "Din indsats på dit væddemål skal være positiv.");
                 placeBetBTN.innerHTML = "Placér bet";
             }
@@ -594,14 +849,14 @@ function StageMatcharticle () {
             setNotiMessage("error", "Gruppespil slut", "Gruppespillet er desværre allerede færdiggjort.");
             placeBetBTN.innerHTML = "Placér bet";
         } else {
-            if (currentMoney < indsats || indsats < parseInt(selectedGame["min_amount"].slice(0, -4)) || indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
-                if (currentMoney < indsats) {
+            if (currentMoney < singleIndsats || singleIndsats < parseInt(selectedGame["min_amount"].slice(0, -4)) || singleIndsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                if (currentMoney < singleIndsats) {
                     setNotiMessage("error", "Ikke nok penge", "Du har ikke nok penge, til at placere denne kupon. Prøv med et lavere beløb.");
                     placeBetBTN.innerHTML = "Placér bet";
-                } else if (indsats < parseInt(selectedGame["min_amount"].slice(0, -4))) {
+                } else if (singleIndsats < parseInt(selectedGame["min_amount"].slice(0, -4))) {
                     setNotiMessage("error", "Minimumsbeløb", "Dette gruppespil spiller med et minimumsbeløb på " + selectedGame["min_amount"]);
                     placeBetBTN.innerHTML = "Placér bet";
-                } else if (indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                } else if (singleIndsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
                     setNotiMessage("error", "Maksimumsbeløb", "Dette gruppespil spiller med et maksimumsbeløb på " + selectedGame["max_amount"]);
                     placeBetBTN.innerHTML = "Placér bet";
                 }
@@ -624,7 +879,8 @@ function StageMatcharticle () {
             for (var p in odds) {
                 const bet_dato = parseInt(odds[p].odds_date);
                 if (bet_dato*1000 < currentDate) {
-                    console.log("GAMMELT VÆDDEMÅL")
+                    setNotiMessage("error", "Aktiv kamp", "En kamp du prøver at oddse på, er allerede sat igang.");
+                    placeBetBTN.innerHTML = "Placér bet";
                     gammel = true;
                 } else {
                     if (bet_dato > last_date) {
@@ -639,9 +895,10 @@ function StageMatcharticle () {
                     "updateValue": {
                         "bets": [],
                         "player": userEmail,
-                        "indsats": indsats,
-                        "fullProb": returnOdds,
-                        "last_date": last_date
+                        "last_date": last_date,
+                        "type": "singler",
+                        "indsats": 0,
+                        "fullProb": 0
                     },
                     "index": localIndex
                 }
@@ -654,7 +911,11 @@ function StageMatcharticle () {
                     const visitorteamString = odds[m].visitorteam;
                     const hometeamString = odds[m].hometeam;
                     const bet_date = odds[m].odds_date;
-        
+
+                    var single_indsats = parseFloat((document.getElementById("singleindsats"+match+"-"+result) as HTMLInputElement).value);
+                    if (single_indsats === NaN) {
+                        single_indsats = 0;
+                    }
                     betBody.updateValue.bets[m] = {
                         "game" : match,
                         "betType": type,
@@ -662,11 +923,15 @@ function StageMatcharticle () {
                         "probability": probability,
                         "hometeam": hometeamString,
                         "visitorteam": visitorteamString,
-                        "bet_date": bet_date
+                        "bet_date": bet_date,
+                        "indsats": single_indsats
                     }
                 }
         
                 axios.patch(placeBetUrl, betBody, betConfig).then(response => {
+                    document.getElementById("bet-modal").classList.add("display-not")
+                    document.getElementById("singler-modal").classList.add("display-not")
+                    document.getElementById("placed-modal").classList.remove("display-not");
                     console.log("Bet oprettet:", betBody, response)
                     setCurrentMoney(currentMoney - indsats);
                 }).catch(error => {
@@ -675,18 +940,28 @@ function StageMatcharticle () {
                 })
                 emptyBets();
                 setNotiMessage("success", "Væddemål placeret", "Dit væddemål er nu placeret. Gå til 'Mine gruppespil' for at se dine væddemål.");
-                placeBetBTN.innerHTML = "Placér bet";
+                var placeBetBTN2 = document.getElementById("placeBetBTN");
+                placeBetBTN2.innerHTML = "Placér bet";
             }
             }
+        }
         }
     }
 
     function emptyBets() {
         if (matchAllowed === true) {
+            document.getElementById("kombination-content").classList.remove("display");
+            document.getElementById("singler-content").classList.remove("display");
+
+            document.getElementById("kombination-bottom").classList.add("display");
+            document.getElementById("singler-bottom").classList.remove("display");
+            setSingleIndsats(0);
+            setSingleUdbetaling(0);
+
             setOdds([]);
             sessionStorage.setItem("odds", "");
             setReturnOdds(1);
-            setIndsats(30);
+            setIndsats(0);
             setUdbetaling(0);
             setKuponBtn("kupon-btn odd-off");
     
@@ -1122,7 +1397,7 @@ function StageMatcharticle () {
     function getStats() {
         var localStatArray = statsL;
         var visitorStatArray = statsV;
-        if (localStatArray["corners"] !== undefined && visitorStatArray["corners"] !== undefined) {
+        if (localStatArray["corners"] !== undefined && visitorStatArray["corners"] !== undefined && localStatArray["shots"] && visitorStatArray["shots"]) {
             var possessiontime_str_l = localStatArray["possessiontime"] + "%";
             var possessiontime_str_v = visitorStatArray["possessiontime"] + "%";
 
@@ -1424,6 +1699,25 @@ function StageMatcharticle () {
                     };
                     storage.push(elementPush);
                     localStorage.setItem("favoritter", JSON.stringify(storage));
+
+                    const signupURL = "https://1ponivn4w3.execute-api.eu-central-1.amazonaws.com/api/favorit";
+
+                    const requestConfig = {
+                        headers: {
+                            "x-api-key": "utBfOHNWpj750kzjq0snL4gNN1SpPTxH8LdSLPmJ"
+                        }
+                    }
+
+                    const requestBody = {
+                        "data": storage,
+                        "bruger": localStorage.getItem("email"),
+                        "gruppespil": localStorage.getItem("activeGame")
+                    }
+                    axios.post(signupURL, requestBody, requestConfig).then(response => {
+                        console.log("Favoritter-api: ", response);
+                    }).catch(error => {
+                        console.log(error);
+                    })
                 } else {
                     var storageDiv = [];
                     const elementPush = {
@@ -1623,33 +1917,314 @@ function StageMatcharticle () {
         document.getElementById("match-kupon").classList.remove("match-show");
     }
 
+    function showModal(type, modalType) {
+        if (type === "bet") {
+            if (modalType === "kombination") {
+                var nowDate = new Date().getTime();
+            var varighedDate = new Date(slutdato).getTime();
+            if (!(odds.length > 0) || !(localStorage.getItem("activeGame")) || indsats <= 0) {
+                if (!(odds.length > 0)) {
+                    setNotiMessage("error", "Ingen væddemål", "Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.");
+                } else if (!(localStorage.getItem("activeGame"))) {
+                    setNotiMessage("error", "Intet aktivt gruppespil", "For at placere et væddemål, skal du være tilmeldt et gruppespil, og sætte det som aktivt.");
+                } else if (indsats <= 0) {
+                    setNotiMessage("error", "Positivt beløb", "Din indsats på dit væddemål skal være positiv.");
+                }
+            } else if (nowDate > varighedDate) {
+                setNotiMessage("error", "Gruppespil slut", "Gruppespillet er desværre allerede færdiggjort.");
+            } else {
+                if (currentMoney < indsats || indsats < parseInt(selectedGame["min_amount"].slice(0, -4)) || indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                    if (currentMoney < indsats) {
+                        setNotiMessage("error", "Ikke nok penge", "Du har ikke nok penge, til at placere denne kupon. Prøv med et lavere beløb.");
+                    } else if (indsats < parseInt(selectedGame["min_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Minimumsbeløb", "Dette gruppespil spiller med et minimumsbeløb på " + selectedGame["min_amount"]);
+                    } else if (indsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Maksimumsbeløb", "Dette gruppespil spiller med et maksimumsbeløb på " + selectedGame["max_amount"]);
+                    }
+                } else {
+
+                var last_date = 0;
+                var gammel = false;
+                var currentDate = new Date().getTime();
+                for (var p in odds) {
+                    const bet_dato = parseInt(odds[p].odds_date);
+                    if (bet_dato*1000 < currentDate) {
+                        setNotiMessage("error", "Gammel væddemål", "Et væddemål du prøver at oddse på er allerede startet.");
+                        gammel = true;
+                    } else {
+                        if (bet_dato > last_date) {
+                            last_date = bet_dato;
+                        }
+                    }
+                }
+
+                if (gammel !== true) {
+                    document.getElementById("bet-modal").classList.remove("display-not")
+                        document.getElementById("errorCon").classList.remove("display")
+                }
+                }
+            }
+            } else {
+                var nowDate = new Date().getTime();
+            var varighedDate = new Date(slutdato).getTime();
+            if (!(odds.length > 0) || !(localStorage.getItem("activeGame")) || singleIndsats <= 0) {
+                if (!(odds.length > 0)) {
+                    setNotiMessage("error", "Ingen væddemål", "Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.");
+                } else if (!(localStorage.getItem("activeGame"))) {
+                    setNotiMessage("error", "Intet aktivt gruppespil", "For at placere et væddemål, skal du være tilmeldt et gruppespil, og sætte det som aktivt.");
+                } else if (singleIndsats <= 0) {
+                    setNotiMessage("error", "Positivt beløb", "Din indsats på dit væddemål skal være positiv.");
+                }
+            } else if (nowDate > varighedDate) {
+                setNotiMessage("error", "Gruppespil slut", "Gruppespillet er desværre allerede færdiggjort.");
+            } else {
+                if (currentMoney < singleIndsats || singleIndsats < parseInt(selectedGame["min_amount"].slice(0, -4)) || singleIndsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                    if (currentMoney < singleIndsats) {
+                        setNotiMessage("error", "Ikke nok penge", "Du har ikke nok penge, til at placere denne kupon. Prøv med et lavere beløb.");
+                    } else if (singleIndsats < parseInt(selectedGame["min_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Minimumsbeløb", "Dette gruppespil spiller med et minimumsbeløb på " + selectedGame["min_amount"]);
+                    } else if (singleIndsats > parseInt(selectedGame["max_amount"].slice(0, -4))) {
+                        setNotiMessage("error", "Maksimumsbeløb", "Dette gruppespil spiller med et maksimumsbeløb på " + selectedGame["max_amount"]);
+                    }
+                } else {
+    
+                var last_date = 0;
+                var gammel = false;
+                var currentDate = new Date().getTime();
+                for (var p in odds) {
+                    const bet_dato = parseInt(odds[p].odds_date);
+                    if (bet_dato*1000 < currentDate) {
+                        setNotiMessage("error", "Aktiv kamp", "En kamp du prøver at oddse på, er allerede sat igang.");
+                        gammel = true;
+                    } else {
+                        if (bet_dato > last_date) {
+                            last_date = bet_dato;
+                        }
+                    }
+                }
+    
+                if (gammel !== true) {
+                    document.getElementById("singler-modal").classList.remove("display-not")
+                        document.getElementById("errorCon").classList.remove("display")
+                }
+                }
+            }
+            }
+        }
+    }
+
+    function getLabel(item, n) {
+        var label0 = "Label - 0";
+        var label1 = "Label - 1";
+        var label2 = "Label - 2";
+        var overskrift = "Overskrift";
+        if (item.type === "3Way Result") {
+            label0 = "Vinder " + homeTeam;
+            label1 = "Uafgjort";
+            label2 = "Vinder " + visitorTeam;
+            overskrift = "Fuldtid - Resultat";
+        } else if (item.type === "Double Chance") {
+            label0 = homeTeam + " eller uafgjort";
+            label1 = "Uafgjort eller " + visitorTeam;
+            label2 = homeTeam + " eller " + visitorTeam;
+            overskrift = "Dobbeltchance";
+        } else if (item.type === "Team To Score First") {
+            label0 = homeTeam;
+            label1 = "Ingen mål";
+            label2 = visitorTeam;
+            overskrift = "Første hold til at score";
+        } else if (item.type === "Highest Scoring Half") {
+            label0 = "1. halvleg";
+            label1 = "2. halvleg";
+            label2 = "Uafgjort";
+            overskrift = "Flest mål i halvleg";
+        } else if (item.type === "Both Teams To Score") {
+            label0 = "Ja";
+            label1 = "Nej";
+            overskrift = "Begge hold scorer";
+        } else if (item.type === "Clean Sheet - Home") {
+            label0 = "Ja";
+            label1 = "Nej";
+            overskrift = "Clean Sheet - " + homeTeam;
+        } else if (item.type === "Clean Sheet - Away") {
+            label0 = "Ja";
+            label1 = "Nej";
+            overskrift = "Clean Sheet - " + visitorTeam;
+        } else if (item.type === "Corner Match Bet") {
+            label0 = homeTeam;
+            label1 = "Ingen hjørnespark";
+            label2 = visitorTeam;
+            overskrift = "Flest hjørnespark";
+        } else if (item.type === "Highest Scoring Half") {
+            label0 = "1. halvleg";
+            label1 = "2. halvleg";
+            label2 = "Ingen mål";
+            overskrift = "Flest mål i halvleg";
+        } else if (item.type === "Both Teams To Score") {
+            label0 = "Ja";
+            label1 = "Nej";
+            overskrift = "Begge hold scorer";
+        } else if (item.total !== undefined) {
+            if ((item.type.slice(17)).slice(0,-3) === "1st Half") {
+                overskrift = "Over/Under " + item.total + " mål - 1. Halvleg";
+            } else if ((item.type.slice(11)).slice(0,-3) === "2nd Half") {
+                overskrift = "Over/Under " + item.total + " mål - 2. Halvleg";
+            } else {
+                overskrift = "Over/Under " + item.total + " mål";
+            }
+            label0 = "Over";
+            label1 = "Under"
+        } else if (item.type === "Exact Goals Number") {
+            overskrift = "Antal mål i kampen";
+        } else if (item.type === "Time Of First Card") {
+            label0 = "Ja";
+            label1 = "Nej";
+            overskrift = "Kort givet inden 33:00";
+        } else if (item.type === "First Card Received") {
+            label0 = homeTeam;
+            label1 = "Ingen kort";
+            label2 = visitorTeam;
+            overskrift = "Første kort";
+        } else if (item.type === "A Red Card in the Match") {
+            label0 = "Ja";
+            label1 = "Nej";
+            overskrift = "Rødt kort i kampen";
+        } else if (item.type === "Both Teams To Receive 2+ Cards") {
+            label0 = "Ja";
+            label1 = "Nej";
+            overskrift = "Begge hold modtager 2+ kort";
+        } else if (item.type === "Both Teams To Receive A Card") {
+            label0 = "Ja";
+            label1 = "Nej";
+            overskrift = "Begge hold modtager et kort";
+        } else if (item.type === "Time Of First Corner") {
+            label0 = "Ja";
+            label1 = "Nej";
+            overskrift = "Hjørnespark inden 7:00";
+        } else if (item.type === "2-Way Corners") {
+            label0 = "Over";
+            label1 = "Under";
+            overskrift = "9.5 hjørnespark";
+        } else if (item.type === "First Match Corner") {
+            label0 = homeTeam;
+            label1 = visitorTeam;
+            overskrift = "Første hjørnespark";
+        } else if (item.type === "Last Match Corner") {
+            label0 = homeTeam;
+            label1 = visitorTeam;
+            overskrift = "Sidste hjørnespark";
+        } else if (item.type === "Team To Score Last") {
+            label0 = homeTeam;
+            label1 = "Ingen mål";
+            label2 = visitorTeam;
+            overskrift = "Sidste målscorer";
+        } else if (item.type === "Odd/Even") {
+            label0 = "Lige";
+            label1 = "Ulige";
+            overskrift = "Lige eller ulige sum af mål";
+        } else if (item.type === "Own Goal") {
+            label0 = "Ja";
+            label1 = "Nej";
+            overskrift = "Selvmål";
+        } else if (item.type === "3Way Result 2nd Half") {
+            label0 = homeTeam;
+            label1 = "Uafgjort";
+            label2 = visitorTeam;
+            overskrift = "Kampresultat - 2. Halvleg";
+        } else if (item.type === "3Way Result 1st Half") {
+            label0 = homeTeam;
+            label1 = "Uafgjort";
+            label2 = visitorTeam;
+            overskrift = "Kampresultat - 1. Halvleg";
+        } else if (item.type === "Double Chance - 1st Half") {
+            label0 = homeTeam + " eller uafgjort";
+            label1 = "Uafgjort eller " + visitorTeam;
+            label2 = homeTeam + " eller " + visitorTeam;
+            overskrift = "Dobbeltchance - 1. Halvleg";
+        } else if (item.type === "Double Chance - 2nd Half") {
+            label0 = homeTeam + " eller uafgjort";
+            label1 = "Uafgjort eller " + visitorTeam;
+            label2 = homeTeam + " eller " + visitorTeam;
+            overskrift = "Dobbeltchance - 2. Halvleg";
+        }
+
+        if (n === 0) {
+            return label0;
+        } else if (n === 1) {
+            return label1;
+        } else if (n === 2) {
+            return label2;
+        } else if (n === 3) {
+            return overskrift;
+        } else {
+            return;
+        }
+    }
+
     return (
         <>
-            <div className="match-kupon-knap" onClick={() => {showKupon()}}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="kupon-receipt" viewBox="0 0 16 16">
-                    <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z"/>
-                    <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/>
-                </svg>
-            </div>
-            <div className="match-kupon" id="match-kupon">
-                <div className="kupon-top">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="close-kupon" onClick={() => {closeKupon()}} viewBox="0 0 16 16">
-                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                    </svg>
-                    <p className="kupon-header-p">Single</p>
-                    <p className="kupon-blue-p" onClick={() => emptyBets()}>Ryd alle</p>
+        <div className="modal-test display-not" id="bet-modal">
+            <div className="modal-con">
+                <p className="con-modal-p">Er du sikker på, at du vil placere din kupon, med en indsats på {indsats},00 kr? Dette beløb er ikke refunderbart.</p>
+                <div className="modal-wrapper">
+                    <button className="con-modal-btn" onClick={() => {var placeBetBTN = document.getElementById("placeBetBTN");
+                        placeBetBTN.innerHTML = "<div class='loader'></div>";
+                        placeBet("kombination");}}>Placér kupon</button>
+                    <button className="con-modal-afbryd" onClick={() => {document.getElementById("bet-modal").classList.add("display-not")}}>Afbryd</button>
                 </div>
-                <ul className="match-kupon-ul">
-                    {odds.map(bet => {
-                        return (
-                            <li key={bet.id}>
-                                <div className="kupon-container">
-                                    <div className="kupon-divider-first"></div>
-                                    <p className="kupon-top-p">Dit væddemål</p>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" onClick={() => {delBet(bet.id, bet.match);}} viewBox="0 0 16 16">
-                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                                    </svg>
-                                    <div className="kupon-divider"></div>
+            </div>
+        </div>
+        <div className="modal-test display-not" id="singler-modal">
+            <div className="modal-con">
+                <p className="con-modal-p">Er du sikker på, at du vil placere din kupon, med en indsats på {singleIndsats},00 kr? Dette beløb er ikke refunderbart.</p>
+                <div className="modal-wrapper">
+                    <button className="con-modal-btn" onClick={() => {var placeBetBTN = document.getElementById("placeBetBTN");
+                        placeBetBTN.innerHTML = "<div class='loader'></div>";
+                        placeBet("singler");}}>Placér kupon</button>
+                    <button className="con-modal-afbryd" onClick={() => {document.getElementById("singler-modal").classList.add("display-not")}}>Afbryd</button>
+                </div>
+            </div>
+        </div>
+        <div className="modal-test display-not" id="placed-modal" style={{textAlign: "center"}}>
+            <div className="modal-con">
+                <div className="con-modal-img-con">
+                    <img src={Congrats} alt="" className="con-modal-img" />
+                </div>
+                <p className="con-modal-h1">Din kupon er placeret!</p>
+                <p className="con-modal-p">Tag et kig under dit aktive gruppespil, for at se din kupon.</p>
+                <div className="modal-wrapper">
+                    <button className="con-modal-btn" onClick={() => {document.getElementById("placed-modal").classList.add("display-not")}}>Modtaget</button>
+                </div>
+            </div>
+        </div>
+        <div className="match-kupon-knap" onClick={() => {showKupon()}}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="kupon-receipt" viewBox="0 0 16 16">
+                <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z"/>
+                <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+        </div>
+        <div className="match-kupon" id="match-kupon">
+        <div className="kupon-top">
+                <p className="kupon-header-p">{kuponType}</p>
+                <p className="kupon-blue-p" onClick={() => emptyBets()}>Ryd alle</p>
+            </div>
+            <div className="kupon-type" id="kuponType">
+                <div className="kupon-type-element" id="singler" onClick={() => {setKuponType("Singler")}}>Singler</div>
+                <div className="kupon-type-element kupon-type-element-active" id="kombination" onClick={() => {setKuponType("Kombination")}}>Kombination</div>
+                {/* <div className="kupon-type-element" id="system" onClick={() => {setKuponType("System")}}>System</div> */}
+            </div>
+            <ul className="match-kupon-ul" id="kombination-content">
+                {odds.map(bet => {
+                    return (
+                        <li key={bet.id}>
+                            <div className="kupon-container">
+                                <div className="kupon-divider-first"></div>
+                                <p className="kupon-top-p">Dit væddemål</p>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="kupon-icon2" onClick={() => {delBet(bet.id, bet.match);}} viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                                <div className="kupon-divider"></div>
+                                <div className="kupon-content">
                                     <div className="kupon-info">
                                         <p className="kupon-h1">{bet.hometeam} - {bet.visitorteam}</p>
                                         <p className="kupon-p">{getKupon(bet.odds_type,bet.hometeam,bet.visitorteam)}: <span className="weight600">{getString(bet.odds_type,bet.odds_result,bet.hometeam,bet.visitorteam)}</span></p>
@@ -1658,1365 +2233,1215 @@ function StageMatcharticle () {
                                         <p className="kupon-h2">{bet.probability}</p>
                                     </div>
                                 </div>
-                            </li>
-                        );
-                    })}
-                </ul>
-                <div className="kupon-bottom">
-                    <div className="kupon-bottom-info">
-                        <div className="kupon-indsats">
-                            <input type="number" className="kupon-input" autoComplete="off" id="indsatsInput" placeholder="Indsats" onChange={event => {setIndsats(parseInt(event.target.value)); updateUdbetaling()}}/>
-                        </div>
-                        <div className="kupon-info-div">
-                            <p className="kupon-bottom-info-p">Total indsats</p>
-                            <p className="kupon-bottom-info-p-right">{indsats},00 kr.</p>
-                        </div>
-                        <div className="kupon-info-div">
-                            <p className="kupon-bottom-info-p">Total odds</p>
-                            <p className="kupon-bottom-info-p-right">{returnOdds.toFixed(2)}</p>
-                        </div>
+                            </div>
+                        </li>
+                    );
+                })}
+            </ul>
+            <ul className="match-kupon-ul" id="singler-content">
+                {odds.map(bet => {
+                    return (
+                        <li key={bet.id}>
+                            <div className="kupon-container">
+                                <div className="kupon-divider-first"></div>
+                                <p className="kupon-top-p">Dit væddemål</p>
+                                <div className="kupon-divider"></div>
+                                <div className="kupon-content">
+                                    <div className="kupon-info">
+                                        <p className="kupon-h1">{bet.hometeam} - {bet.visitorteam}</p>
+                                        <p className="kupon-p">{getKupon(bet.odds_type,bet.hometeam,bet.visitorteam)}: <span className="weight600">{getString(bet.odds_type,bet.odds_result,bet.hometeam,bet.visitorteam)}</span></p>
+                                    </div>
+                                    <div className="kupon-odds">
+                                        <p className="kupon-h2">{bet.probability}</p>
+                                        <input type="number" className="single-kupon-input" autoComplete="off" id={"singleindsats"+bet.match+"-"+bet.odds_result} placeholder="Indsats" onChange={event => {setSingleIndsatser(parseInt(event.target.value), bet.id); updateUdbetaling("singler", bet.probability, parseInt(event.target.value))}}/>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    );
+                })}
+            </ul>
+            <div className="kupon-bottom display" id="kombination-bottom">
+                <div className="kupon-bottom-info">
+                    <div className="kupon-indsats">
+                        <input type="number" className="kupon-input" autoComplete="off" id="indsatsInput" placeholder="Indsats" onChange={event => {setIndsats(parseInt(event.target.value)); updateUdbetaling("kombination", "", 0)}}/>
                     </div>
-                    <div className="kupon-confirm">
-                        <div className="kupon-confirm-div">
-                            <p className="kupon-confirm-p">Udbetaling:</p>
-                            <p className="kupon-confirm-h1">{udbetaling.toFixed(2)} kr.</p>
+                    <div className="kupon-info-div">
+                        <p className="kupon-bottom-info-p">Total indsats</p>
+                        <p className="kupon-bottom-info-p-right">{indsats},00 kr.</p>
+                    </div>
+                    <div className="kupon-info-div">
+                        <p className="kupon-bottom-info-p">Total odds</p>
+                        <p className="kupon-bottom-info-p-right">{returnOdds.toFixed(2)}</p>
+                    </div>
+                </div>
+                <div className="kupon-confirm">
+                    <div className="kupon-confirm-div">
+                        <p className="kupon-confirm-p">Udbetaling:</p>
+                        <p className="kupon-confirm-h1">{udbetaling.toFixed(2)} kr.</p>
+                    </div>
+                    <button className={kuponBtn} id="placeBetBTN" onClick={() => {showModal("bet", "kombination")}}>Placér bet</button>
+                </div>
+            </div>
+            <div className="kupon-bottom" id="singler-bottom">
+                <div className="kupon-bottom-info">
+                    <div className="kupon-info-div">
+                        <p className="kupon-bottom-info-p">Total indsats</p>
+                        <p className="kupon-bottom-info-p-right">{singleIndsats},00 kr.</p>
+                    </div>
+                </div>
+                <div className="kupon-confirm">
+                    <div className="kupon-confirm-div">
+                        <p className="kupon-confirm-p">Udbetaling:</p>
+                        <p className="kupon-confirm-h1">{singleUdbetaling.toFixed(2)} kr.</p>
+                    </div>
+                    <button className={kuponBtn} id="placeBetBTN" onClick={() => {showModal("bet", "singler")}}>Placér bet</button>
+                </div>
+            </div>
+        </div>
+        <div className="stage-main-article-container">
+            <div className={messageType} id="errorCon">
+                <svg xmlns="http://www.w3.org/2000/svg" className="triangle" viewBox="0 0 16 16" id="errorIcon">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+                <div className="error-text">
+                    <p className="error-container-h1" id="errorConH">Ingen væddemål</p>
+                    <p className="error-container-p" id="errorConP">Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.</p>
+                </div>
+            </div>
+            <button className="back-btn" onClick={() => navigate(-1)}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="match-back" viewBox="0 0 16 16">
+                    <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+                </svg>
+            </button>
+            <div className="match-info" style={{padding: "0px"}}>
+                <Link to={"/stage/league?id=" + seasonId} className="match-league">
+                    <img src={continentLink} alt="" className="match-league-i" />
+                    <p className="match-league-p"><span className="match-league-light">{continent} - </span>{league} - Runde {round_id}</p>
+                </Link>
+                <div className="match-title" style={{padding: "40px"}}>
+                    <div className="match-team-cont">
+                        <div className="favorit-container-match" onClick={() => setFavoritter(1)} onMouseOver={() => favoritHover(1)} onMouseLeave={() => favoritUnHover(1)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="favorit display" id="favorit-o" viewBox="0 0 16 16">
+                                <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="favorit" id="favorit" viewBox="0 0 16 16">
+                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                            </svg>
                         </div>
-                        <button className={kuponBtn} id="placeBetBTN" onClick={() => {
-                        var placeBetBTN = document.getElementById("placeBetBTN");
-                        placeBetBTN.innerHTML = "<div class='loader'></div>";
-                        placeBet();
-                    }}>Placér bet</button>
+                        <Link to={"/stage/team?team=" + homeTeamId}>
+                            <div className="match-team">
+                                <div className="match-title-text">
+                                    <h1 className="match-h1">{homeTeam}</h1>
+                                    <p className="match-p">{homeplace}. PLADS</p>
+                                </div>
+                                <img src={homelogo} alt="" className="match-img" />
+                            </div>
+                        </Link>
+                    </div>
+                    <div className="match-stilling">
+                        <div className={livedisplay}>LIVE</div>
+                        <div className="match-2nd-info">
+                            <div className="match-stilling-text" id="time">
+                                <p className={livestilling}>{homescore}</p>
+                                <p className="match-stilling-p">{restTime}</p>
+                                <p className={livestilling}>{visitorscore}</p>
+                            </div>
+                            <p className={live}>{time}</p>
+                        </div>
+                        <div className="match_fix"></div>
+                    </div>
+                    <div className="match-team-cont">
+                        <Link to={"/stage/team?team=" + visitorTeamId}>
+                            <div className="match-team">
+                                <div className="match-title-text">
+                                    <h1 className="match-h1">{visitorTeam}</h1>
+                                    <p className="match-p">{visitorplace}. PLADS</p>
+                                </div>
+                                <img src={visitorlogo} alt="" className="match-img" />
+                            </div>
+                        </Link>
+                        <div className="favorit-container-match" onClick={() => setFavoritter(2)} onMouseOver={() => favoritHover(2)} onMouseLeave={() => favoritUnHover(2)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="favorit display" id="favorit-o2" viewBox="0 0 16 16">
+                                <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="favorit" id="favorit2" viewBox="0 0 16 16">
+                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div className="stage-main-article-container">
-                <div className={messageType} id="errorCon">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="triangle" viewBox="0 0 16 16" id="errorIcon">
-                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                    </svg>
-                    <div className="error-text">
-                        <p className="error-container-h1" id="errorConH">Ingen væddemål</p>
-                        <p className="error-container-p" id="errorConP">Du har ikke placeret nogle væddemål. Placer ét eller flere væddemål, for at lave din kuppon.</p>
-                    </div>
-                </div>
-                <button className="back-btn" onClick={() => navigate(-1)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="match-back" viewBox="0 0 16 16">
-                        <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
-                    </svg>
-                </button>
-                <div className="match-info" style={{padding: "0px"}}>
-                    <Link to={"/stage/league?id=" + seasonId} className="match-league">
-                        <img src={continentLink} alt="" className="match-league-i" />
-                        <p className="match-league-p"><span className="match-league-light">{continent} - </span>{league} - Runde {round_id}</p>
-                    </Link>
-                    <div className="match-title" style={{padding: "40px"}}>
-                        <div className="match-team-cont">
-                            <div className="favorit-container-match" onClick={() => setFavoritter(1)} onMouseOver={() => favoritHover(1)} onMouseLeave={() => favoritUnHover(1)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="favorit display" id="favorit-o" viewBox="0 0 16 16">
-                                    <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="favorit" id="favorit" viewBox="0 0 16 16">
-                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                </svg>
-                            </div>
-                            <Link to={"/stage/team?team=" + homeTeamId}>
-                                <div className="match-team">
-                                    <div className="match-title-text">
-                                        <h1 className="match-h1">{homeTeam}</h1>
-                                        <p className="match-p">{homeplace}. PLADS</p>
-                                    </div>
-                                    <img src={homelogo} alt="" className="match-img" />
-                                </div>
-                            </Link>
-                        </div>
-                        <div className="match-stilling">
-                            <div className={livedisplay}>LIVE</div>
-                            <div className="match-2nd-info">
-                                <div className="match-stilling-text" id="time">
-                                    <p className={livestilling}>{homescore}</p>
-                                    <p className="match-stilling-p">{restTime}</p>
-                                    <p className={livestilling}>{visitorscore}</p>
-                                </div>
-                                <p className={live}>{time}</p>
-                            </div>
-                            <div className="match_fix"></div>
-                        </div>
-                        <div className="match-team-cont">
-                            <Link to={"/stage/team?team=" + visitorTeamId}>
-                                <div className="match-team">
-                                    <div className="match-title-text">
-                                        <h1 className="match-h1">{visitorTeam}</h1>
-                                        <p className="match-p">{visitorplace}. PLADS</p>
-                                    </div>
-                                    <img src={visitorlogo} alt="" className="match-img" />
-                                </div>
-                            </Link>
-                            <div className="favorit-container-match" onClick={() => setFavoritter(2)} onMouseOver={() => favoritHover(2)} onMouseLeave={() => favoritUnHover(2)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="favorit display" id="favorit-o2" viewBox="0 0 16 16">
-                                    <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="favorit" id="favorit2" viewBox="0 0 16 16">
-                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="match-info-con">
-                    <div className="match-info-half nopadding">
-                        <div className="match-odds-con">
-                            <div className="match-odds-nav">
+            <div className="match-info-con">
+                <div className="match-info-half nopadding">
+                    <div className="match-odds-con">
+                        <div className="match-odds-nav-fix">
+                            <div className="match-odds-nav" style={{paddingTop: "20px"}}>
                                 <button className="oddsspil-element-active" onClick={() => {setOddNav("popular")}} id="popularN">Populære</button>
+                                <button className="oddsspil-element" onClick={() => {setOddNav("minutter")}} id="minutterN">Halvleg</button>
                                 <button className="oddsspil-element" onClick={() => {setOddNav("kort")}} id="kortN">Kort</button>
                                 <button className="oddsspil-element" onClick={() => {setOddNav("corner")}} id="cornerN">Hjørnespark</button>
                                 <button className="oddsspil-element" onClick={() => {setOddNav("goal")}} id="goalN">Mål</button>
                                 <button className="oddsspil-element" onClick={() => {setOddNav("spillere")}} id="spillereN">Spillere</button>
                                 <button className="oddsspil-element" onClick={() => {setOddNav("specials")}} id="specialsN">Specials</button>
-                                <button className="oddsspil-element" onClick={() => {setOddNav("minutter")}} id="minutterN">Minutter</button>
-                            </div>
-                            <div className="match-odds-show">
-                            <div className="match-odds-container">
-                                <div className="match-odds-section">
-                                    <ul className="match-odds-cont display" id="popular">
-                                        {availPopular.map((item) => {
-                                            var label0 = "Label - 0";
-                                            var label1 = "Label - 1";
-                                            var label2 = "Label - 2";
-                                            var overskrift = "Overskrift";
-                                            if (item.type === "3Way Result") {
-                                                label0 = "Vinder " + homeTeam;
-                                                label1 = "Uafgjort";
-                                                label2 = "Vinder " + visitorTeam;
-                                                overskrift = "Fuldtid - Resultat";
-                                            } else if (item.type === "Double Chance") {
-                                                label0 = homeTeam + " eller uafgjort";
-                                                label1 = "Uafgjort eller " + visitorTeam;
-                                                label2 = homeTeam + " eller " + visitorTeam;
-                                                overskrift = "Dobbeltchance";
-                                            } else if (item.type === "Team To Score First") {
-                                                label0 = homeTeam;
-                                                label1 = "Ingen mål";
-                                                label2 = visitorTeam;
-                                                overskrift = "Første hold til at score";
-                                            } else if (item.type === "Highest Scoring Half") {
-                                                label0 = "1. halvleg";
-                                                label1 = "2. halvleg";
-                                                label2 = "Uafgjort";
-                                                overskrift = "Flest mål i halvleg";
-                                            } else if (item.type === "Both Teams To Score") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Begge hold scorer";
-                                            } else if (item.type === "Clean Sheet - Home") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Clean Sheet - " + homeTeam;
-                                            } else if (item.type === "Clean Sheet - Away") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Clean Sheet - " + visitorTeam;
-                                            } else if (item.type === "Corner Match Bet") {
-                                                label0 = homeTeam;
-                                                label1 = "Ingen hjørnespark";
-                                                label2 = visitorTeam;
-                                                overskrift = "Flest hjørnespark";
-                                            } else if (item.type === "Highest Scoring Half") {
-                                                label0 = "1. halvleg";
-                                                label1 = "2. halvleg";
-                                                label2 = "Ingen mål";
-                                                overskrift = "Flest mål i halvleg";
-                                            } else if (item.type === "Both Teams To Score") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Begge hold scorer";
-                                            }
-
-                                            var oddofforon0 = "match-odds-offer-element-3";
-                                            var oddofforon1 = "match-odds-offer-element-3";
-                                            var oddofforon2 = "match-odds-offer-element-3";
-
-                                            var oddofforon20 = "match-odds-offer-element-2";
-                                            var oddofforon21 = "match-odds-offer-element-2";
-
-                                            var nowDate = new Date().getTime();
-                                            var thistime = (nowDate.toString()).slice(0, -3);
-                                            if (items["time"].starting_at.timestamp < thistime) {
-                                                if (item.type_length === 3) {
-                                                    oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                    return (
-                                                        <li key={item.type + matchID}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                        <p className="match-odds-offer-h1">{label2}</p>
-                                                                        <p className="match-odds-offer-h2">{item.third}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type_length === 2) {
-                                                    oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                    oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                    return (
-                                                        <li key={item.type}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </li>
-                                                    );
-                                                }
-                                            } else {
-
-                                            if (item.type_length === 3) {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var i = 0; i < 3; i++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
-                                                        if (repliceIndex >= 0) {
-                                                            if (i === 0) {
-                                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 1) {
-                                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 2) {
-                                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return (
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                                <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                    <p className="match-odds-offer-h1">{label2}</p>
-                                                                    <p className="match-odds-offer-h2">{item.third}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            } else {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var o = 0; o < 2; o++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
-                                                        if (repliceIndex >= 0) {
-                                                            if (o === 0) {
-                                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                            } else if (o === 1) {
-                                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return(
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            }
-                                            }
-                                            }
-                                        )}
-                                    </ul>
-                                    <ul className="match-odds-cont" id="kort">
-                                        {availKort.map((item) => {
-                                            var label0 = "Label - 0";
-                                            var label1 = "Label - 1";
-                                            var label2 = "Label - 2";
-                                            var overskrift = "Overskrift";
-                                            if (item.type === "Time Of First Card") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Kort givet inden 33:00";
-                                            } else if (item.type === "First Card Received") {
-                                                label0 = homeTeam;
-                                                label1 = "Ingen kort";
-                                                label2 = visitorTeam;
-                                                overskrift = "Første kort";
-                                            } else if (item.type === "A Red Card in the Match") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Rødt kort i kampen";
-                                            } else if (item.type === "Both Teams To Receive 2+ Cards") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Begge hold modtager 2+ kort";
-                                            } else if (item.type === "Both Teams To Receive A Card") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Begge hold modtager et kort";
-                                            }
-
-                                            var oddofforon0 = "match-odds-offer-element-3";
-                                            var oddofforon1 = "match-odds-offer-element-3";
-                                            var oddofforon2 = "match-odds-offer-element-3";
-
-                                            var oddofforon20 = "match-odds-offer-element-2";
-                                            var oddofforon21 = "match-odds-offer-element-2";
-
-                                            var nowDate = new Date().getTime();
-                                            var thistime = (nowDate.toString()).slice(0, -3);
-                                            if (items["time"].starting_at.timestamp < thistime) {
-                                                if (item.type_length === 3) {
-                                                    oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                    return (
-                                                        <li key={item.type + matchID}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                        <p className="match-odds-offer-h1">{label2}</p>
-                                                                        <p className="match-odds-offer-h2">{item.third}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type_length === 2) {
-                                                    oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                    oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                    return (
-                                                        <li key={item.type}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </li>
-                                                    );
-                                                }
-                                            } else {
-
-                                            if (item.type_length === 3) {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var i = 0; i < 3; i++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
-                                                        if (repliceIndex >= 0) {
-                                                            if (i === 0) {
-                                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 1) {
-                                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 2) {
-                                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return (
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                                <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                    <p className="match-odds-offer-h1">{label2}</p>
-                                                                    <p className="match-odds-offer-h2">{item.third}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            } else {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var o = 0; o < 2; o++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
-                                                        if (repliceIndex >= 0) {
-                                                            if (o === 0) {
-                                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                            } else if (o === 1) {
-                                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return(
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            }
-                                            }
-                                            }
-                                        )}
-                                    </ul>
-                                    <ul className="match-odds-cont" id="corner">
-                                        {availCorner.map((item) => {
-                                            var label0 = "Label - 0";
-                                            var label1 = "Label - 1";
-                                            var label2 = "Label - 2";
-                                            var overskrift = "Overskrift";
-                                            if (item.type === "Time Of First Corner") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Hjørnespark inden 7:00";
-                                            } else if (item.type === "2-Way Corners") {
-                                                label0 = "Over";
-                                                label1 = "Under";
-                                                overskrift = "9.5 hjørnespark";
-                                            }else if (item.type === "First Match Corner") {
-                                                label0 = homeTeam;
-                                                label1 = visitorTeam;
-                                                overskrift = "Første hjørnespark";
-                                            } else if (item.type === "Last Match Corner") {
-                                                label0 = homeTeam;
-                                                label1 = visitorTeam;
-                                                overskrift = "Sidste hjørnespark";
-                                            }
-
-                                            var oddofforon0 = "match-odds-offer-element-3";
-                                            var oddofforon1 = "match-odds-offer-element-3";
-                                            var oddofforon2 = "match-odds-offer-element-3";
-
-                                            var oddofforon20 = "match-odds-offer-element-2";
-                                            var oddofforon21 = "match-odds-offer-element-2";
-
-                                            var nowDate = new Date().getTime();
-                                            var thistime = (nowDate.toString()).slice(0, -3);
-                                            if (items["time"].starting_at.timestamp < thistime) {
-                                                if (item.type_length === 3) {
-                                                    oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                    return (
-                                                        <li key={item.type + matchID}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                        <p className="match-odds-offer-h1">{label2}</p>
-                                                                        <p className="match-odds-offer-h2">{item.third}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type_length === 2) {
-                                                    oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                    oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                    return (
-                                                        <li key={item.type}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </li>
-                                                    );
-                                                }
-                                            } else {
-
-                                            if (item.type_length === 3) {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var i = 0; i < 3; i++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
-                                                        if (repliceIndex >= 0) {
-                                                            if (i === 0) {
-                                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 1) {
-                                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 2) {
-                                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return (
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                                <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                    <p className="match-odds-offer-h1">{label2}</p>
-                                                                    <p className="match-odds-offer-h2">{item.third}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            } else {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var o = 0; o < 2; o++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
-                                                        if (repliceIndex >= 0) {
-                                                            if (o === 0) {
-                                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                            } else if (o === 1) {
-                                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return(
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            }
-                                            }
-                                            }
-                                        )}
-                                    </ul>
-                                    <ul className="match-odds-cont" id="goal">
-                                        {availGoal.map((item) => {
-                                            var label0 = "Label - 0";
-                                            var label1 = "Label - 1";
-                                            var label2 = "Label - 2";
-                                            var overskrift = "Overskrift";
-                                            if (item.type === "Team To Score Last") {
-                                                label0 = homeTeam;
-                                                label1 = "Ingen mål";
-                                                label2 = visitorTeam;
-                                                overskrift = "Sidste målscorer";
-                                            } else if (item.type === "Odd/Even") {
-                                                label0 = "Lige";
-                                                label1 = "Ulige";
-                                                overskrift = "Lige eller ulige sum af mål";
-                                            } else if (item.type === "Own Goal") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Selvmål";
-                                            }
-
-                                            var oddofforon0 = "match-odds-offer-element-3";
-                                            var oddofforon1 = "match-odds-offer-element-3";
-                                            var oddofforon2 = "match-odds-offer-element-3";
-
-                                            var oddofforon20 = "match-odds-offer-element-2";
-                                            var oddofforon21 = "match-odds-offer-element-2";
-
-                                            var nowDate = new Date().getTime();
-                                            var thistime = (nowDate.toString()).slice(0, -3);
-                                            if (items["time"].starting_at.timestamp < thistime) {
-                                                if (item.type_length === 3) {
-                                                    oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                    return (
-                                                        <li key={item.type + matchID}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                        <p className="match-odds-offer-h1">{label2}</p>
-                                                                        <p className="match-odds-offer-h2">{item.third}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type_length === 2) {
-                                                    oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                    oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                    return (
-                                                        <li key={item.type}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </li>
-                                                    );
-                                                }
-                                            } else {
-
-                                            if (item.type_length === 3) {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var i = 0; i < 3; i++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
-                                                        if (repliceIndex >= 0) {
-                                                            if (i === 0) {
-                                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 1) {
-                                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 2) {
-                                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return (
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                                <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                    <p className="match-odds-offer-h1">{label2}</p>
-                                                                    <p className="match-odds-offer-h2">{item.third}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            } else {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var o = 0; o < 2; o++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
-                                                        if (repliceIndex >= 0) {
-                                                            if (o === 0) {
-                                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                            } else if (o === 1) {
-                                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return(
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            }
-                                            }
-                                            }
-                                        )}
-                                    </ul>
-                                    <ul className="match-odds-cont" id="spillere">
-                                        {availSpillere.map((item) => {
-                                            var label0 = "Label - 0";
-                                            var label1 = "Label - 1";
-                                            var label2 = "Label - 2";
-                                            var overskrift = "Overskrift";
-                                            if (item.type === "3Way Result") {
-                                                label0 = "Vinder " + homeTeam;
-                                                label1 = "Uafgjort";
-                                                label2 = "Vinder " + visitorTeam;
-                                                overskrift = "Fuldtid - Resultat";
-                                            } else if (item.type === "Double Chance") {
-                                                label0 = homeTeam + " eller uafgjort";
-                                                label1 = "Uafgjort eller " + visitorTeam;
-                                                label2 = homeTeam + " eller " + visitorTeam;
-                                                overskrift = "Dobbeltchance";
-                                            } else if (item.type === "Team To Score First") {
-                                                label0 = homeTeam;
-                                                label1 = "Ingen mål";
-                                                label2 = visitorTeam;
-                                                overskrift = "Første hold til at score";
-                                            } else if (item.type === "Highest Scoring Half") {
-                                                label0 = "1. halvleg";
-                                                label1 = "2. halvleg";
-                                                label2 = "Ingen mål";
-                                                overskrift = "Flest mål i halvleg";
-                                            } else if (item.type === "Both Teams To Score") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Begge hold scorer";
-                                            } else if (item.type === "Time Of First Corner") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Hjørnespark inden 7:00";
-                                            } else if (item.type === "Clean Sheet - Home") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Clean Sheet - " + homeTeam;
-                                            } else if (item.type === "Clean Sheet - Away") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Clean Sheet - " + visitorTeam;
-                                            } else if (item.type === "2-Way Corners") {
-                                                label0 = "Over";
-                                                label1 = "Under";
-                                                overskrift = "9.5 hjørnespark";
-                                            }
-
-                                            var oddofforon0 = "match-odds-offer-element-3";
-                                            var oddofforon1 = "match-odds-offer-element-3";
-                                            var oddofforon2 = "match-odds-offer-element-3";
-
-                                            var oddofforon20 = "match-odds-offer-element-2";
-                                            var oddofforon21 = "match-odds-offer-element-2";
-
-                                            var nowDate = new Date().getTime();
-                                            var thistime = (nowDate.toString()).slice(0, -3);
-                                            if (items["time"].starting_at.timestamp < thistime) {
-                                                if (item.type_length === 3) {
-                                                    oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                    return (
-                                                        <li key={item.type + matchID}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                        <p className="match-odds-offer-h1">{label2}</p>
-                                                                        <p className="match-odds-offer-h2">{item.third}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type_length === 2) {
-                                                    oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                    oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                    return (
-                                                        <li key={item.type}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </li>
-                                                    );
-                                                }
-                                            } else {
-
-                                            if (item.type_length === 3) {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var i = 0; i < 3; i++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
-                                                        if (repliceIndex >= 0) {
-                                                            if (i === 0) {
-                                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 1) {
-                                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 2) {
-                                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return (
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                                <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                    <p className="match-odds-offer-h1">{label2}</p>
-                                                                    <p className="match-odds-offer-h2">{item.third}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            } else {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var o = 0; o < 2; o++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
-                                                        if (repliceIndex >= 0) {
-                                                            if (o === 0) {
-                                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                            } else if (o === 1) {
-                                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return(
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            }
-                                            }
-                                            }
-                                        )}
-                                    </ul>
-                                    <ul className="match-odds-cont" id="specials">
-                                        {availSpecials.map((item) => {
-                                            var label0 = "Label - 0";
-                                            var label1 = "Label - 1";
-                                            var label2 = "Label - 2";
-                                            var overskrift = "Overskrift";
-                                            if (item.type === "Clean Sheet - Home") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Clean Sheet - " + homeTeam;
-                                            } else if (item.type === "Clean Sheet - Away") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Clean Sheet - " + visitorTeam;
-                                            } else if (item.type === "3Way Result 2nd Half") {
-                                                label0 = homeTeam;
-                                                label1 = "Uafgjort";
-                                                label2 = visitorTeam;
-                                                overskrift = "Kampresultat - 2. Halvleg";
-                                            } else if (item.type === "3Way Result 1st Half") {
-                                                label0 = homeTeam;
-                                                label1 = "Uafgjort";
-                                                label2 = visitorTeam;
-                                                overskrift = "Kampresultat - 1. Halvleg";
-                                            } else if (item.type === "Double Chance - 1st Half") {
-                                                label0 = homeTeam + " eller uafgjort";
-                                                label1 = "Uafgjort eller " + visitorTeam;
-                                                label2 = homeTeam + " eller " + visitorTeam;
-                                                overskrift = "Dobbeltchance - 1. Halvleg";
-                                            } else if (item.type === "Double Chance - 2nd Half") {
-                                                label0 = homeTeam + " eller uafgjort";
-                                                label1 = "Uafgjort eller " + visitorTeam;
-                                                label2 = homeTeam + " eller " + visitorTeam;
-                                                overskrift = "Dobbeltchance - 2. Halvleg";
-                                            }
-
-                                            var oddofforon0 = "match-odds-offer-element-3";
-                                            var oddofforon1 = "match-odds-offer-element-3";
-                                            var oddofforon2 = "match-odds-offer-element-3";
-
-                                            var oddofforon20 = "match-odds-offer-element-2";
-                                            var oddofforon21 = "match-odds-offer-element-2";
-
-                                            var nowDate = new Date().getTime();
-                                            var thistime = (nowDate.toString()).slice(0, -3);
-                                            if (items["time"].starting_at.timestamp < thistime) {
-                                                if (item.type_length === 3) {
-                                                    oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                    return (
-                                                        <li key={item.type + matchID}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                        <p className="match-odds-offer-h1">{label2}</p>
-                                                                        <p className="match-odds-offer-h2">{item.third}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type_length === 2) {
-                                                    oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                    oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                    return (
-                                                        <li key={item.type}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </li>
-                                                    );
-                                                }
-                                            } else {
-
-                                            if (item.type_length === 3) {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var i = 0; i < 3; i++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
-                                                        if (repliceIndex >= 0) {
-                                                            if (i === 0) {
-                                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 1) {
-                                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 2) {
-                                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return (
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                                <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                    <p className="match-odds-offer-h1">{label2}</p>
-                                                                    <p className="match-odds-offer-h2">{item.third}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            } else {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var o = 0; o < 2; o++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
-                                                        if (repliceIndex >= 0) {
-                                                            if (o === 0) {
-                                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                            } else if (o === 1) {
-                                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return(
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            }
-                                            }
-                                            }
-                                        )}
-                                    </ul>
-                                    <ul className="match-odds-cont" id="minutter">
-                                        {availMinutter.map((item) => {
-                                            var label0 = "Label - 0";
-                                            var label1 = "Label - 1";
-                                            var label2 = "Label - 2";
-                                            var overskrift = "Overskrift";
-                                            if (item.type === "3Way Result") {
-                                                label0 = "Vinder " + homeTeam;
-                                                label1 = "Uafgjort";
-                                                label2 = "Vinder " + visitorTeam;
-                                                overskrift = "Fuldtid - Resultat";
-                                            } else if (item.type === "Double Chance") {
-                                                label0 = homeTeam + " eller uafgjort";
-                                                label1 = "Uafgjort eller " + visitorTeam;
-                                                label2 = homeTeam + " eller " + visitorTeam;
-                                                overskrift = "Dobbeltchance";
-                                            } else if (item.type === "Team To Score First") {
-                                                label0 = homeTeam;
-                                                label1 = "Ingen mål";
-                                                label2 = visitorTeam;
-                                                overskrift = "Første hold til at score";
-                                            } else if (item.type === "Highest Scoring Half") {
-                                                label0 = "1. halvleg";
-                                                label1 = "2. halvleg";
-                                                label2 = "Ingen mål";
-                                                overskrift = "Flest mål i halvleg";
-                                            } else if (item.type === "Both Teams To Score") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Begge hold scorer";
-                                            } else if (item.type === "Time Of First Corner") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Hjørnespark inden 7:00";
-                                            } else if (item.type === "Clean Sheet - Home") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Clean Sheet - " + homeTeam;
-                                            } else if (item.type === "Clean Sheet - Away") {
-                                                label0 = "Ja";
-                                                label1 = "Nej";
-                                                overskrift = "Clean Sheet - " + visitorTeam;
-                                            } else if (item.type === "2-Way Corners") {
-                                                label0 = "Over";
-                                                label1 = "Under";
-                                                overskrift = "9.5 hjørnespark";
-                                            }
-
-                                            var oddofforon0 = "match-odds-offer-element-3";
-                                            var oddofforon1 = "match-odds-offer-element-3";
-                                            var oddofforon2 = "match-odds-offer-element-3";
-
-                                            var oddofforon20 = "match-odds-offer-element-2";
-                                            var oddofforon21 = "match-odds-offer-element-2";
-
-                                            var nowDate = new Date().getTime();
-                                            var thistime = (nowDate.toString()).slice(0, -3);
-                                            if (items["time"].starting_at.timestamp < thistime) {
-                                                if (item.type_length === 3) {
-                                                    oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                    oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                    return (
-                                                        <li key={item.type + matchID}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                        <p className="match-odds-offer-h1">{label2}</p>
-                                                                        <p className="match-odds-offer-h2">{item.third}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type_length === 2) {
-                                                    oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                    oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                    return (
-                                                        <li key={item.type}>
-                                                            <div className="match-bet">
-                                                                <div className="match-bet-top">
-                                                                    <p className="match-odds-h1">{overskrift}</p>
-                                                                </div>
-                                                                <div className="match-odds-offer">
-                                                                    <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                        <p className="match-odds-offer-h1">{label0}</p>
-                                                                        <p className="match-odds-offer-h2">{item.first}</p>
-                                                                    </div>
-                                                                    <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                        <p className="match-odds-offer-h1">{label1}</p>
-                                                                        <p className="match-odds-offer-h2">{item.second}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </li>
-                                                    );
-                                                }
-                                            } else {
-
-                                            if (item.type_length === 3) {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var i = 0; i < 3; i++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
-                                                        if (repliceIndex >= 0) {
-                                                            if (i === 0) {
-                                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 1) {
-                                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
-                                                            } else if (i === 2) {
-                                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return (
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon0} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon1} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                                <div className={oddofforon2} id={item.type + matchID + "-" + "2"} onClick={() => chooseOdd(item.type + matchID + "-" + "2", item.type, "2", item.third)}>
-                                                                    <p className="match-odds-offer-h1">{label2}</p>
-                                                                    <p className="match-odds-offer-h2">{item.third}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            } else {
-                                                if (sessionStorage.getItem("notUsableBtn")) {
-                                                    const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
-                                                    for (var o = 0; o < 2; o++) {
-                                                        const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
-                                                        if (repliceIndex >= 0) {
-                                                            if (o === 0) {
-                                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
-                                                            } else if (o === 1) {
-                                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                return(
-                                                    <li key={item.type}>
-                                                        <div className="match-bet">
-                                                            <div className="match-bet-top">
-                                                                <p className="match-odds-h1">{overskrift}</p>
-                                                            </div>
-                                                            <div className="match-odds-offer">
-                                                                <div className={oddofforon20} id={item.type + matchID + "-" + "0"} onClick={() => chooseOdd(item.type + matchID + "-" + "0", item.type, "0", item.first)}>
-                                                                    <p className="match-odds-offer-h1">{label0}</p>
-                                                                    <p className="match-odds-offer-h2">{item.first}</p>
-                                                                </div>
-                                                                <div className={oddofforon21} id={item.type + matchID + "-" + "1"} onClick={() => chooseOdd(item.type + matchID + "-" + "1", item.type, "1", item.second)}>
-                                                                    <p className="match-odds-offer-h1">{label1}</p>
-                                                                    <p className="match-odds-offer-h2">{item.second}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                );
-                                            }
-                                            }
-                                            }
-                                        )}
-                                    </ul>
-                                </div>
-                            </div>
                             </div>
                         </div>
+                        <div className="match-odds-show">
+                        <div className="match-odds-container">
+                            <div className="match-odds-section">
+                                <ul className="match-odds-cont display" id="popular">
+                                    {availPopular.map((item) => {
+                                        var label0 = getLabel(item, 0);
+                                        var label1 = getLabel(item, 1);
+                                        var label2 = getLabel(item, 2);
+                                        var overskrift = getLabel(item, 3);
+
+                                        var oddofforon0 = "match-odds-offer-element-3";
+                                        var oddofforon1 = "match-odds-offer-element-3";
+                                        var oddofforon2 = "match-odds-offer-element-3";
+
+                                        var oddofforon20 = "match-odds-offer-element-2";
+                                        var oddofforon21 = "match-odds-offer-element-2";
+
+                                        var oddofforon10 = "match-odds-offer-element-1";
+
+                                        var nowDate = new Date().getTime();
+                                        var thistime = (nowDate.toString()).slice(0, -3);
+                                        if (items["time"].starting_at.timestamp < thistime) {
+                                            if (item.type_length === 3) {
+                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                return (
+                                                    <li key={item.type + matchID}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                                <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                    <p className="match-odds-offer-h1">{label2}</p>
+                                                                    <p className="match-odds-offer-h2">{item.third}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type_length === 2) {
+                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                return (
+                                                    <li key={item.type}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </li>
+                                                );
+                                            }
+                                        } else {
+
+                                        if (item.type_length === 3) {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var i = 0; i < 3; i++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
+                                                    if (repliceIndex >= 0) {
+                                                        if (i === 0) {
+                                                            oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 1) {
+                                                            oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 2) {
+                                                            oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return (
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                            <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                <p className="match-odds-offer-h1">{label2}</p>
+                                                                <p className="match-odds-offer-h2">{item.third}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        } else if (item.type_length === 2) {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var o = 0; o < 2; o++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
+                                                    if (repliceIndex >= 0) {
+                                                        if (o === 0) {
+                                                            oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                        } else if (o === 1) {
+                                                            oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return(
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        } else if (item.type_length === 7) {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + goals);
+                                                if (repliceIndex >= 0) {
+                                                    oddofforon10 = "match-odds-offer-element-1 odd-off";
+                                                }
+                                            }
+                                            return(
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}: {goals}</p>
+                                                        </div>
+                                                        <input type="range" className="match-odds-slider" min="0" max="7" defaultValue={goals} onChange={event => setGoals(event.target.value)}  step="1"/>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon10} id={item.type + matchID + "-" + goals} onClick={() => chooseOdd(item.type + matchID + "-" + goals, item.type, goals, goalsOdds)}>
+                                                                <p className="match-odds-offer-h1">Tilføj til væddemål</p>
+                                                                <p className="match-odds-offer-h2">{goalsOdds}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        }
+                                        }
+                                        }
+                                    )}
+                                </ul>
+                                <ul className="match-odds-cont" id="kort">
+                                    {availKort.map((item) => {
+                                        var label0 = getLabel(item, 0);
+                                        var label1 = getLabel(item, 1);
+                                        var label2 = getLabel(item, 2);
+                                        var overskrift = getLabel(item, 3);
+
+                                        var oddofforon0 = "match-odds-offer-element-3";
+                                        var oddofforon1 = "match-odds-offer-element-3";
+                                        var oddofforon2 = "match-odds-offer-element-3";
+
+                                        var oddofforon20 = "match-odds-offer-element-2";
+                                        var oddofforon21 = "match-odds-offer-element-2";
+
+                                        var nowDate = new Date().getTime();
+                                        var thistime = (nowDate.toString()).slice(0, -3);
+                                        if (items["time"].starting_at.timestamp < thistime) {
+                                            if (item.type_length === 3) {
+                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                return (
+                                                    <li key={item.type + matchID}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                                <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                    <p className="match-odds-offer-h1">{label2}</p>
+                                                                    <p className="match-odds-offer-h2">{item.third}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type_length === 2) {
+                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                return (
+                                                    <li key={item.type}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </li>
+                                                );
+                                            }
+                                        } else {
+
+                                        if (item.type_length === 3) {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var i = 0; i < 3; i++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
+                                                    if (repliceIndex >= 0) {
+                                                        if (i === 0) {
+                                                            oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 1) {
+                                                            oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 2) {
+                                                            oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return (
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                            <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                <p className="match-odds-offer-h1">{label2}</p>
+                                                                <p className="match-odds-offer-h2">{item.third}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        } else {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var o in btnReplica) {
+                                                    if (btnReplica[o] === item.type + matchID + "-" + item.result0) {
+                                                        oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                    } else if (btnReplica[o] === item.type + matchID + "-" + item.result1) {
+                                                        oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                    }
+                                                }
+                                            }
+                                            return(
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        }
+                                        }
+                                        }
+                                    )}
+                                </ul>
+                                <ul className="match-odds-cont" id="corner">
+                                    {availCorner.map((item) => {
+                                        var label0 = getLabel(item, 0);
+                                        var label1 = getLabel(item, 1);
+                                        var label2 = getLabel(item, 2);
+                                        var overskrift = getLabel(item, 3);
+
+                                        var oddofforon0 = "match-odds-offer-element-3";
+                                        var oddofforon1 = "match-odds-offer-element-3";
+                                        var oddofforon2 = "match-odds-offer-element-3";
+
+                                        var oddofforon20 = "match-odds-offer-element-2";
+                                        var oddofforon21 = "match-odds-offer-element-2";
+
+                                        var nowDate = new Date().getTime();
+                                        var thistime = (nowDate.toString()).slice(0, -3);
+                                        if (items["time"].starting_at.timestamp < thistime) {
+                                            if (item.type_length === 3) {
+                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                return (
+                                                    <li key={item.type + matchID}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                                <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                    <p className="match-odds-offer-h1">{label2}</p>
+                                                                    <p className="match-odds-offer-h2">{item.third}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type_length === 2) {
+                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                return (
+                                                    <li key={item.type}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </li>
+                                                );
+                                            }
+                                        } else {
+
+                                        if (item.type_length === 3) {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var i = 0; i < 3; i++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
+                                                    if (repliceIndex >= 0) {
+                                                        if (i === 0) {
+                                                            oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 1) {
+                                                            oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 2) {
+                                                            oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return (
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                            <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                <p className="match-odds-offer-h1">{label2}</p>
+                                                                <p className="match-odds-offer-h2">{item.third}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        } else {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var o = 0; o < 2; o++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
+                                                    if (repliceIndex >= 0) {
+                                                        if (o === 0) {
+                                                            oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                        } else if (o === 1) {
+                                                            oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return(
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        }
+                                        }
+                                        }
+                                    )}
+                                </ul>
+                                <ul className="match-odds-cont" id="goal">
+                                    {availGoal.map((item) => {
+                                        var label0 = getLabel(item, 0);
+                                        var label1 = getLabel(item, 1);
+                                        var label2 = getLabel(item, 2);
+                                        var overskrift = getLabel(item, 3);
+
+                                        var oddofforon0 = "match-odds-offer-element-3";
+                                        var oddofforon1 = "match-odds-offer-element-3";
+                                        var oddofforon2 = "match-odds-offer-element-3";
+
+                                        var oddofforon20 = "match-odds-offer-element-2";
+                                        var oddofforon21 = "match-odds-offer-element-2";
+
+                                        var nowDate = new Date().getTime();
+                                        var thistime = (nowDate.toString()).slice(0, -3);
+                                        if (items["time"].starting_at.timestamp < thistime) {
+                                            if (item.type_length === 3) {
+                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                return (
+                                                    <li key={item.type + matchID}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                                <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                    <p className="match-odds-offer-h1">{label2}</p>
+                                                                    <p className="match-odds-offer-h2">{item.third}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type_length === 2) {
+                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                return (
+                                                    <li key={item.type}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </li>
+                                                );
+                                            }
+                                        } else {
+
+                                        if (item.type_length === 3) {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var i = 0; i < 3; i++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
+                                                    if (repliceIndex >= 0) {
+                                                        if (i === 0) {
+                                                            oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 1) {
+                                                            oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 2) {
+                                                            oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return (
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                            <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                <p className="match-odds-offer-h1">{label2}</p>
+                                                                <p className="match-odds-offer-h2">{item.third}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        } else {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var o = 0; o < 2; o++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
+                                                    if (repliceIndex >= 0) {
+                                                        if (o === 0) {
+                                                            oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                        } else if (o === 1) {
+                                                            oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return(
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        }
+                                        }
+                                        }
+                                    )}
+                                </ul>
+                                <ul className="match-odds-cont" id="spillere">
+                                    {availSpillere.map((item) => {
+                                        var label0 = getLabel(item, 0);
+                                        var label1 = getLabel(item, 1);
+                                        var label2 = getLabel(item, 2);
+                                        var overskrift = getLabel(item, 3);
+
+                                        var oddofforon0 = "match-odds-offer-element-3";
+                                        var oddofforon1 = "match-odds-offer-element-3";
+                                        var oddofforon2 = "match-odds-offer-element-3";
+
+                                        var oddofforon20 = "match-odds-offer-element-2";
+                                        var oddofforon21 = "match-odds-offer-element-2";
+
+                                        var nowDate = new Date().getTime();
+                                        var thistime = (nowDate.toString()).slice(0, -3);
+                                        if (items["time"].starting_at.timestamp < thistime) {
+                                            if (item.type_length === 3) {
+                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                return (
+                                                    <li key={item.type + matchID}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                                <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                    <p className="match-odds-offer-h1">{label2}</p>
+                                                                    <p className="match-odds-offer-h2">{item.third}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type_length === 2) {
+                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                return (
+                                                    <li key={item.type}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </li>
+                                                );
+                                            }
+                                        } else {
+
+                                        if (item.type_length === 3) {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var i = 0; i < 3; i++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
+                                                    if (repliceIndex >= 0) {
+                                                        if (i === 0) {
+                                                            oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 1) {
+                                                            oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 2) {
+                                                            oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return (
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                            <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                <p className="match-odds-offer-h1">{label2}</p>
+                                                                <p className="match-odds-offer-h2">{item.third}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        } else {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var o = 0; o < 2; o++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
+                                                    if (repliceIndex >= 0) {
+                                                        if (o === 0) {
+                                                            oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                        } else if (o === 1) {
+                                                            oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return(
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        }
+                                        }
+                                        }
+                                    )}
+                                </ul>
+                                <ul className="match-odds-cont" id="specials">
+                                    {availSpecials.map((item) => {
+                                        var label0 = getLabel(item, 0);
+                                        var label1 = getLabel(item, 1);
+                                        var label2 = getLabel(item, 2);
+                                        var overskrift = getLabel(item, 3);
+
+                                        var oddofforon0 = "match-odds-offer-element-3";
+                                        var oddofforon1 = "match-odds-offer-element-3";
+                                        var oddofforon2 = "match-odds-offer-element-3";
+
+                                        var oddofforon20 = "match-odds-offer-element-2";
+                                        var oddofforon21 = "match-odds-offer-element-2";
+
+                                        var nowDate = new Date().getTime();
+                                        var thistime = (nowDate.toString()).slice(0, -3);
+                                        if (items["time"].starting_at.timestamp < thistime) {
+                                            if (item.type_length === 3) {
+                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                return (
+                                                    <li key={item.type + matchID}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                                <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                    <p className="match-odds-offer-h1">{label2}</p>
+                                                                    <p className="match-odds-offer-h2">{item.third}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type_length === 2) {
+                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                return (
+                                                    <li key={item.type}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </li>
+                                                );
+                                            }
+                                        } else {
+
+                                        if (item.type_length === 3) {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var i = 0; i < 3; i++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
+                                                    if (repliceIndex >= 0) {
+                                                        if (i === 0) {
+                                                            oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 1) {
+                                                            oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 2) {
+                                                            oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return (
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                            <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                <p className="match-odds-offer-h1">{label2}</p>
+                                                                <p className="match-odds-offer-h2">{item.third}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        } else {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var o = 0; o < 2; o++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
+                                                    if (repliceIndex >= 0) {
+                                                        if (o === 0) {
+                                                            oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                        } else if (o === 1) {
+                                                            oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return(
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        }
+                                        }
+                                        }
+                                    )}
+                                </ul>
+                                <ul className="match-odds-cont" id="minutter">
+                                    {availMinutter.map((item) => {
+                                        var label0 = getLabel(item, 0);
+                                        var label1 = getLabel(item, 1);
+                                        var label2 = getLabel(item, 2);
+                                        var overskrift = getLabel(item, 3);
+
+                                        var oddofforon0 = "match-odds-offer-element-3";
+                                        var oddofforon1 = "match-odds-offer-element-3";
+                                        var oddofforon2 = "match-odds-offer-element-3";
+
+                                        var oddofforon20 = "match-odds-offer-element-2";
+                                        var oddofforon21 = "match-odds-offer-element-2";
+
+                                        var nowDate = new Date().getTime();
+                                        var thistime = (nowDate.toString()).slice(0, -3);
+                                        if (items["time"].starting_at.timestamp < thistime) {
+                                            if (item.type_length === 3) {
+                                                oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                return (
+                                                    <li key={item.type + matchID}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                                <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                    <p className="match-odds-offer-h1">{label2}</p>
+                                                                    <p className="match-odds-offer-h2">{item.third}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type_length === 2) {
+                                                oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                return (
+                                                    <li key={item.type}>
+                                                        <div className="match-bet">
+                                                            <div className="match-bet-top">
+                                                                <p className="match-odds-h1">{overskrift}</p>
+                                                            </div>
+                                                            <div className="match-odds-offer">
+                                                                <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                    <p className="match-odds-offer-h1">{label0}</p>
+                                                                    <p className="match-odds-offer-h2">{item.first}</p>
+                                                                </div>
+                                                                <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                    <p className="match-odds-offer-h1">{label1}</p>
+                                                                    <p className="match-odds-offer-h2">{item.second}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </li>
+                                                );
+                                            }
+                                        } else {
+
+                                        if (item.type_length === 3) {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var i = 0; i < 3; i++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + i);
+                                                    if (repliceIndex >= 0) {
+                                                        if (i === 0) {
+                                                            oddofforon0 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 1) {
+                                                            oddofforon1 = "match-odds-offer-element-3 odd-off";
+                                                        } else if (i === 2) {
+                                                            oddofforon2 = "match-odds-offer-element-3 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return (
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon0} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon1} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                            <div className={oddofforon2} id={item.type + matchID + "-" + item.result2} onClick={() => chooseOdd(item.type + matchID + "-" + item.result2, item.type, item.result2, item.third)}>
+                                                                <p className="match-odds-offer-h1">{label2}</p>
+                                                                <p className="match-odds-offer-h2">{item.third}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        } else {
+                                            if (sessionStorage.getItem("notUsableBtn")) {
+                                                const btnReplica = JSON.parse(sessionStorage.getItem("notUsableBtn"));
+                                                for (var o = 0; o < 2; o++) {
+                                                    const repliceIndex = btnReplica.indexOf(item.type + matchID + "-" + o);
+                                                    if (repliceIndex >= 0) {
+                                                        if (o === 0) {
+                                                            oddofforon20 = "match-odds-offer-element-2 odd-off";
+                                                        } else if (o === 1) {
+                                                            oddofforon21 = "match-odds-offer-element-2 odd-off";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            return(
+                                                <li key={item.type}>
+                                                    <div className="match-bet">
+                                                        <div className="match-bet-top">
+                                                            <p className="match-odds-h1">{overskrift}</p>
+                                                        </div>
+                                                        <div className="match-odds-offer">
+                                                            <div className={oddofforon20} id={item.type + matchID + "-" + item.result0} onClick={() => chooseOdd(item.type + matchID + "-" + item.result0, item.type, item.result0, item.first)}>
+                                                                <p className="match-odds-offer-h1">{label0}</p>
+                                                                <p className="match-odds-offer-h2">{item.first}</p>
+                                                            </div>
+                                                            <div className={oddofforon21} id={item.type + matchID + "-" + item.result1} onClick={() => chooseOdd(item.type + matchID + "-" + item.result1, item.type, item.result1, item.second)}>
+                                                                <p className="match-odds-offer-h1">{label1}</p>
+                                                                <p className="match-odds-offer-h2">{item.second}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            );
+                                        }
+                                        }
+                                        }
+                                    )}
+                                </ul>
+                            </div>
+                        </div>
+                        </div>
                     </div>
-                    <div className="match-info-half-2">
-                    <div className="match-odds-nav" style={{marginBottom: "15px", padding: "0px", paddingBottom: "15px", overflowX: "scroll"}}>
+                </div>
+                <div className="match-info-half-2">
+                    <div className="match-odds-nav-fix">
+                        <div className="match-odds-nav" style={{marginBottom: "15px", padding: "0px", paddingBottom: "20px", marginTop: "-15px"}}>
                             <button className="match-odds-nav-element-active" id="navOversigt" onClick={() => {setNav("oversigt")}}>Oversigt</button>
                             <button className="match-odds-nav-element" id="navKampinfo" onClick={() => {setNav("kampinfo")}}>Kampinfo</button>
                             <button className="match-odds-nav-element" id="navStartopstilling" onClick={() => {setNav("startopstilling")}}>Startopstilling</button>
@@ -3024,847 +3449,848 @@ function StageMatcharticle () {
                             <button className="match-odds-nav-element" id="navStatistikker" onClick={() => {setNav("statistikker")}}>Statistikker</button>
                             <button className="match-odds-nav-element" id="navTabel" onClick={() => {setNav("tabel")}}>Tabeloversigt</button>
                         </div>
-                        <div className="match-indhold" id="oversigt">
-                            <div className="oversigt-section">
-                                <div className="oversigt-top">
-                                    <p className="oversigt-h1">1. HALVEG</p>
-                                    <p className="oversigt-p">{hg1}-{ag1}</p>
-                                </div>
-                                <ul>
-                                {events.map(item => {
-                                    var mstime = new Date().getTime();
-                                    var randomNumber = Math.floor(Math.random() * 512);
-                                    var randomId = mstime+"-"+randomNumber;
-                                        if (item.minute <= 45) {
-                                            if (parseInt(item.team_id) === homeTeamId) {
-                                                if (item.type === "goal") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h3">{item.related_player_name}</Link>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <img src={goal} alt="" className="oversigt-img" />
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
+                    </div>
+                    <div className="match-indhold" id="oversigt">
+                        <div className="oversigt-section">
+                            <div className="oversigt-top">
+                                <p className="oversigt-h1">1. HALVLEG</p>
+                                <p className="oversigt-p">{hg1}-{ag1}</p>
+                            </div>
+                            <ul>
+                            {events.map(item => {
+                                var mstime = new Date().getTime();
+                                var randomNumber = Math.floor(Math.random() * 512);
+                                var randomId = mstime+"-"+randomNumber;
+                                    if (item.minute <= 45) {
+                                        if (parseInt(item.team_id) === homeTeamId) {
+                                            if (item.type === "goal") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h3">{item.related_player_name}</Link>
                                                             </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "yellowcard") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{homeTeam}</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-gul1"></div>
-                                                                        <div className="oversigt-gul2"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <img src={goal} alt="" className="oversigt-img" />
                                                             </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "redcard") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{homeTeam}</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-rod1"></div>
-                                                                        <div className="oversigt-rod2"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "yellowred") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{homeTeam}</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-gul1"></div>
-                                                                        <div className="oversigt-rod1"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "substitution") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2-ind">{item.player_name}</Link>
-                                                                    <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h2-ud">{item.related_player_name}</Link>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="sub">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="sub1" viewBox="0 0 16 16">
-                                                                            <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                                                                        </svg>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="sub2" viewBox="0 0 16 16">
-                                                                            <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                                                                        </svg>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else {
-                                                    return;
-                                                }
-                                            } else {
-                                                if (item.type === "goal") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <img src={goal} alt="" className="oversigt-img" />
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h3">{item.related_player_name}</Link>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "yellowcard") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-gul1"></div>
-                                                                        <div className="oversigt-gul2"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{visitorTeam}</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "redcard") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-rod1"></div>
-                                                                        <div className="oversigt-rod2"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{visitorTeam}</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "yellowred") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{homeTeam}</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-gul1"></div>
-                                                                        <div className="oversigt-rod1"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "substitution") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
+                                                            <div className="oversigt-el-box-r">
                                                                 <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="sub">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="sub1" viewBox="0 0 16 16">
-                                                                            <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                                                                        </svg>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="sub2" viewBox="0 0 16 16">
-                                                                            <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                                                                        </svg>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2-ind">{item.player_name}</Link>
-                                                                    <p className="oversigt-h2-ud">{item.related_player_name}</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "yellowcard") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{homeTeam}</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-gul1"></div>
+                                                                    <div className="oversigt-gul2"></div>
                                                                 </div>
                                                             </div>
-                                                        </li>
-                                                    );
-                                                } else {
-                                                    return;
-                                                }
+                                                            <div className="oversigt-el-box-r">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "redcard") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{homeTeam}</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-rod1"></div>
+                                                                    <div className="oversigt-rod2"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "yellowred") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{homeTeam}</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-gul1"></div>
+                                                                    <div className="oversigt-rod1"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "substitution") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2-ind">{item.player_name}</Link>
+                                                                <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h2-ud">{item.related_player_name}</Link>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="sub">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="sub1" viewBox="0 0 16 16">
+                                                                        <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                                                    </svg>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="sub2" viewBox="0 0 16 16">
+                                                                        <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                                                    </svg>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else {
+                                                return;
+                                            }
+                                        } else {
+                                            if (item.type === "goal") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <img src={goal} alt="" className="oversigt-img" />
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h3">{item.related_player_name}</Link>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "yellowcard") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-gul1"></div>
+                                                                    <div className="oversigt-gul2"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{visitorTeam}</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "redcard") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-rod1"></div>
+                                                                    <div className="oversigt-rod2"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{visitorTeam}</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "yellowred") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{homeTeam}</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-gul1"></div>
+                                                                    <div className="oversigt-rod1"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "substitution") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                            <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="sub">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="sub1" viewBox="0 0 16 16">
+                                                                        <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                                                    </svg>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="sub2" viewBox="0 0 16 16">
+                                                                        <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                                                    </svg>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2-ind">{item.player_name}</Link>
+                                                                <p className="oversigt-h2-ud">{item.related_player_name}</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else {
+                                                return;
                                             }
                                         }
-                                    })}
-                                </ul>
+                                    }
+                                })}
+                            </ul>
+                        </div>
+                        <div className="oversigt-section">
+                            <div className="oversigt-top">
+                                <p className="oversigt-h1">2. HALVLEG</p>
+                                <p className="oversigt-p">{hg2}-{ag2}</p>
                             </div>
-                            <div className="oversigt-section">
-                                <div className="oversigt-top">
-                                    <p className="oversigt-h1">2. HALVEG</p>
-                                    <p className="oversigt-p">{hg2}-{ag2}</p>
-                                </div>
-                                <ul>
-                                {events.map(item => {
-                                    var mstime = new Date().getTime();
-                                    var randomNumber = Math.floor(Math.random() * 512);
-                                    var randomId = mstime+"-"+randomNumber;
-                                        if (item.minute > 45) {
-                                            if (parseInt(item.team_id) === homeTeamId) {
-                                                if (item.type === "goal") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h3">{item.related_player_name}</Link>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <img src={goal} alt="" className="oversigt-img" />
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
+                            <ul>
+                            {events.map(item => {
+                                var mstime = new Date().getTime();
+                                var randomNumber = Math.floor(Math.random() * 512);
+                                var randomId = mstime+"-"+randomNumber;
+                                    if (item.minute > 45) {
+                                        if (parseInt(item.team_id) === homeTeamId) {
+                                            if (item.type === "goal") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h3">{item.related_player_name}</Link>
                                                             </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "yellowcard") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{homeTeam}</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-gul1"></div>
-                                                                        <div className="oversigt-gul2"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <img src={goal} alt="" className="oversigt-img" />
                                                             </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "redcard") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{homeTeam}</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-rod1"></div>
-                                                                        <div className="oversigt-rod2"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "yellowred") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{homeTeam}</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-gul1"></div>
-                                                                        <div className="oversigt-rod1"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "substitution") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2-ind">{item.player_name}</Link>
-                                                                    <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h2-ud">{item.related_player_name}</Link>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="sub">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="sub1" viewBox="0 0 16 16">
-                                                                            <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                                                                        </svg>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="sub2" viewBox="0 0 16 16">
-                                                                            <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                                                                        </svg>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else {
-                                                    return;
-                                                }
-                                            } else {
-                                                if (item.type === "goal") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <img src={goal} alt="" className="oversigt-img" />
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h3">{item.related_player_name}</Link>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "yellowcard") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-gul1"></div>
-                                                                        <div className="oversigt-gul2"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{visitorTeam}</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "redcard") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-rod1"></div>
-                                                                        <div className="oversigt-rod2"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{visitorTeam}</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "yellowred") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
-                                                                    <p className="oversigt-h3">{homeTeam}</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="oversigt-card">
-                                                                        <div className="oversigt-gul1"></div>
-                                                                        <div className="oversigt-rod1"></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    );
-                                                } else if (item.type === "substitution") {
-                                                    return (
-                                                        <li key={randomId + item.team_id + item.player_name + item.minute}>
-                                                            <div className="oversigt-element">
-                                                                <div className="oversigt-el-box-l">
+                                                            <div className="oversigt-el-box-r">
                                                                 <p className="oversigt-h4">{item.minute}'</p>
-                                                                </div>
-                                                                <div className="oversigt-el-icon">
-                                                                    <div className="sub">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="sub1" viewBox="0 0 16 16">
-                                                                            <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                                                                        </svg>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="sub2" viewBox="0 0 16 16">
-                                                                            <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                                                                        </svg>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="oversigt-el-box-r">
-                                                                    <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2-ind">{item.player_name}</Link>
-                                                                    <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h2-ud">{item.related_player_name}</Link>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "yellowcard") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{homeTeam}</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-gul1"></div>
+                                                                    <div className="oversigt-gul2"></div>
                                                                 </div>
                                                             </div>
-                                                        </li>
-                                                    );
-                                                } else {
-                                                    return;
-                                                }
+                                                            <div className="oversigt-el-box-r">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "redcard") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{homeTeam}</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-rod1"></div>
+                                                                    <div className="oversigt-rod2"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "yellowred") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{homeTeam}</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-gul1"></div>
+                                                                    <div className="oversigt-rod1"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "substitution") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2-ind">{item.player_name}</Link>
+                                                                <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h2-ud">{item.related_player_name}</Link>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="sub">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="sub1" viewBox="0 0 16 16">
+                                                                        <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                                                    </svg>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="sub2" viewBox="0 0 16 16">
+                                                                        <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                                                    </svg>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else {
+                                                return;
+                                            }
+                                        } else {
+                                            if (item.type === "goal") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <img src={goal} alt="" className="oversigt-img" />
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h3">{item.related_player_name}</Link>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "yellowcard") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-gul1"></div>
+                                                                    <div className="oversigt-gul2"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{visitorTeam}</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "redcard") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-rod1"></div>
+                                                                    <div className="oversigt-rod2"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{visitorTeam}</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "yellowred") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2">{item.player_name}</Link>
+                                                                <p className="oversigt-h3">{homeTeam}</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="oversigt-card">
+                                                                    <div className="oversigt-gul1"></div>
+                                                                    <div className="oversigt-rod1"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else if (item.type === "substitution") {
+                                                return (
+                                                    <li key={randomId + item.team_id + item.player_name + item.minute}>
+                                                        <div className="oversigt-element">
+                                                            <div className="oversigt-el-box-l">
+                                                            <p className="oversigt-h4">{item.minute}'</p>
+                                                            </div>
+                                                            <div className="oversigt-el-icon">
+                                                                <div className="sub">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="sub1" viewBox="0 0 16 16">
+                                                                        <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                                                    </svg>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="sub2" viewBox="0 0 16 16">
+                                                                        <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                                                    </svg>
+                                                                </div>
+                                                            </div>
+                                                            <div className="oversigt-el-box-r">
+                                                                <Link to={"/stage/spiller?id=" + item.player_id} className="oversigt-h2-ind">{item.player_name}</Link>
+                                                                <Link to={"/stage/spiller?id=" + item.related_player_id} className="oversigt-h2-ud">{item.related_player_name}</Link>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                );
+                                            } else {
+                                                return;
                                             }
                                         }
+                                    }
+                                })}
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="match-indhold" id="kampinfo">
+                        <div className="match-info-element">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="match-info-element-icon" viewBox="0 0 16 16">
+                                <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                            </svg>
+                            <p className="match-info-p">Start</p>
+                            <p className="match-info-h1">{start}</p>
+                        </div>
+                        <div className="match-info-element-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="match-info-element-icon" viewBox="0 0 16 16">
+                                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935zM3.504 1c.007.517.026 1.006.056 1.469.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.501.501 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667.03-.463.049-.952.056-1.469H3.504z"/>
+                            </svg>
+                            <p className="match-info-p">Turnering</p>
+                            <p className="match-info-h1">{turnering}</p>
+                        </div>
+                        <div className="match-info-element">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="match-info-element-icon" viewBox="0 0 16 16">
+                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                            </svg>
+                            <p className="match-info-p">Dommer</p>
+                            <p className="match-info-h1">{dommer}</p>
+                        </div>
+                        <div className="match-info-element-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="match-info-element-icon" viewBox="0 0 16 16">
+                                <path fillRule="evenodd" d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022zM6 8.694 1 10.36V15h5V8.694zM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5V15z"/>
+                                <path d="M2 11h1v1H2v-1zm2 0h1v1H4v-1zm-2 2h1v1H2v-1zm2 0h1v1H4v-1zm4-4h1v1H8V9zm2 0h1v1h-1V9zm-2 2h1v1H8v-1zm2 0h1v1h-1v-1zm2-2h1v1h-1V9zm0 2h1v1h-1v-1zM8 7h1v1H8V7zm2 0h1v1h-1V7zm2 0h1v1h-1V7zM8 5h1v1H8V5zm2 0h1v1h-1V5zm2 0h1v1h-1V5zm0-2h1v1h-1V3z"/>
+                            </svg>
+                            <p className="match-info-p">Stadion</p>
+                            <p className="match-info-h1">{stadium}</p>
+                        </div>
+                        <div className="match-info-element">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="match-info-element-icon" viewBox="0 0 16 16">
+                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                            </svg>
+                            <p className="match-info-p">Trænere</p>
+                            <div className="match-info-double">
+                                <p className="match-info-h2">{localCoach}</p>
+                                <p className="match-info-h3">{visitorCoach}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="match-indhold" id="startopstilling">
+                        <p className="nogames display" id="startopstilling-error">Startopstillingen er endnu ikke blevet opgivet.</p>
+                        <div id="startopstilling2">
+                        <div className="startopstilling-pitch">
+                            <div className="startopstilling-element">
+                                <div className="st-overall">
+                                    {getLineup()}
+                                </div>
+                                <img src={lineupPitch} alt="" className="pitch" />
+                            </div>
+                        </div>
+                        <div className="startopstilling">
+                            <div className="team-kampe-section" id="startopstilling-div">
+                                <p className="team-kampe-h1">Udskiftninger {homeTeam}</p>
+                                <div className="stage-kampe" id="latest">
+                                    <ul>
+                                    {udskiftningerHome.map(item => {
+                                        var mstime = new Date().getTime();
+                                        var randomNumber = Math.floor(Math.random() * 512);
+                                        var randomId = mstime+"-"+randomNumber;
+                                        var position = "";
+                                        if (item.position === "G") {
+                                            position = "Målmand";
+                                        } else if (item.position === "D") {
+                                            position = "Forsvarsspiller";
+                                        } else if (item.position === "A") {
+                                            position = "Angrebsspiller";
+                                        } else if (item.position === "M") {
+                                            position = "Midtbanespiller";
+                                        }
+                                        return (
+                                            <li key={randomId + item.player_name + item.number + position}>
+                                                <Link className="bench-element" to={"/stage/spiller?id=" + item.player_id}>
+                                                    <img src={homelogo} alt="" className="bench-img" />
+                                                    <div className="bench-info">
+                                                        <p className="bench-h1">{item.number}. {item.player_name}</p>
+                                                        <p className="bench-h2">{position}</p>
+                                                    </div>
+                                                </Link>
+                                            </li>
+                                        );
                                     })}
                                 </ul>
+                                </div>
                             </div>
-                        </div>
-                        <div className="match-indhold" id="kampinfo">
-                            <div className="match-info-element">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="match-info-element-icon" viewBox="0 0 16 16">
-                                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
-                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
-                                </svg>
-                                <p className="match-info-p">Start</p>
-                                <p className="match-info-h1">{start}</p>
-                            </div>
-                            <div className="match-info-element-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="match-info-element-icon" viewBox="0 0 16 16">
-                                    <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935zM3.504 1c.007.517.026 1.006.056 1.469.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.501.501 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667.03-.463.049-.952.056-1.469H3.504z"/>
-                                </svg>
-                                <p className="match-info-p">Turnering</p>
-                                <p className="match-info-h1">{turnering}</p>
-                            </div>
-                            <div className="match-info-element">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="match-info-element-icon" viewBox="0 0 16 16">
-                                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                                </svg>
-                                <p className="match-info-p">Dommer</p>
-                                <p className="match-info-h1">{dommer}</p>
-                            </div>
-                            <div className="match-info-element-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="match-info-element-icon" viewBox="0 0 16 16">
-                                    <path fillRule="evenodd" d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022zM6 8.694 1 10.36V15h5V8.694zM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5V15z"/>
-                                    <path d="M2 11h1v1H2v-1zm2 0h1v1H4v-1zm-2 2h1v1H2v-1zm2 0h1v1H4v-1zm4-4h1v1H8V9zm2 0h1v1h-1V9zm-2 2h1v1H8v-1zm2 0h1v1h-1v-1zm2-2h1v1h-1V9zm0 2h1v1h-1v-1zM8 7h1v1H8V7zm2 0h1v1h-1V7zm2 0h1v1h-1V7zM8 5h1v1H8V5zm2 0h1v1h-1V5zm2 0h1v1h-1V5zm0-2h1v1h-1V3z"/>
-                                </svg>
-                                <p className="match-info-p">Stadion</p>
-                                <p className="match-info-h1">{stadium}</p>
-                            </div>
-                            <div className="match-info-element">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="match-info-element-icon" viewBox="0 0 16 16">
-                                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                                </svg>
-                                <p className="match-info-p">Trænere</p>
-                                <div className="match-info-double">
-                                    <p className="match-info-h2">{localCoach}</p>
-                                    <p className="match-info-h3">{visitorCoach}</p>
+                            <div className="team-kampe-section" id="startopstilling-div">
+                                <p className="team-kampe-h1">Udskiftninger {visitorTeam}</p>
+                                <div className="stage-kampe" id="latest">
+                                    <ul>
+                                    {udskiftningerVisitor.map(item => {
+                                        var mstime = new Date().getTime();
+                                        var randomNumber = Math.floor(Math.random() * 512);
+                                        var randomId = mstime+"-"+randomNumber;
+                                        var position = "";
+                                        if (item.position === "G") {
+                                            position = "Målmand";
+                                        } else if (item.position === "D") {
+                                            position = "Forsvarsspiller";
+                                        } else if (item.position === "A") {
+                                            position = "Angrebsspiller";
+                                        } else if (item.position === "M") {
+                                            position = "Midtbanespiller";
+                                        }
+                                        return (
+                                            <li key={randomId + item.player_name + position}>
+                                                <Link className="bench-element" to={"/stage/spiller?id=" + item.player_id}>
+                                                    <img src={visitorlogo} alt="" className="bench-img" />
+                                                    <div className="bench-info">
+                                                        <p className="bench-h1">{item.number}. {item.player_name}</p>
+                                                        <p className="bench-h2">{position}</p>
+                                                    </div>
+                                                </Link>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
                                 </div>
                             </div>
                         </div>
-                        <div className="match-indhold" id="startopstilling">
-                            <p className="nogames display" id="startopstilling-error">Startopstillingen er endnu ikke blevet opgivet.</p>
-                            <div id="startopstilling2">
-                            <div className="startopstilling-pitch">
-                                <div className="startopstilling-element">
-                                    <div className="st-overall">
-                                        {getLineup()}
-                                    </div>
-                                    <img src={lineupPitch} alt="" className="pitch" />
-                                </div>
-                            </div>
-                            <div className="startopstilling">
-                                <div className="team-kampe-section" id="startopstilling-div">
-                                    <p className="team-kampe-h1">Udskiftninger {homeTeam}</p>
-                                    <div className="stage-kampe" id="latest">
-                                        <ul>
-                                        {udskiftningerHome.map(item => {
-                                            var mstime = new Date().getTime();
-                                            var randomNumber = Math.floor(Math.random() * 512);
-                                            var randomId = mstime+"-"+randomNumber;
-                                            var position = "";
-                                            if (item.position === "G") {
-                                                position = "Målmand";
-                                            } else if (item.position === "D") {
-                                                position = "Forsvarsspiller";
-                                            } else if (item.position === "A") {
-                                                position = "Angrebsspiller";
-                                            } else if (item.position === "M") {
-                                                position = "Midtbanespiller";
+                        </div>
+                    </div>
+                    <div className="match-indhold" id="H2H">
+                        <div className="team-kampe-section" id="seneste">
+                            <p className="team-kampe-h1">Seneste kampresultater - {homeTeam}</p>
+                            <div className="stage-kampe" id="latest">
+                                <ul>
+                                    {senesteHome.slice(0,15).map((item) => {
+                                        var timeClass = "team-kampe-minut";
+                                        var liveView = "FT";
+                                        var scoreLocal = "stage-stilling-p";
+                                        var scoreVisitor = "stage-stilling-p";
+                                        var teamNameLocal = "stage-kampe-p";
+                                        var teamNameVisitor = "stage-kampe-p";
+                                        if (item.time.status === "LIVE") {
+                                            timeClass = "team-kampe-minut team-kampe-minut-active";
+                                            liveView = item.time.minute+" MIN";
+                                        } else if (item.time.status === "NS") {
+                                            scoreLocal = "stage-stilling-p-none";
+                                            scoreVisitor = "stage-stilling-p-none";
+                                            var calcTime = item.time.starting_at.time;
+                                            calcTime = calcTime.slice(0,-3);
+                                            liveView = calcTime;
+                                        } else if (item.time.status === "FT") {
+                                            if (item.winner_team_id === item.localteam_id) {
+                                                scoreLocal = "stage-stilling-p-fat";
+                                                teamNameLocal = "stage-kampe-p-fat";
+                                            } else if (item.winner_team_id === item.visitorteam_id) {
+                                                scoreVisitor = "stage-stilling-p-fat";
+                                                teamNameVisitor = "stage-kampe-p-fat";
                                             }
-                                            return (
-                                                <li key={randomId + item.player_name + item.number + position}>
-                                                    <Link className="bench-element" to={"/stage/spiller?id=" + item.player_id}>
-                                                        <img src={homelogo} alt="" className="bench-img" />
-                                                        <div className="bench-info">
-                                                            <p className="bench-h1">{item.number}. {item.player_name}</p>
-                                                            <p className="bench-h2">{position}</p>
+                                        }
+                                        const gameURL = "/stage/match?game=" + item.id + "";
+
+                                        var starting_at = item.time.starting_at.timestamp * 1000;
+                                        var starting_at_date = new Date(starting_at).getDate();
+                                        var starting_at_date_str = starting_at_date.toString();
+                                        var starting_at_month = new Date(starting_at).getMonth() + 1;
+                                        var starting_at_month_str = starting_at_month.toString();
+                                        if ((starting_at_month.toString()).length === 1) {
+                                            starting_at_month_str = "0" + starting_at_month;
+                                        }
+                                        if ((starting_at_date.toString()).length === 1) {
+                                            starting_at_date_str = "0" + starting_at_date;
+                                        }
+                                        return (
+                                            <li key={item.id}>
+                                                <div className="team-match">
+                                                    <div className="stage-indhold-down">
+                                                        <div onClick={() => {window.open(gameURL, "_self")}} className="team-kampe-hold-h2h">
+                                                            <div className="stage-h2h">
+                                                                <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                                <div className="stage-kampe-hold-div">
+                                                                    <div className="stage-kampe-team">
+                                                                        <p className={scoreLocal}>{item.scores.localteam_score}</p>
+                                                                        <img alt="." src={item.localTeam.data.logo_path} className="stage-img" />
+                                                                        <p className={teamNameLocal}>{item.localTeam.data.name}</p>
+                                                                    </div>
+                                                                    <div className="stage-kampe-team">
+                                                                        <p className={scoreVisitor}>{item.scores.visitorteam_score}</p>
+                                                                        <img alt="." src={item.visitorTeam.data.logo_path} className="stage-img" />
+                                                                        <p className={teamNameVisitor}>{item.visitorTeam.data.name}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" className="team-icon" id="h2h-icon" viewBox="0 0 16 16">
+                                                                <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                                            </svg>
                                                         </div>
-                                                    </Link>
-                                                </li>
+                                                    </div>
+                                                </div>
+                                            </li>
                                             );
-                                        })}
-                                    </ul>
-                                    </div>
+                                        }
+                                    )}
+                                </ul>
+                                <div className="stage-indhold-down">
+                                    <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
+                                        <p className="team-kampe-p">Se alle resultater.</p>
+                                    </Link>
                                 </div>
-                                <div className="team-kampe-section" id="startopstilling-div">
-                                    <p className="team-kampe-h1">Udskiftninger {visitorTeam}</p>
-                                    <div className="stage-kampe" id="latest">
-                                        <ul>
-                                        {udskiftningerVisitor.map(item => {
-                                            var mstime = new Date().getTime();
-                                            var randomNumber = Math.floor(Math.random() * 512);
-                                            var randomId = mstime+"-"+randomNumber;
-                                            var position = "";
-                                            if (item.position === "G") {
-                                                position = "Målmand";
-                                            } else if (item.position === "D") {
-                                                position = "Forsvarsspiller";
-                                            } else if (item.position === "A") {
-                                                position = "Angrebsspiller";
-                                            } else if (item.position === "M") {
-                                                position = "Midtbanespiller";
+                            </div>
+                        </div>
+                        <div className="team-kampe-section" id="seneste">
+                            <p className="team-kampe-h1">Seneste kampresultater - {visitorTeam}</p>
+                            <div className="stage-kampe" id="latest">
+                                <ul>
+                                    {senesteVisitor.slice(0,15).map((item) => {
+                                        var timeClass = "team-kampe-minut";
+                                        var liveView = "FT";
+                                        var scoreLocal = "stage-stilling-p";
+                                        var scoreVisitor = "stage-stilling-p";
+                                        var teamNameLocal = "stage-kampe-p";
+                                        var teamNameVisitor = "stage-kampe-p";
+                                        if (item.time.status === "LIVE") {
+                                            timeClass = "team-kampe-minut team-kampe-minut-active";
+                                            liveView = item.time.minute+" MIN";
+                                        } else if (item.time.status === "NS") {
+                                            scoreLocal = "stage-stilling-p-none";
+                                            scoreVisitor = "stage-stilling-p-none";
+                                            var calcTime = item.time.starting_at.time;
+                                            calcTime = calcTime.slice(0,-3);
+                                            liveView = calcTime;
+                                        } else if (item.time.status === "FT") {
+                                            if (item.winner_team_id === item.localteam_id) {
+                                                scoreLocal = "stage-stilling-p-fat";
+                                                teamNameLocal = "stage-kampe-p-fat";
+                                            } else if (item.winner_team_id === item.visitorteam_id) {
+                                                scoreVisitor = "stage-stilling-p-fat";
+                                                teamNameVisitor = "stage-kampe-p-fat";
                                             }
-                                            return (
-                                                <li key={randomId + item.player_name + position}>
-                                                    <Link className="bench-element" to={"/stage/spiller?id=" + item.player_id}>
-                                                        <img src={visitorlogo} alt="" className="bench-img" />
-                                                        <div className="bench-info">
-                                                            <p className="bench-h1">{item.number}. {item.player_name}</p>
-                                                            <p className="bench-h2">{position}</p>
+                                        }
+                                        const gameURL = "/stage/match?game=" + item.id + "";
+
+                                        var starting_at = item.time.starting_at.timestamp * 1000;
+                                        var starting_at_date = new Date(starting_at).getDate();
+                                        var starting_at_date_str = starting_at_date.toString();
+                                        var starting_at_month = new Date(starting_at).getMonth() + 1;
+                                        var starting_at_month_str = starting_at_month.toString();
+                                        if ((starting_at_month.toString()).length === 1) {
+                                            starting_at_month_str = "0" + starting_at_month;
+                                        }
+                                        if ((starting_at_date.toString()).length === 1) {
+                                            starting_at_date_str = "0" + starting_at_date;
+                                        }
+                                        return (
+                                            <li key={item.id}>
+                                                <div className="team-match">
+                                                    <div className="stage-indhold-down">
+                                                        <div onClick={() => {window.open(gameURL, "_self")}} className="team-kampe-hold-h2h">
+                                                            <div className="stage-h2h">
+                                                                <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
+                                                                <div className="stage-kampe-hold-div">
+                                                                    <div className="stage-kampe-team">
+                                                                        <p className={scoreLocal}>{item.scores.localteam_score}</p>
+                                                                        <img alt="." src={item.localTeam.data.logo_path} className="stage-img" />
+                                                                        <p className={teamNameLocal}>{item.localTeam.data.name}</p>
+                                                                    </div>
+                                                                    <div className="stage-kampe-team">
+                                                                        <p className={scoreVisitor}>{item.scores.visitorteam_score}</p>
+                                                                        <img alt="." src={item.visitorTeam.data.logo_path} className="stage-img" />
+                                                                        <p className={teamNameVisitor}>{item.visitorTeam.data.name}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" className="team-icon" id="h2h-icon" viewBox="0 0 16 16">
+                                                                <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                                            </svg>
                                                         </div>
-                                                    </Link>
-                                                </li>
+                                                    </div>
+                                                </div>
+                                            </li>
                                             );
-                                        })}
-                                    </ul>
-                                    </div>
+                                        }
+                                    )}
+                                </ul>
+                                <div className="stage-indhold-down">
+                                    <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
+                                        <p className="team-kampe-p">Se alle resultater.</p>
+                                    </Link>
                                 </div>
                             </div>
-                            </div>
                         </div>
-                        <div className="match-indhold" id="H2H">
-                            <div className="team-kampe-section" id="seneste">
-                                <p className="team-kampe-h1">Seneste kampresultater - {homeTeam}</p>
-                                <div className="stage-kampe" id="latest">
-                                    <ul>
-                                        {senesteHome.slice(0,15).map((item) => {
-                                            var timeClass = "team-kampe-minut";
-                                            var liveView = "FT";
-                                            var scoreLocal = "stage-stilling-p";
-                                            var scoreVisitor = "stage-stilling-p";
-                                            var teamNameLocal = "stage-kampe-p";
-                                            var teamNameVisitor = "stage-kampe-p";
-                                            if (item.time.status === "LIVE") {
-                                                timeClass = "team-kampe-minut team-kampe-minut-active";
-                                                liveView = item.time.minute+" MIN";
-                                            } else if (item.time.status === "NS") {
-                                                scoreLocal = "stage-stilling-p-none";
-                                                scoreVisitor = "stage-stilling-p-none";
-                                                var calcTime = item.time.starting_at.time;
-                                                calcTime = calcTime.slice(0,-3);
-                                                liveView = calcTime;
-                                            } else if (item.time.status === "FT") {
-                                                if (item.winner_team_id === item.localteam_id) {
-                                                    scoreLocal = "stage-stilling-p-fat";
-                                                    teamNameLocal = "stage-kampe-p-fat";
-                                                } else if (item.winner_team_id === item.visitorteam_id) {
-                                                    scoreVisitor = "stage-stilling-p-fat";
-                                                    teamNameVisitor = "stage-kampe-p-fat";
-                                                }
+                        <div className="team-kampe-section" id="seneste">
+                            <p className="team-kampe-h1">Head2Head</p>
+                            <div className="stage-kampe" id="latest">
+                                <ul>
+                                    {h2h.slice(0,5).map((item) => {
+                                        var timeClass = "team-kampe-minut";
+                                        var liveView = "FT";
+                                        var scoreLocal = "stage-stilling-p";
+                                        var scoreVisitor = "stage-stilling-p";
+                                        var teamNameLocal = "stage-kampe-p";
+                                        var teamNameVisitor = "stage-kampe-p";
+                                        if (item.time.status === "LIVE") {
+                                            timeClass = "team-kampe-minut team-kampe-minut-active";
+                                            liveView = item.time.minute+" MIN";
+                                        } else if (item.time.status === "NS") {
+                                            scoreLocal = "stage-stilling-p-none";
+                                            scoreVisitor = "stage-stilling-p-none";
+                                            var calcTime = item.time.starting_at.time;
+                                            calcTime = calcTime.slice(0,-3);
+                                            liveView = calcTime;
+                                        } else if (item.time.status === "FT") {
+                                            if (item.winner_team_id === item.localteam_id) {
+                                                scoreLocal = "stage-stilling-p-fat";
+                                                teamNameLocal = "stage-kampe-p-fat";
+                                            } else if (item.winner_team_id === item.visitorteam_id) {
+                                                scoreVisitor = "stage-stilling-p-fat";
+                                                teamNameVisitor = "stage-kampe-p-fat";
                                             }
-                                            const gameURL = "/stage/match?game=" + item.id + "";
+                                        }
+                                        const gameURL = "/stage/match?game=" + item.id + "";
 
-                                            var starting_at = item.time.starting_at.timestamp * 1000;
-                                            var starting_at_date = new Date(starting_at).getDate();
-                                            var starting_at_date_str = starting_at_date.toString();
-                                            var starting_at_month = new Date(starting_at).getMonth() + 1;
-                                            var starting_at_month_str = starting_at_month.toString();
-                                            if ((starting_at_month.toString()).length === 1) {
-                                                starting_at_month_str = "0" + starting_at_month;
-                                            }
-                                            if ((starting_at_date.toString()).length === 1) {
-                                                starting_at_date_str = "0" + starting_at_date;
-                                            }
-                                            return (
-                                                <li key={item.id}>
-                                                    <div className="team-match">
-                                                        <div className="stage-indhold-down">
-                                                            <div onClick={() => {window.open(gameURL, "_self")}} className="team-kampe-hold-h2h">
-                                                                <div className="stage-h2h">
+                                        var starting_at = item.time.starting_at.timestamp * 1000;
+                                        var starting_at_date = new Date(starting_at).getDate();
+                                        var starting_at_date_str = starting_at_date.toString();
+                                        var starting_at_month = new Date(starting_at).getMonth() + 1;
+                                        var starting_at_month_str = starting_at_month.toString();
+                                        if ((starting_at_month.toString()).length === 1) {
+                                            starting_at_month_str = "0" + starting_at_month;
+                                        }
+                                        if ((starting_at_date.toString()).length === 1) {
+                                            starting_at_date_str = "0" + starting_at_date;
+                                        }
+
+                                        var starting_at_year = new Date(starting_at).getFullYear();
+                                        var yearClass = "display-not";
+                                        if (starting_at_year !== new Date().getFullYear()) {
+                                            yearClass = "team-kampe-minut";
+                                        }
+                                        return (
+                                            <li key={item.id}>
+                                                <div className="team-match">
+                                                    <div className="stage-indhold-down">
+                                                        <div onClick={() => {window.open(gameURL, "_self")}} className="team-kampe-hold-h2h">
+                                                            <div className="stage-h2h">
+                                                                <div className="time-con">
                                                                     <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
-                                                                    <div className="stage-kampe-hold-div">
-                                                                        <div className="stage-kampe-team">
-                                                                            <p className={scoreLocal}>{item.scores.localteam_score}</p>
-                                                                            <img alt="." src={item.localTeam.data.logo_path} className="stage-img" />
-                                                                            <p className={teamNameLocal}>{item.localTeam.data.name}</p>
-                                                                        </div>
-                                                                        <div className="stage-kampe-team">
-                                                                            <p className={scoreVisitor}>{item.scores.visitorteam_score}</p>
-                                                                            <img alt="." src={item.visitorTeam.data.logo_path} className="stage-img" />
-                                                                            <p className={teamNameVisitor}>{item.visitorTeam.data.name}</p>
-                                                                        </div>
+                                                                    <p className={yearClass}>{starting_at_year}</p>
+                                                                </div>
+                                                                <div className="stage-kampe-hold-div">
+                                                                    <div className="stage-kampe-team">
+                                                                        <p className={scoreLocal}>{item.scores.localteam_score}</p>
+                                                                        <img alt="." src={item.localTeam.data.logo_path} className="stage-img" />
+                                                                        <p className={teamNameLocal}>{item.localTeam.data.name}</p>
+                                                                    </div>
+                                                                    <div className="stage-kampe-team">
+                                                                        <p className={scoreVisitor}>{item.scores.visitorteam_score}</p>
+                                                                        <img alt="." src={item.visitorTeam.data.logo_path} className="stage-img" />
+                                                                        <p className={teamNameVisitor}>{item.visitorTeam.data.name}</p>
                                                                     </div>
                                                                 </div>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="team-icon" id="h2h-icon" viewBox="0 0 16 16">
-                                                                    <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-                                                                </svg>
                                                             </div>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" className="team-icon" id="h2h-icon" viewBox="0 0 16 16">
+                                                                <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                                            </svg>
                                                         </div>
                                                     </div>
-                                                </li>
-                                                );
-                                            }
-                                        )}
-                                    </ul>
-                                    <div className="stage-indhold-down">
-                                        <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
-                                            <p className="team-kampe-p">Se alle resultater.</p>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="team-kampe-section" id="seneste">
-                                <p className="team-kampe-h1">Seneste kampresultater - {visitorTeam}</p>
-                                <div className="stage-kampe" id="latest">
-                                    <ul>
-                                        {senesteVisitor.slice(0,15).map((item) => {
-                                            var timeClass = "team-kampe-minut";
-                                            var liveView = "FT";
-                                            var scoreLocal = "stage-stilling-p";
-                                            var scoreVisitor = "stage-stilling-p";
-                                            var teamNameLocal = "stage-kampe-p";
-                                            var teamNameVisitor = "stage-kampe-p";
-                                            if (item.time.status === "LIVE") {
-                                                timeClass = "team-kampe-minut team-kampe-minut-active";
-                                                liveView = item.time.minute+" MIN";
-                                            } else if (item.time.status === "NS") {
-                                                scoreLocal = "stage-stilling-p-none";
-                                                scoreVisitor = "stage-stilling-p-none";
-                                                var calcTime = item.time.starting_at.time;
-                                                calcTime = calcTime.slice(0,-3);
-                                                liveView = calcTime;
-                                            } else if (item.time.status === "FT") {
-                                                if (item.winner_team_id === item.localteam_id) {
-                                                    scoreLocal = "stage-stilling-p-fat";
-                                                    teamNameLocal = "stage-kampe-p-fat";
-                                                } else if (item.winner_team_id === item.visitorteam_id) {
-                                                    scoreVisitor = "stage-stilling-p-fat";
-                                                    teamNameVisitor = "stage-kampe-p-fat";
-                                                }
-                                            }
-                                            const gameURL = "/stage/match?game=" + item.id + "";
-
-                                            var starting_at = item.time.starting_at.timestamp * 1000;
-                                            var starting_at_date = new Date(starting_at).getDate();
-                                            var starting_at_date_str = starting_at_date.toString();
-                                            var starting_at_month = new Date(starting_at).getMonth() + 1;
-                                            var starting_at_month_str = starting_at_month.toString();
-                                            if ((starting_at_month.toString()).length === 1) {
-                                                starting_at_month_str = "0" + starting_at_month;
-                                            }
-                                            if ((starting_at_date.toString()).length === 1) {
-                                                starting_at_date_str = "0" + starting_at_date;
-                                            }
-                                            return (
-                                                <li key={item.id}>
-                                                    <div className="team-match">
-                                                        <div className="stage-indhold-down">
-                                                            <div onClick={() => {window.open(gameURL, "_self")}} className="team-kampe-hold-h2h">
-                                                                <div className="stage-h2h">
-                                                                    <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
-                                                                    <div className="stage-kampe-hold-div">
-                                                                        <div className="stage-kampe-team">
-                                                                            <p className={scoreLocal}>{item.scores.localteam_score}</p>
-                                                                            <img alt="." src={item.localTeam.data.logo_path} className="stage-img" />
-                                                                            <p className={teamNameLocal}>{item.localTeam.data.name}</p>
-                                                                        </div>
-                                                                        <div className="stage-kampe-team">
-                                                                            <p className={scoreVisitor}>{item.scores.visitorteam_score}</p>
-                                                                            <img alt="." src={item.visitorTeam.data.logo_path} className="stage-img" />
-                                                                            <p className={teamNameVisitor}>{item.visitorTeam.data.name}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="team-icon" id="h2h-icon" viewBox="0 0 16 16">
-                                                                    <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-                                                                </svg>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                );
-                                            }
-                                        )}
-                                    </ul>
-                                    <div className="stage-indhold-down">
-                                        <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
-                                            <p className="team-kampe-p">Se alle resultater.</p>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="team-kampe-section" id="seneste">
-                                <p className="team-kampe-h1">Head2Head</p>
-                                <div className="stage-kampe" id="latest">
-                                    <ul>
-                                        {h2h.slice(0,5).map((item) => {
-                                            var timeClass = "team-kampe-minut";
-                                            var liveView = "FT";
-                                            var scoreLocal = "stage-stilling-p";
-                                            var scoreVisitor = "stage-stilling-p";
-                                            var teamNameLocal = "stage-kampe-p";
-                                            var teamNameVisitor = "stage-kampe-p";
-                                            if (item.time.status === "LIVE") {
-                                                timeClass = "team-kampe-minut team-kampe-minut-active";
-                                                liveView = item.time.minute+" MIN";
-                                            } else if (item.time.status === "NS") {
-                                                scoreLocal = "stage-stilling-p-none";
-                                                scoreVisitor = "stage-stilling-p-none";
-                                                var calcTime = item.time.starting_at.time;
-                                                calcTime = calcTime.slice(0,-3);
-                                                liveView = calcTime;
-                                            } else if (item.time.status === "FT") {
-                                                if (item.winner_team_id === item.localteam_id) {
-                                                    scoreLocal = "stage-stilling-p-fat";
-                                                    teamNameLocal = "stage-kampe-p-fat";
-                                                } else if (item.winner_team_id === item.visitorteam_id) {
-                                                    scoreVisitor = "stage-stilling-p-fat";
-                                                    teamNameVisitor = "stage-kampe-p-fat";
-                                                }
-                                            }
-                                            const gameURL = "/stage/match?game=" + item.id + "";
-
-                                            var starting_at = item.time.starting_at.timestamp * 1000;
-                                            var starting_at_date = new Date(starting_at).getDate();
-                                            var starting_at_date_str = starting_at_date.toString();
-                                            var starting_at_month = new Date(starting_at).getMonth() + 1;
-                                            var starting_at_month_str = starting_at_month.toString();
-                                            if ((starting_at_month.toString()).length === 1) {
-                                                starting_at_month_str = "0" + starting_at_month;
-                                            }
-                                            if ((starting_at_date.toString()).length === 1) {
-                                                starting_at_date_str = "0" + starting_at_date;
-                                            }
-
-                                            var starting_at_year = new Date(starting_at).getFullYear();
-                                            var yearClass = "display-not";
-                                            if (starting_at_year !== new Date().getFullYear()) {
-                                                yearClass = "team-kampe-minut";
-                                            }
-                                            return (
-                                                <li key={item.id}>
-                                                    <div className="team-match">
-                                                        <div className="stage-indhold-down">
-                                                            <div onClick={() => {window.open(gameURL, "_self")}} className="team-kampe-hold-h2h">
-                                                                <div className="stage-h2h">
-                                                                    <div className="time-con">
-                                                                        <p className={timeClass}>{starting_at_date_str}.{starting_at_month_str}</p>
-                                                                        <p className={yearClass}>{starting_at_year}</p>
-                                                                    </div>
-                                                                    <div className="stage-kampe-hold-div">
-                                                                        <div className="stage-kampe-team">
-                                                                            <p className={scoreLocal}>{item.scores.localteam_score}</p>
-                                                                            <img alt="." src={item.localTeam.data.logo_path} className="stage-img" />
-                                                                            <p className={teamNameLocal}>{item.localTeam.data.name}</p>
-                                                                        </div>
-                                                                        <div className="stage-kampe-team">
-                                                                            <p className={scoreVisitor}>{item.scores.visitorteam_score}</p>
-                                                                            <img alt="." src={item.visitorTeam.data.logo_path} className="stage-img" />
-                                                                            <p className={teamNameVisitor}>{item.visitorTeam.data.name}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="team-icon" id="h2h-icon" viewBox="0 0 16 16">
-                                                                    <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-                                                                </svg>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                );
-                                            }
-                                        )}
-                                    </ul>
-                                    <div className="stage-indhold-down">
-                                        <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
-                                            <p className="team-kampe-p">Se alle resultater.</p>
-                                        </Link>
-                                    </div>
+                                                </div>
+                                            </li>
+                                            );
+                                        }
+                                    )}
+                                </ul>
+                                <div className="stage-indhold-down">
+                                    <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
+                                        <p className="team-kampe-p">Se alle resultater.</p>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
-                        <div className="match-indhold" id="statistikker">
-                            <p className="nogames display">{statText}</p>
-                            {getStats()}
-                        </div>
-                        <div className="match-indhold" id="tabel">
-                            <div className="team-kampe-section" id="seneste">
-                                <div className="match-loader display" id="stage-loader1"></div>
-                                {getGroups()}
-                            </div>
+                    </div>
+                    <div className="match-indhold" id="statistikker">
+                        <p className="nogames display">{statText}</p>
+                        {getStats()}
+                    </div>
+                    <div className="match-indhold" id="tabel">
+                        <div className="team-kampe-section" id="seneste">
+                            <div className="match-loader display" id="stage-loader1"></div>
+                            {getGroups()}
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         </>
     )
 }

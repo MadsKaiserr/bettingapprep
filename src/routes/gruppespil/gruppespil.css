@@ -51,6 +51,14 @@
     transition: 0.2s;
 }
 
+.gruppespil-row-active {
+    background-color: var(--blueStageSurface) !important;
+}
+
+.gruppespil-row-active:hover {
+    background-color: var(--blueStageSurface) !important;
+}
+
 .gruppespil-table-row:hover {
     background-color: var(--surface);
 }

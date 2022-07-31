@@ -71,7 +71,7 @@ function StageTeam () {
             var mostgoalsArray = [];
             var mostAssistsArray = [];
             for (var e in topscorerArray) {
-                if (topscorerArray[e].type === "goals") {
+                if (topscorerArray[e].type === "goals" && topscorerArray[e].player.data.team_id === parseInt(matchID)) {
                     var mostGoalsIndex = mostgoalsArray.findIndex(obj => obj.player.data.fullname === topscorerArray[e].player.data.fullname);
                     if (mostGoalsIndex === -1) {
                         mostgoalsArray.push(topscorerArray[e]);
@@ -371,8 +371,10 @@ function StageTeam () {
             //         console.log("Table result", result.data[t].standings.data)
             //     }
             // }
-            setTabelO(result.data);
-            setTableType("1");
+            if (result.data) {
+                setTabelO(result.data);
+                setTableType("1");
+            }
         })
         .catch(error => console.log('error', error));
     }
@@ -703,7 +705,7 @@ function StageTeam () {
                     </div>
                 </div>
                 <div className="match-info" id="team_match">
-                    <div className="match-odds-nav" style={{marginBottom: "15px", padding: "0px", paddingBottom: "15px"}}>
+                    <div className="match-odds-nav" style={{marginBottom: "15px", padding: "0px", paddingBottom: "15px", marginTop: "-15px"}}>
                         <button className="match-odds-nav-element-active" id="navOversigt" onClick={() => {setNav("oversigt")}}>Oversigt</button>
                         <button className="match-odds-nav-element" id="navResultater" onClick={() => {setNav("resultater")}}>Resultater</button>
                         <button className="match-odds-nav-element" id="navKommende" onClick={() => {setNav("kommende")}}>Kommende</button>
@@ -995,7 +997,7 @@ function StageTeam () {
                         <div className="team-kampe-section" id="seneste">
                             <p className="team-kampe-h1">Resultater</p>
                             <div className="stage-kampe" id="latest">
-                                <ul>
+                                <ul id="resultater15">
                                     {senesteFive.slice(0,15).map((item) => {
                                         var timeClass = "team-kampe-minut";
                                         var liveView = "FT";
@@ -1069,18 +1071,8 @@ function StageTeam () {
                                         }
                                     )}
                                 </ul>
-                                <div className="stage-indhold-down">
-                                    <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
-                                        <p className="team-kampe-p">Se alle resultater.</p>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="team-kampe-section" id="kampe2">
-                            <p className="team-kampe-h1">Resultater</p>
-                            <div className="stage-kampe" id="latest">
-                                <ul>
-                                    {senesteFive.slice(15,30).map((item) => {
+                                <ul className="display-not" id="resultateralle">
+                                    {senesteFive.map((item) => {
                                         var timeClass = "team-kampe-minut";
                                         var liveView = "FT";
                                         var scoreLocal = "stage-stilling-p";
@@ -1104,43 +1096,6 @@ function StageTeam () {
                                                 scoreVisitor = "stage-stilling-p-fat";
                                                 teamNameVisitor = "stage-kampe-p-fat";
                                             }
-                                        }
-                            
-                                        var wherearewe = "";
-                                        if (item.league_id === 271) {
-                                            wherearewe = "Danmark / Super Liga"
-                                        } else if (item.league_id === 2) {
-                                            wherearewe = "Verden / Champions League"
-                                        } else if (item.league_id === 5) {
-                                            wherearewe = "Europa / Europa League"
-                                        } else if (item.league_id === 8) {
-                                            wherearewe = "England / Premier League"
-                                        } else if (item.league_id === 82) {
-                                            wherearewe = "Tyskland / Bundesliga"
-                                        } else if (item.league_id === 301) {
-                                            wherearewe = "Frankrig / Ligue 1"
-                                        } else if (item.league_id === 384) {
-                                            wherearewe = "Italien / Serie A"
-                                        } else if (item.league_id === 564) {
-                                            wherearewe = "Spanien / La Liga"
-                                        } else if (item.league_id === 720) {
-                                            wherearewe = "Europa / VM Kvalifikation Europa"
-                                        } else if (item.league_id === 1325) {
-                                            wherearewe = "Europa / EM Kvalifikation"
-                                        } else if (item.league_id === 1326) {
-                                            wherearewe = "Europa / EM"
-                                        } else if (item.league_id === 2286) {
-                                            wherearewe = "Europa / Conference League"
-                                        } else if (item.league_id === 732) {
-                                            wherearewe = "Verden / VM"
-                                        } else if (item.league_id === 1082) {
-                                            wherearewe = "Verden / Venskabskamp"
-                                        } else if (item.league_id === 1125) {
-                                            wherearewe = "Verden / OL"
-                                        } else if (item.league_id === 1398) {
-                                            wherearewe = "Verden / Audi Cup"
-                                        } else {
-                                            wherearewe = "Mindre liga"
                                         }
                                         const gameURL = "/stage/match?game=" + item.id;
 
@@ -1191,9 +1146,9 @@ function StageTeam () {
                                     )}
                                 </ul>
                                 <div className="stage-indhold-down">
-                                    <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
-                                        <p className="team-kampe-p">Se alle resultater.</p>
-                                    </Link>
+                                    <div className="team-kampe-hold" onClick={() => {document.getElementById("resultater15").classList.add("display-not");document.getElementById("resultateralle").classList.remove("display-not");document.getElementById("sealle").innerHTML = "Tilbage til toppen";window.scrollTo(0, 0);}}>
+                                        <p className="team-kampe-p" id="sealle">Se alle resultater</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1202,7 +1157,7 @@ function StageTeam () {
                         <div className="team-kampe-section" id="seneste">
                             <p className="team-kampe-h1">Kommende</p>
                             <div className="stage-kampe" id="latest">
-                                <ul>
+                                <ul id="kommende15">
                                     {kommendeFive.slice(0,15).map((item) => {
                                         var timeClass = "team-kampe-minut";
                                         var liveView = "FT";
@@ -1313,18 +1268,8 @@ function StageTeam () {
                                         }
                                     )}
                                 </ul>
-                                <div className="stage-indhold-down">
-                                    <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
-                                        <p className="team-kampe-p">Se alle resultater.</p>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="team-kampe-section" id="kampe2">
-                            <p className="team-kampe-h1">Kommende</p>
-                            <div className="stage-kampe" id="latest">
-                                <ul>
-                                    {kommendeFive.slice(15,30).map((item) => {
+                                <ul className="display-not" id="kommendealle">
+                                    {kommendeFive.map((item) => {
                                         var timeClass = "team-kampe-minut";
                                         var liveView = "FT";
                                         var scoreLocal = "stage-stilling-p";
@@ -1435,9 +1380,9 @@ function StageTeam () {
                                     )}
                                 </ul>
                                 <div className="stage-indhold-down">
-                                    <Link to="/stage/team?team=85&nav=resultater" className="team-kampe-hold">
-                                        <p className="team-kampe-p">Se alle resultater.</p>
-                                    </Link>
+                                    <div className="team-kampe-hold" onClick={() => {document.getElementById("kommende15").classList.add("display-not");document.getElementById("kommendealle").classList.remove("display-not");document.getElementById("seallekommende").innerHTML = "Tilbage til toppen";window.scrollTo(0, 0);}}>
+                                        <p className="team-kampe-p" id="seallekommende">Se alle kommende kampe</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

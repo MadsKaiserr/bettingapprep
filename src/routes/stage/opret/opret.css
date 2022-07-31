@@ -26,6 +26,23 @@
   color: #56586f;
 }
 
+.opret-money-input {
+  padding: 10px 10px;
+  margin: 10px 20px;
+  border-bottom: 1px solid rgba(60, 66, 87,.4) !important;
+  font-family: CircularBook;
+  font-weight: 100;
+  color: rgba(60, 66, 87,.8);
+  font-size: 16px;
+  border: 0px;
+  transition: 0.2s;
+}
+
+.opret-money-input:hover {
+  border-bottom: 1px solid rgba(60, 66, 87,.8) !important;
+  color: rgba(60, 66, 87,1) !important;
+}
+
 .opret-element {
   margin-bottom: 25px;
 }

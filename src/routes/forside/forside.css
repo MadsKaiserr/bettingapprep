@@ -272,19 +272,46 @@
 }
 
 .help-top {
-  background-color: var(--secondary);
   width: 100%;
-  height: 55px;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.tp-img {
+  height: 23px;
+}
+
+.tp-p {
+  font-family: Arial;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 100;
+}
+
+.tp-h1 {
+  font-size: 28px;
+  font-weight: 100;
+  color: #fff;
+  padding-top: 20px;
+  font-family: CircularLight;
+}
+
+.tp-h2 {
+  font-size: 14px;
+  font-weight: 100;
+  color: #7980b2;
+  padding-top: 5px;
+  font-family: CircularLight;
 }
 
 .help-container {
   background-color: #1f2138f8;
   width: 100%;
   height: 350px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+  padding: 30px;
+  border-radius: 4px;
 }
 
 .ny-window {

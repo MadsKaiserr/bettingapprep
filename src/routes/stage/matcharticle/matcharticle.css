@@ -67,6 +67,7 @@
     background-color: #fff;
     border-radius: 5px;
     padding: 40px;
+    padding-top: 25px !important;
     position: relative;
 }
 
@@ -310,12 +311,106 @@
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
-    padding-top: 20px;
     padding-left: 40px;
     padding-right: 40px;
+    overflow: scroll;
+    width: 100%;
     padding-bottom: 15px;
     border-bottom: 2px var(--stageSurface) solid;
     background-color: transparent;
+    position: relative;
+}
+
+.match-odds-nav-fix {
+    position: relative;
+    width: 100%;
+}
+
+.nav-gradient-left {
+    height: 100%;
+    width: 50px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    background: rgb(255,255,255);
+    background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 50%);
+}
+
+.match-odds-slider {
+    width: 100%;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    -webkit-appearance: none;
+}
+
+.match-odds-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+}
+
+.match-odds-slider:focus {
+    outline: none;
+}
+
+.match-odds-slider::-ms-track {
+    width: 100%;
+    cursor: pointer;
+    border-color: transparent;
+    color: transparent;
+}
+
+.match-odds-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    cursor: pointer;
+    margin-top: -17.5px;
+    border: 9px #8ba8ef solid;
+}
+
+.match-odds-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 1px;
+    cursor: pointer;
+    background: rgba(0,0,0,.3);
+    border-radius: 1.3px;
+}
+
+.match-odds-slider::-ms-track {
+    width: 100%;
+    height: 8.4px;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    border-width: 16px 0;
+    color: transparent;
+}
+.match-odds-slider::-ms-fill-lower {
+    background: #2a6495;
+    border-radius: 2.6px;
+}
+.match-odds-slider:focus::-ms-fill-lower {
+    background: #3071a9;
+}
+.match-odds-slider::-ms-fill-upper {
+    background: #3071a9;
+    border-radius: 2.6px;
+}
+.match-odds-slider:focus::-ms-fill-upper {
+    background: #367ebd;
+}
+
+.nav-gradient-right {
+    height: 100%;
+    width: 50px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 3;
+    background: green;
+    background: linear-gradient(270deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 50%);
 }
 
 #startopstilling-error {
@@ -328,6 +423,7 @@
     font-size: 14px;
     font-family: CircularBook;
     font-weight: 100;
+    margin-top: 10px;
     background-color: var(--stageSurface);
     border: 0px;
     border-radius: 3px;
@@ -886,6 +982,7 @@
     padding: 6px 12px;
     color: #fff !important;
     font-size: 14px;
+    margin-top: 10px;
     font-family: CircularBook !important;
     font-weight: 100;
     background-color: var(--primary) !important;
@@ -959,7 +1056,7 @@
 }
 
 .match-odds-offer-h1 {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 100;
     font-family: CircularLight;
     opacity: 0.9;
@@ -967,7 +1064,7 @@
 }
 
 .match-odds-offer-h2 {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 100;
     font-family: CircularBook;
     color: #fff;
@@ -977,17 +1074,6 @@
     display: flex;
     flex-grow: column wrap;
     gap: 0.5vh;
-}
-
-.match-odds-offer-element-3 {
-    display: flex;
-    width: 33%;
-    justify-content: space-between;
-    padding: 1.7vh 15px;
-    background-color: var(--primary);
-    border-radius: 3px;
-    margin-top: 10px;
-    cursor: pointer;
 }
 
 .kupon-receipt {
@@ -1013,14 +1099,36 @@
     cursor: pointer;
 }
 
+.match-odds-offer-element-3 {
+    display: flex;
+    width: 33%;
+    justify-content: space-between;
+    padding: 1.4vh 15px;
+    background-color: var(--primary);
+    border-radius: 2px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
 .match-odds-offer-element-2 {
     display: flex;
     width: 50%;
     cursor: pointer;
     justify-content: space-between;
-    padding: 1.5vh 15px;
+    padding: 1.4vh 15px;
     background-color: var(--primary);
-    border-radius: 5px;
+    border-radius: 2px;
+    margin-top: 10px;
+}
+
+.match-odds-offer-element-1 {
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+    justify-content: space-between;
+    padding: 1.4vh 15px;
+    background-color: var(--primary);
+    border-radius: 2px;
     margin-top: 10px;
 }
 

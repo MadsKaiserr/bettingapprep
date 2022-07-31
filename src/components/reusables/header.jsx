@@ -8,7 +8,7 @@ import '../../styles/utilities.css';
 
 import DownArrow from '../../assets/img/down-arrow.png';
 
-import logo from '../../assets/img/long-logo-primary.png';
+import logo from '../../assets/img/logo-primary.png';
 // import flag from '../../assets/img/danmark.png';
  
 function Header () {
@@ -100,12 +100,11 @@ function Header () {
         <>
             <div className="nav-bar" id="nav-bar-main">
                 <div className="nav-container-fix">
-                    <div className="nav-container-left">
-                        <Link to="/">
-                            <img src={logo} alt="Tipsspillet Logo" className="main-logo" />
-                        </Link>
-                    </div>
                     <div className="nav-container-mid">
+                        <Link to="/" className="header-inside">
+                            <img src={logo} alt="Tipsspillet Logo" className="main-logo" />
+                            <p className="logo-h1">Tipsspillet</p>
+                        </Link>
                         <div className="nav-link-container">
                             <p className="nav-p" id="nav-drop">Gruppespil
                                 <img src={DownArrow} alt="" className="nav-icon" />

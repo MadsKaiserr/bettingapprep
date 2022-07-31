@@ -1,72 +1,29 @@
 import * as React from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { loadStripe } from '@stripe/stripe-js'
+import {loadStripe} from '@stripe/stripe-js';
 
 import './priser.css';
-import Abonnement from '../../components/abonnement/abonnement';
 import Spiloffer from '../../components/spiloffer/spiloffer';
  
 function Priser () {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-      }, [])
+    }, [])
 
-    
-    const buyPremium = async e => {
-        if (localStorage.getItem("auth")) {
-            const stripePromise = await loadStripe('pk_test_51L8ohSHmQPuzRZTtLiNLkrvy2P1EobTAfX90Gl56CIHdj3yHfQU8XpOtdJ8IGxDlP3qPt2CTpRA4H33KBAn7WZK000YexYChIT')
-            const stripe = await stripePromise;
-            const { error } = await stripe.redirectToCheckout({
+    const handlePremium = async e => {
+        const stripe = await loadStripe("pk_test_51L8ohSHmQPuzRZTtLiNLkrvy2P1EobTAfX90Gl56CIHdj3yHfQU8XpOtdJ8IGxDlP3qPt2CTpRA4H33KBAn7WZK000YexYChIT");
+        const {error} = await stripe.redirectToCheckout({
             lineItems: [{
-                price: 'price_1LGPKhHmQPuzRZTt6V11b9HO',
-                quantity: 1,
+                price: "price_1LGPKhHmQPuzRZTt6V11b9HO",
+                quantity: 1
             }],
-            mode: 'payment',
-            successUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=success',
-            cancelUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=cancel',
-            });
-        } else {
-            window.open("/signup", "_self");
-        }
-    };
-
-    const buyDyst = async e => {
-        if (localStorage.getItem("auth")) {
-            const stripePromise = await loadStripe('pk_test_51L8ohSHmQPuzRZTtLiNLkrvy2P1EobTAfX90Gl56CIHdj3yHfQU8XpOtdJ8IGxDlP3qPt2CTpRA4H33KBAn7WZK000YexYChIT')
-            const stripe = await stripePromise;
-            const { error } = await stripe.redirectToCheckout({
-            lineItems: [{
-                price: 'price_1LIsFZHmQPuzRZTtK1mcFRDs',
-                quantity: 1,
-            }],
-            mode: 'payment',
-            successUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=success',
-            cancelUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=cancel',
-            });
-        } else {
-            window.open("/signup", "_self");
-        }
-    };
-
-    const buyGruppespil = async e => {
-        if (localStorage.getItem("auth")) {
-            const stripePromise = await loadStripe('pk_test_51L8ohSHmQPuzRZTtLiNLkrvy2P1EobTAfX90Gl56CIHdj3yHfQU8XpOtdJ8IGxDlP3qPt2CTpRA4H33KBAn7WZK000YexYChIT')
-            const stripe = await stripePromise;
-            const { error } = await stripe.redirectToCheckout({
-            lineItems: [{
-                price: 'price_1LIsFuHmQPuzRZTt4G822jNh',
-                quantity: 1,
-            }],
-            mode: 'payment',
-            successUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=success',
-            cancelUrl: 'https://main.d3hbwy9kjihi1v.amplifyapp.com/priser/done?status=cancel',
-            });
-        } else {
-            window.open("/signup", "_self");
-        }
-    };
+            mode: "payment",
+            successUrl: "http://localhost:3000/done",
+            cancelUrl: "http://localhost:3000/error"
+        });
+    }
 
     return (
         <>
@@ -178,7 +135,7 @@ function Priser () {
                                         <p className="plan-element-perk-desc">Udvidet statistikker</p>
                                     </div>
                                 </div>
-                                <button className="square-btn-default plan-btn" onClick={buyPremium}>Køb abonnement</button>
+                                <button className="square-btn-default plan-btn" onClick={handlePremium}>Køb abonnement</button>
                             </div>
                         </div>
                     </div>
@@ -232,6 +189,17 @@ function Priser () {
                             </div>
                             <div className="plan-func-element">
                                 <div className="plan-el-desc">
+                                    <p className="plan-func-p">Betting Tips</p>
+                                </div>
+                                <div className="plan-el-1">
+                                    <p className="plan-func-p">Nej</p>
+                                </div>
+                                <div className="plan-el-2">
+                                    <p className="plan-func-p">Ja</p>
+                                </div>
+                            </div>
+                            <div className="plan-func-element">
+                                <div className="plan-el-desc">
                                     <p className="plan-func-p">Udvidet statistikker</p>
                                 </div>
                                 <div className="plan-el-1">
@@ -267,7 +235,7 @@ function Priser () {
                                         <p className="plan-element-perk-desc">Deltag i valgfrit præmiespil</p>
                                     </div>
                                 </div>
-                                <button className="square-btn-outline plan-btn" onClick={buyDyst}>Køb adgang</button>
+                                <button className="square-btn-outline plan-btn">Køb adgang</button>
                             </div>
                             <div className="plan-element standard">
                                 <div className="plan-element-top">
@@ -284,7 +252,7 @@ function Priser () {
                                         <p className="plan-element-perk-desc">Opret dit eget gruppespil</p>
                                     </div>
                                 </div>
-                                <button className="square-btn-outline plan-btn" onClick={buyGruppespil}>Køb adgang</button>
+                                <button className="square-btn-outline plan-btn">Køb adgang</button>
                             </div>
                         </div>
                     </div>

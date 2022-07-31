@@ -93,7 +93,6 @@ function Signup () {
                 axios.post(signupURL, requestBody, requestConfig).then(response => {
                     console.log("API REQUEST");
                     resetUserSession();
-                    setMessage("Din konto er nu oprettet");
                     document.getElementById("signupBTN").innerHTML = "Opret konto";
                     
 
@@ -112,6 +111,7 @@ function Signup () {
                     axios.post(loginURL, loginBody, loginConfig).then(response => {
                         console.log(response.data.user);
                         setUserSession(response.data.user, response.data.token);
+                        localStorage.setItem("velkommen", "now");
                         window.open("/stage", "_self");
                     }).catch(error => {
                         console.log(error);
